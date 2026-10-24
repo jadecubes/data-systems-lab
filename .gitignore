@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+test-results/
+playwright-report/
+
+# `tsc <file>` ignores tsconfig noEmit and writes the .js beside its source.
+# Nothing here is hand-written JS outside scripts/, and vite.config.js would shadow the .ts.
+src/**/*.js
+e2e/**/*.js
+/vite.config.js

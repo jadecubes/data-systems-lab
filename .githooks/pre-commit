@@ -1,0 +1,2 @@
+#!/bin/sh
+exec node scripts/banned-words.mjs --staged

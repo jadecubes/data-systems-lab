@@ -1,0 +1,37 @@
+{
+  "name": "data-systems-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm typecheck && vite build && node scripts/prerender.mjs",
+    "test:e2e": "BASE_PATH=/data-systems-lab/ pnpm build && BASE_PATH=/data-systems-lab/ playwright test",
+    "content": "node scripts/build-content-index.mjs"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/user-event": "14.5.2",
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "axe-core": "4.10.2",
+    "jsdom": "25.0.1",
+    "typescript": "5.7.3",
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
+  }
+}
