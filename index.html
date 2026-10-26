@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <!-- Hides the site index before the first paint when the reader chose that; see src/app/indexToggle.ts.
+         If the app script fails to load, there is no button to show it again, so it stays shown. Once the
+         button exists, a module script that fails (an extension's, a host toolbar's) is not the app's. -->
+    <script>
+      try {
+        if (localStorage.getItem('data-systems-lab.index') === 'hidden') document.documentElement.dataset.index = 'hidden'
+      } catch {}
+      addEventListener('error', (e) => e.target instanceof HTMLScriptElement && e.target.type === 'module' && !document.querySelector('.index-toggle') && delete document.documentElement.dataset.index, true)
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
+  </body>
+</html>
