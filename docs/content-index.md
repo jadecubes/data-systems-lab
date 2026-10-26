@@ -11,6 +11,7 @@
 - 章末的「名詞」「怎麼選」「容易誤解」「小結」也是段落，照樣列出。
 - 篩選版開頭寫評了 416 段，筆記各章實際有 414 個標題，以本索引為準。
 - 「PDF 頁」對照筆記用；「印刷頁」＝PDF 頁 − 24，是書上印的、網站上顯示的頁碼。
+- 「段落 id」就是網站主題頁上該段區塊的 `id`，也是 `src/content/sections.ts` 與各語言內容檔的鍵。
 
 ## 總覽
 
@@ -27,237 +28,237 @@
 
 ### T1 非功能需求與可靠性：哪些要寫進 spec
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 320-323 | 2 | 引言：功能性與非功能性需求 | 57 | 33 | 要會用 | 要會用 |
-| 452-459 | 2 | Humans and Reliability（人與可靠性） | 71–72 | 47–48 | 要會用 | 要會用 |
-| 460-465 | 2 | How Important Is Reliability?（可靠性有多重要？） | 72–73 | 48–49 | 要會用 | 要能問 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 320-323 | 2 | 引言：功能性與非功能性需求 | `ch2-intro-functional-and-nonfunctional-requirements` | 57 | 33 | 要會用 | 要會用 |
+| 452-459 | 2 | Humans and Reliability（人與可靠性） | `ch2-humans-and-reliability` | 71–72 | 47–48 | 要會用 | 要會用 |
+| 460-465 | 2 | How Important Is Reliability?（可靠性有多重要？） | `ch2-how-important-is-reliability` | 72–73 | 48–49 | 要會用 | 要能問 |
 
 ### T2 效能看百分位數，不看平均；SLO
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 385-391 | 2 | Average, Median, and Percentiles（平均數、中位數與百分位數） | 64–65 | 40–41 | 要會用 | 要會用 |
-| 399-403 | 2 | Use of Response Time Metrics（回應時間指標的用法） | 65–66 | 41–42 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 385-391 | 2 | Average, Median, and Percentiles（平均數、中位數與百分位數） | `ch2-average-median-and-percentiles` | 64–65 | 40–41 | 要會用 | 要會用 |
+| 399-403 | 2 | Use of Response Time Metrics（回應時間指標的用法） | `ch2-use-of-response-time-metrics` | 65–66 | 41–42 | 要會用 | 要會用 |
 
 ### T3 逾時：不知道到底成功沒有
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 224-231 | 1 | Problems with Distributed Systems（分散式系統的問題） | 44–45 | 20–21 | 要會用 | 要會用 |
-| 1404-1414 | 5 | 遠端程序呼叫的問題（The problems with remote procedure calls） | 207–208 | 183–184 | 要會用 | 要會用 |
-| 2651-2663 | 9 | Unreliable Networks（不可靠的網路） | 371–372 | 347–348 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 224-231 | 1 | Problems with Distributed Systems（分散式系統的問題） | `ch1-problems-with-distributed-systems` | 44–45 | 20–21 | 要會用 | 要會用 |
+| 1404-1414 | 5 | 遠端程序呼叫的問題（The problems with remote procedure calls） | `ch5-the-problems-with-remote-procedure-calls` | 207–208 | 183–184 | 要會用 | 要會用 |
+| 2651-2663 | 9 | Unreliable Networks（不可靠的網路） | `ch9-unreliable-networks` | 371–372 | 347–348 | 要會用 | 要會用 |
 
 ### T4 安全重試：請求 ID 與去重
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 2182-2192 | 8 | Handling errors and aborts（處理錯誤與中止） | 311–312 | 287–288 | 要會用 | 要會用 |
-| 2528-2537 | 8 | Exactly-Once Message Processing Revisited（再談恰好一次訊息處理） | 358–359 | 334–335 | 要會用 | 要會用 |
-| 4246-4277 | 13 | The End-to-End Argument for Databases（資料庫的端到端論證） | 586–590 | 562–566 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 2182-2192 | 8 | Handling errors and aborts（處理錯誤與中止） | `ch8-handling-errors-and-aborts` | 311–312 | 287–288 | 要會用 | 要會用 |
+| 2528-2537 | 8 | Exactly-Once Message Processing Revisited（再談恰好一次訊息處理） | `ch8-exactly-once-message-processing-revisited` | 358–359 | 334–335 | 要會用 | 要會用 |
+| 4246-4277 | 13 | The End-to-End Argument for Databases（資料庫的端到端論證） | `ch13-the-end-to-end-argument-for-databases` | 586–590 | 562–566 | 要會用 | 要會用 |
 
 ### T5 存了卻看不到：複製延遲與寫後讀一致性
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1630-1635 | 6 | Problems with Replication Lag（複製延遲的問題） | 233 | 209 | 要會用 | 要會用 |
-| 1636-1647 | 6 | Reading your own writes（寫後讀一致性） | 234–235 | 210–211 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1630-1635 | 6 | Problems with Replication Lag（複製延遲的問題） | `ch6-problems-with-replication-lag` | 233 | 209 | 要會用 | 要會用 |
+| 1636-1647 | 6 | Reading your own writes（寫後讀一致性） | `ch6-reading-your-own-writes` | 234–235 | 210–211 | 要會用 | 要會用 |
 
 ### T6 兩人同時改：遺失更新與衝突寫入
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 2261-2264 | 8 | Preventing Lost Updates（防止遺失更新） | 323 | 299 | 要會用 | 要會用 |
-| 1714-1754 | 6 | Dealing with Conflicting Writes（處理衝突寫入） | 246–253 | 222–229 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 2261-2264 | 8 | Preventing Lost Updates（防止遺失更新） | `ch8-preventing-lost-updates` | 323 | 299 | 要會用 | 要會用 |
+| 1714-1754 | 6 | Dealing with Conflicting Writes（處理衝突寫入） | `ch6-dealing-with-conflicting-writes` | 246–253 | 222–229 | 要會用 | 要會用 |
 
 ### T7 不能重複：約束由誰、在什麼時候擋
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 2134-2139 | 8 | 一致性（Consistency） | 304–305 | 280–281 | 要會用 | 要能問 |
-| 2303-2308 | 8 | More examples of write skew（更多寫偏斜例子） | 329–330 | 305–306 | 要會用 | 要會用 |
-| 4278-4307 | 13 | Enforcing Constraints（強制約束） | 590–594 | 566–570 | 要會用 | 要會用 |
-| 3078-3091 | 10 | Relying on Linearizability（何時需要線性一致性） | 432–435 | 408–411 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 2134-2139 | 8 | 一致性（Consistency） | `ch8-consistency` | 304–305 | 280–281 | 要會用 | 要能問 |
+| 2303-2308 | 8 | More examples of write skew（更多寫偏斜例子） | `ch8-more-examples-of-write-skew` | 329–330 | 305–306 | 要會用 | 要會用 |
+| 4278-4307 | 13 | Enforcing Constraints（強制約束） | `ch13-enforcing-constraints` | 590–594 | 566–570 | 要會用 | 要會用 |
+| 3078-3091 | 10 | Relying on Linearizability（何時需要線性一致性） | `ch10-relying-on-linearizability` | 432–435 | 408–411 | 要會用 | 要會用 |
 
 ### T8 晚一點看到 vs 永久錯誤：及時性與完整性
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 4308-4350 | 13 | Timeliness and Integrity（及時性與完整性） | 595–599 | 571–575 | 要會用 | 要會用 |
-| 4409-4416 | 13 | 怎麼選（判準） | 565–602 | 541–578 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 4308-4350 | 13 | Timeliness and Integrity（及時性與完整性） | `ch13-timeliness-and-integrity` | 595–599 | 571–575 | 要會用 | 要會用 |
+| 4409-4416 | 13 | 怎麼選（判準） | `ch13-how-to-choose` | 565–602 | 541–578 | 要會用 | 要會用 |
 
 ### T9 新舊版本共存與 API 變更
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1229-1241 | 5 | 為什麼新舊版本會共存（章首） | 185–187 | 161–163 | 要會用 | 要會用 |
-| 1429-1436 | 5 | RPC 的資料編碼與演進（Data encoding and evolution for RPC） | 210 | 186 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1229-1241 | 5 | 為什麼新舊版本會共存（章首） | `ch5-intro-why-versions-coexist` | 185–187 | 161–163 | 要會用 | 要會用 |
+| 1429-1436 | 5 | RPC 的資料編碼與演進（Data encoding and evolution for RPC） | `ch5-data-encoding-and-evolution-for-rpc` | 210 | 186 | 要會用 | 要會用 |
 
 ### T10 遷移：舊資料、行為變更與退路
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 527-532 | 2 | Evolvability: Making Change Easy（可演進性：讓改變容易） | 79–80 | 55–56 | 要會用 | 要會用 |
-| 1374-1382 | 5 | 不同時間寫入的值（Different values written at different times） | 203 | 179 | 要會用 | 要會用 |
-| 4108-4127 | 13 | Batch and Stream Processing（批次與串流處理） | 568–570 | 544–546 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 527-532 | 2 | Evolvability: Making Change Easy（可演進性：讓改變容易） | `ch2-evolvability-making-change-easy` | 79–80 | 55–56 | 要會用 | 要會用 |
+| 1374-1382 | 5 | 不同時間寫入的值（Different values written at different times） | `ch5-different-values-written-at-different-times` | 203 | 179 | 要會用 | 要會用 |
+| 4108-4127 | 13 | Batch and Stream Processing（批次與串流處理） | `ch13-batch-and-stream-processing` | 568–570 | 544–546 | 要會用 | 要會用 |
 
 ### T11 多租戶：隔離、還原與跨租戶功能
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1935-1950 | 7 | Sharding for Multitenancy（多租戶分片） | 278–279 | 254–255 | 要會用 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1935-1950 | 7 | Sharding for Multitenancy（多租戶分片） | `ch7-sharding-for-multitenancy` | 278–279 | 254–255 | 要會用 | 要會用 |
 
 ### T12 法律與隱私：存什麼、存多久、怎麼刪
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 259-270 | 1 | Data Systems, Law, and Society（資料系統、法律與社會） | 48–49 | 24–25 | 要會用 | 要會用 |
-| 4517-4525 | 14 | Legislation and Self-Regulation（立法與自律） | 620–621 | 596–597 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 259-270 | 1 | Data Systems, Law, and Society（資料系統、法律與社會） | `ch1-data-systems-law-and-society` | 48–49 | 24–25 | 要會用 | 要會用 |
+| 4517-4525 | 14 | Legislation and Self-Regulation（立法與自律） | `ch14-legislation-and-self-regulation` | 620–621 | 596–597 | 要能問 | 要會用 |
 
 ### T0 記錄系統與衍生資料、正規化
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 144-152 | 1 | Systems of Record and Derived Data（記錄系統與衍生資料） | 35 | 11 | 要會用 | 要會用 |
-| 628-634 | 3 | Normalization, Denormalization, and Joins（正規化、反正規化與 join） | 96–97 | 72–73 | 要會用 | 要能問 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 144-152 | 1 | Systems of Record and Derived Data（記錄系統與衍生資料） | `ch1-systems-of-record-and-derived-data` | 35 | 11 | 要會用 | 要會用 |
+| 628-634 | 3 | Normalization, Denormalization, and Joins（正規化、反正規化與 join） | `ch3-normalization-denormalization-and-joins` | 96–97 | 72–73 | 要會用 | 要能問 |
 
 ### Q1 營運資料與分析資料分開；資料倉儲
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 84-94 | 1 | Operational Versus Analytical Systems（營運系統 vs. 分析系統） | 27–28 | 3–4 | 要能問 | 要會用 |
-| 116-130 | 1 | Data Warehousing（資料倉儲） | 31–33 | 7–9 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 84-94 | 1 | Operational Versus Analytical Systems（營運系統 vs. 分析系統） | `ch1-operational-versus-analytical-systems` | 27–28 | 3–4 | 要能問 | 要會用 |
+| 116-130 | 1 | Data Warehousing（資料倉儲） | `ch1-data-warehousing` | 31–33 | 7–9 | 要能問 | 要會用 |
 
 ### Q2 雲端 vs 自建；微服務與 serverless
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 159-174 | 1 | Pros and Cons of Cloud Services（雲端服務的優缺點） | 37–38 | 13–14 | 要能問 | 要會用 |
-| 232-245 | 1 | Microservices and Serverless（微服務與無伺服器） | 45–46 | 21–22 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 159-174 | 1 | Pros and Cons of Cloud Services（雲端服務的優缺點） | `ch1-pros-and-cons-of-cloud-services` | 37–38 | 13–14 | 要能問 | 要會用 |
+| 232-245 | 1 | Microservices and Serverless（微服務與無伺服器） | `ch1-microservices-and-serverless` | 45–46 | 21–22 | 要能問 | 要會用 |
 
 ### Q3 先描述負載再談擴展；過載為何回不來
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 466-472 | 2 | Scalability（可擴展性） | 73–74 | 49–50 | 要能問 | 要會用 |
-| 473-481 | 2 | Understanding Load（理解負載） | 74–75 | 50–51 | 要能問 | 要會用 |
-| 491-496 | 2 | Principles for Scalability（可擴展性原則） | 76 | 52 | 要能問 | 要會用 |
-| 367-374 | 2 | When an Overloaded System Won't Recover（過載系統為何無法恢復） | 62 | 38 | 要能問 | 要會用 |
-| 348-358 | 2 | Materializing and Updating Timelines（物化與更新時間軸） | 59–60 | 35–36 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 466-472 | 2 | Scalability（可擴展性） | `ch2-scalability` | 73–74 | 49–50 | 要能問 | 要會用 |
+| 473-481 | 2 | Understanding Load（理解負載） | `ch2-understanding-load` | 74–75 | 50–51 | 要能問 | 要會用 |
+| 491-496 | 2 | Principles for Scalability（可擴展性原則） | `ch2-principles-for-scalability` | 76 | 52 | 要能問 | 要會用 |
+| 367-374 | 2 | When an Overloaded System Won't Recover（過載系統為何無法恢復） | `ch2-when-an-overloaded-system-won-t-recover` | 62 | 38 | 要能問 | 要會用 |
+| 348-358 | 2 | Materializing and Updating Timelines（物化與更新時間軸） | `ch2-materializing-and-updating-timelines` | 59–60 | 35–36 | 要能問 | 要會用 |
 
 ### Q4 容錯與可營運性
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 417-423 | 2 | Fault Tolerance（容錯） | 67–68 | 43–44 | 要能問 | 要會用 |
-| 506-517 | 2 | Operability: Making Life Easy for Operations（可營運性：讓營運輕鬆） | 77–78 | 53–54 | 懂名詞 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 417-423 | 2 | Fault Tolerance（容錯） | `ch2-fault-tolerance` | 67–68 | 43–44 | 要能問 | 要會用 |
+| 506-517 | 2 | Operability: Making Life Easy for Operations（可營運性：讓營運輕鬆） | `ch2-operability-making-life-easy-for-operations` | 77–78 | 53–54 | 懂名詞 | 要會用 |
 
 ### Q5 schema 的彈性、優點與正規化取捨
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 635-642 | 3 | Trade-offs of normalization（正規化的取捨） | 97–98 | 73–74 | 要能問 | 要會用 |
-| 674-684 | 3 | Schema flexibility in the document model（文件模型的 schema 彈性） | 104–106 | 80–82 | 要能問 | 要會用 |
-| 1343-1358 | 5 | The Merits of Schemas（schema 的優點） | 201–202, 216 | 177–178, 192 | 懂名詞 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 635-642 | 3 | Trade-offs of normalization（正規化的取捨） | `ch3-trade-offs-of-normalization` | 97–98 | 73–74 | 要能問 | 要會用 |
+| 674-684 | 3 | Schema flexibility in the document model（文件模型的 schema 彈性） | `ch3-schema-flexibility-in-the-document-model` | 104–106 | 80–82 | 要能問 | 要會用 |
+| 1343-1358 | 5 | The Merits of Schemas（schema 的優點） | `ch5-the-merits-of-schemas` | 201–202, 216 | 177–178, 192 | 懂名詞 | 要會用 |
 
 ### Q6 事件溯源、CQRS、物化視圖
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 810-819 | 3 | Event Sourcing and CQRS（事件溯源與 CQRS） | 125–127 | 101–103 | 要能問 | 要會用 |
-| 829-833 | 3 | 缺點（p.128） | 128 | 104 | 要能問 | 要會用 |
-| 1121-1129 | 4 | Materialized Views and Data Cubes（物化視圖與資料立方體） | 167–169 | 143–145 | 要能問 | 要會用 |
-| 919-927 | 4 | Storage and Indexing for OLTP（OLTP 的儲存與索引） | 140–141 | 116–117 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 810-819 | 3 | Event Sourcing and CQRS（事件溯源與 CQRS） | `ch3-event-sourcing-and-cqrs` | 125–127 | 101–103 | 要能問 | 要會用 |
+| 829-833 | 3 | 缺點（p.128） | `ch3-event-sourcing-drawbacks` | 128 | 104 | 要能問 | 要會用 |
+| 1121-1129 | 4 | Materialized Views and Data Cubes（物化視圖與資料立方體） | `ch4-materialized-views-and-data-cubes` | 167–169 | 143–145 | 要能問 | 要會用 |
+| 919-927 | 4 | Storage and Indexing for OLTP（OLTP 的儲存與索引） | `ch4-storage-and-indexing-for-oltp` | 140–141 | 116–117 | 要能問 | 要會用 |
 
 ### Q7 複製：同步／非同步、備份、停機、跨地區
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1540-1555 | 6 | 前言：為什麼複製、與備份的關係（Replication and Backups） | 221–222 | 197–198 | 要能問 | 要會用 |
-| 1566-1573 | 6 | Synchronous Versus Asynchronous Replication（同步與非同步複製） | 224–225 | 200–201 | 要能問 | 要會用 |
-| 1596-1612 | 6 | Handling Node Outages（處理節點停機） | 228–230 | 204–206 | 要能問 | 要會用 |
-| 1663-1669 | 6 | Solutions for Replication Lag（複製延遲的解法） | 238–239 | 214–215 | 要能問 | 要會用 |
-| 1675-1689 | 6 | Geographically Distributed Operation（地理分散運作） | 240–242 | 216–218 | 要能問 | 要會用 |
-| 1899-1901 | 6 | 怎麼選（判準） | 241–260 | 217–236 | 要能問 | 要會用 |
-| 2150-2161 | 8 | 側欄：Replication and Durability（複製與持久性） | 307–308 | 283–284 | 懂名詞 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1540-1555 | 6 | 前言：為什麼複製、與備份的關係（Replication and Backups） | `ch6-intro-replication-and-backups` | 221–222 | 197–198 | 要能問 | 要會用 |
+| 1566-1573 | 6 | Synchronous Versus Asynchronous Replication（同步與非同步複製） | `ch6-synchronous-versus-asynchronous-replication` | 224–225 | 200–201 | 要能問 | 要會用 |
+| 1596-1612 | 6 | Handling Node Outages（處理節點停機） | `ch6-handling-node-outages` | 228–230 | 204–206 | 要能問 | 要會用 |
+| 1663-1669 | 6 | Solutions for Replication Lag（複製延遲的解法） | `ch6-solutions-for-replication-lag` | 238–239 | 214–215 | 要能問 | 要會用 |
+| 1675-1689 | 6 | Geographically Distributed Operation（地理分散運作） | `ch6-geographically-distributed-operation` | 240–242 | 216–218 | 要能問 | 要會用 |
+| 1899-1901 | 6 | 怎麼選（判準） | `ch6-how-to-choose` | 241–260 | 217–236 | 要能問 | 要會用 |
+| 2150-2161 | 8 | 側欄：Replication and Durability（複製與持久性） | `ch8-replication-and-durability` | 307–308 | 283–284 | 懂名詞 | 要會用 |
 
 ### Q8 分片與再平衡
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1926-1934 | 7 | Pros and Cons of Sharding（分片的優缺點） | 277–278 | 253–254 | 要能問 | 要會用 |
-| 2019-2026 | 7 | Operations: Automatic Versus Manual Rebalancing（運維：自動與手動再平衡） | 288–289 | 264–265 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1926-1934 | 7 | Pros and Cons of Sharding（分片的優缺點） | `ch7-pros-and-cons-of-sharding` | 277–278 | 253–254 | 要能問 | 要會用 |
+| 2019-2026 | 7 | Operations: Automatic Versus Manual Rebalancing（運維：自動與手動再平衡） | `ch7-operations-automatic-versus-manual-rebalancing` | 288–289 | 264–265 | 要能問 | 要會用 |
 
 ### Q9 隔離等級怎麼選
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 2221-2231 | 8 | Snapshot Isolation and Repeatable Read（快照隔離與可重複讀） | 317–319 | 293–295 | 要能問 | 要會用 |
-| 2600-2620 | 8 | 怎麼選（判準） | 311–361 | 287–337 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 2221-2231 | 8 | Snapshot Isolation and Repeatable Read（快照隔離與可重複讀） | `ch8-snapshot-isolation-and-repeatable-read` | 317–319 | 293–295 | 要能問 | 要會用 |
+| 2600-2620 | 8 | 怎麼選（判準） | `ch8-how-to-choose` | 311–361 | 287–337 | 要能問 | 要會用 |
 
 ### Q10 逾時設定、時間戳排序、fencing
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 2690-2697 | 9 | Timeouts and Unbounded Delays（逾時與無上限延遲） | 376–377 | 352–353 | 要能問 | 要會用 |
-| 2769-2780 | 9 | Timestamps for ordering events（用時間戳排序事件） | 386–388 | 362–364 | 要能問 | 要會用 |
-| 2864-2875 | 9 | Fencing off zombies and delayed requests（隔離殭屍與延遲請求） | 398–400 | 374–376 | 懂名詞 | 要會用 |
-| 2974-2979 | 9 | Summary（總結） | 412–413 | 388–389 | 要能問 | 要會用 |
-| 3011-3018 | 9 | 怎麼選（判準） | 376–411 | 352–387 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 2690-2697 | 9 | Timeouts and Unbounded Delays（逾時與無上限延遲） | `ch9-timeouts-and-unbounded-delays` | 376–377 | 352–353 | 要能問 | 要會用 |
+| 2769-2780 | 9 | Timestamps for ordering events（用時間戳排序事件） | `ch9-timestamps-for-ordering-events` | 386–388 | 362–364 | 要能問 | 要會用 |
+| 2864-2875 | 9 | Fencing off zombies and delayed requests（隔離殭屍與延遲請求） | `ch9-fencing-off-zombies-and-delayed-requests` | 398–400 | 374–376 | 懂名詞 | 要會用 |
+| 2974-2979 | 9 | Summary（總結） | `ch9-summary` | 412–413 | 388–389 | 要能問 | 要會用 |
+| 3011-3018 | 9 | 怎麼選（判準） | `ch9-how-to-choose` | 376–411 | 352–387 | 要能問 | 要會用 |
 
 ### Q11 線性一致的代價與協調服務
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 3038-3043 | 10 | 章首：兩種處理複本不一致的哲學 | 425–426 | 401–402 | 要能問 | 要會用 |
-| 3109-3127 | 10 | The Cost of Linearizability（線性一致性的代價） | 437–441 | 413–417 | 要能問 | 要會用 |
-| 3284-3304 | 10 | Coordination Services（協調服務） | 461–464 | 437–440 | 懂名詞 | 要會用 |
-| 3339-3343 | 10 | 怎麼選（判準） | 433–467 | 409–443 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 3038-3043 | 10 | 章首：兩種處理複本不一致的哲學 | `ch10-intro-two-philosophies` | 425–426 | 401–402 | 要能問 | 要會用 |
+| 3109-3127 | 10 | The Cost of Linearizability（線性一致性的代價） | `ch10-the-cost-of-linearizability` | 437–441 | 413–417 | 要能問 | 要會用 |
+| 3284-3304 | 10 | Coordination Services（協調服務） | `ch10-coordination-services` | 461–464 | 437–440 | 懂名詞 | 要會用 |
+| 3339-3343 | 10 | 怎麼選（判準） | `ch10-how-to-choose` | 433–467 | 409–443 | 要能問 | 要會用 |
 
 ### Q12 資料流、訊息代理、持久執行
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 1370-1373 | 5 | Dataflow Through Databases（經由資料庫的資料流） | 202–203 | 178–179 | 要能問 | 要會用 |
-| 1437-1449 | 5 | Durable Execution and Workflows（持久執行與工作流程） | 211–213 | 187–189 | 要能問 | 要會用 |
-| 1460-1468 | 5 | 訊息代理（Message brokers） | 214–215 | 190–191 | 懂名詞 | 要會用 |
-| 1514-1519 | 5 | 怎麼選（判準） | 186–214 | 162–190 | 要能問 | 要會用 |
-| 3669-3714 | 12 | Messaging Systems（訊息系統） | 513–519 | 489–495 | 要能問 | 要會用 |
-| 3715-3763 | 12 | Log-Based Message Brokers（日誌式訊息代理） | 519–524 | 495–500 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 1370-1373 | 5 | Dataflow Through Databases（經由資料庫的資料流） | `ch5-dataflow-through-databases` | 202–203 | 178–179 | 要能問 | 要會用 |
+| 1437-1449 | 5 | Durable Execution and Workflows（持久執行與工作流程） | `ch5-durable-execution-and-workflows` | 211–213 | 187–189 | 要能問 | 要會用 |
+| 1460-1468 | 5 | 訊息代理（Message brokers） | `ch5-message-brokers` | 214–215 | 190–191 | 懂名詞 | 要會用 |
+| 1514-1519 | 5 | 怎麼選（判準） | `ch5-how-to-choose` | 186–214 | 162–190 | 要能問 | 要會用 |
+| 3669-3714 | 12 | Messaging Systems（訊息系統） | `ch12-messaging-systems` | 513–519 | 489–495 | 要能問 | 要會用 |
+| 3715-3763 | 12 | Log-Based Message Brokers（日誌式訊息代理） | `ch12-log-based-message-brokers` | 519–524 | 495–500 | 要能問 | 要會用 |
 
 ### Q13 讓系統同步：CDC、不可變、組合工具
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 3769-3775 | 12 | Keeping Systems in Sync（讓系統保持同步） | 525–526 | 501–502 | 要能問 | 要會用 |
-| 3776-3816 | 12 | Change Data Capture（變更資料擷取） | 527–532 | 503–508 | 要能問 | 要會用 |
-| 3817-3846 | 12 | State, Streams, and Immutability（狀態、串流與不可變性） | 532–537 | 508–513 | 要能問 | 要會用 |
-| 4077-4107 | 13 | Combining Specialized Tools by Deriving Data（以衍生資料組合專門工具） | 564–568 | 540–544 | 要能問 | 要會用 |
-| 4141-4167 | 13 | Composing Data Storage Technologies（組合資料儲存技術） | 571–575 | 547–551 | 懂名詞 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 3769-3775 | 12 | Keeping Systems in Sync（讓系統保持同步） | `ch12-keeping-systems-in-sync` | 525–526 | 501–502 | 要能問 | 要會用 |
+| 3776-3816 | 12 | Change Data Capture（變更資料擷取） | `ch12-change-data-capture` | 527–532 | 503–508 | 要能問 | 要會用 |
+| 3817-3846 | 12 | State, Streams, and Immutability（狀態、串流與不可變性） | `ch12-state-streams-and-immutability` | 532–537 | 508–513 | 要能問 | 要會用 |
+| 4077-4107 | 13 | Combining Specialized Tools by Deriving Data（以衍生資料組合專門工具） | `ch13-combining-specialized-tools-by-deriving-data` | 564–568 | 540–544 | 要能問 | 要會用 |
+| 4141-4167 | 13 | Composing Data Storage Technologies（組合資料儲存技術） | `ch13-composing-data-storage-technologies` | 571–575 | 547–551 | 懂名詞 | 要會用 |
 
 ### Q14 批次、ETL、提供衍生資料
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 3360-3377 | 11 | 章首：線上系統與批次處理 | 475–477 | 451–453 | 要能問 | 要會用 |
-| 3564-3571 | 11 | Extract–Transform–Load（ETL） | 500–501 | 476–477 | 懂名詞 | 要會用 |
-| 3590-3604 | 11 | Serving Derived Data（提供衍生資料） | 503–505 | 479–481 | 要能問 | 要會用 |
-| 3639-3645 | 11 | 怎麼選（判準） | 475–500 | 451–476 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 3360-3377 | 11 | 章首：線上系統與批次處理 | `ch11-intro-online-and-batch` | 475–477 | 451–453 | 要能問 | 要會用 |
+| 3564-3571 | 11 | Extract–Transform–Load（ETL） | `ch11-extract-transform-load` | 500–501 | 476–477 | 懂名詞 | 要會用 |
+| 3590-3604 | 11 | Serving Derived Data（提供衍生資料） | `ch11-serving-derived-data` | 503–505 | 479–481 | 要能問 | 要會用 |
+| 3639-3645 | 11 | 怎麼選（判準） | `ch11-how-to-choose` | 475–500 | 451–476 | 要能問 | 要會用 |
 
 ### Q15 串流：時間、join、容錯
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 3889-3925 | 12 | Reasoning About Time（關於時間的推理） | 542–546 | 518–522 | 要能問 | 要會用 |
-| 3926-3974 | 12 | Stream Joins（串流 join） | 547–550 | 523–526 | 要能問 | 要會用 |
-| 3975-4004 | 12 | Fault Tolerance（容錯） | 550–553 | 526–529 | 要能問 | 要會用 |
-| 4044-4051 | 12 | 怎麼選（判準） | 515–552 | 491–528 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 3889-3925 | 12 | Reasoning About Time（關於時間的推理） | `ch12-reasoning-about-time` | 542–546 | 518–522 | 要能問 | 要會用 |
+| 3926-3974 | 12 | Stream Joins（串流 join） | `ch12-stream-joins` | 547–550 | 523–526 | 要能問 | 要會用 |
+| 3975-4004 | 12 | Fault Tolerance（容錯） | `ch12-fault-tolerance` | 550–553 | 526–529 | 要能問 | 要會用 |
+| 4044-4051 | 12 | 怎麼選（判準） | `ch12-how-to-choose` | 515–552 | 491–528 | 要能問 | 要會用 |
 
 ### Q16 信任但要驗證：持續稽核
 
-| 筆記行 | 章 | 段落 | PDF 頁 | 印刷頁 | 產品 | 平台 |
-|---|---|---|---|---|---|---|
-| 4351-4380 | 13 | Trust, but Verify（信任，但要驗證） | 599–602 | 575–578 | 要能問 | 要會用 |
+| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |
+|---|---|---|---|---|---|---|---|
+| 4351-4380 | 13 | Trust, but Verify（信任，但要驗證） | `ch13-trust-but-verify` | 599–602 | 575–578 | 要能問 | 要會用 |
 
 ## 依章節：全書每一段的去處
 
