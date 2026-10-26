@@ -1,7 +1,7 @@
 # data-systems-lab
 
-A bilingual (Traditional Chinese / English) study site for people moving into technical product management.
-It maps which parts of *Designing Data-Intensive Applications* (2nd edition) a technical PM needs, and
+A bilingual (Traditional Chinese / English) study site for people moving into technical project management.
+It maps which parts of *Designing Data-Intensive Applications* (2nd edition) a technical project manager needs, and
 for each topic gives the conclusion, the trade-off, the questions to ask engineers, and an example.
 Hands-on labs (timeouts and retries, replication lag, concurrent edits) follow in later phases.
 
