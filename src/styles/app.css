@@ -1,0 +1,755 @@
+:root {
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --text: #1f2328;
+  --muted: #59636e;
+  --border: #d8dee4;
+  --accent: #0b6bcb;
+  --accent-soft: #eaf3fc;
+  --warn: #fff4e0;
+  --warn-text: #7a4a00;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181c;
+    --surface: #1d2126;
+    --text: #e6e8eb;
+    --muted: #a3acb6;
+    --border: #353b43;
+    --accent: #6cb4ff;
+    --accent-soft: #1b2a3a;
+    --warn: #3a2c14;
+    --warn-text: #f2c97a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  /* 17px at the browser default, and scales with the reader's own font size setting. */
+  font-size: 106.25%;
+  line-height: 1.6;
+  /* Long words ("deduplication") must wrap rather than widen the page when text is enlarged. */
+  overflow-wrap: break-word;
+  /* Avoids a last line of one stray character or word; headings balance their lines instead. */
+  text-wrap: pretty;
+  background: var(--bg);
+  color: var(--text);
+}
+
+html:lang(zh-TW) {
+  line-height: 1.7;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  /* Full-width bar, but its contents line up with the 1120px page below. */
+  padding: 0.75rem max(1rem, (100% - 1120px) / 2 + 1rem);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.site-name {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* The link before scripts run and the select after are the same height, so the header does not move. */
+.language-switch a,
+.language-switch select {
+  box-sizing: border-box;
+  height: 2.25rem;
+  /* One width for both, so the select that replaces the link does not move the header. */
+  min-width: 7rem;
+}
+
+.language-switch a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.language-switch select {
+  padding: 0 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+/* Only wide screens show the index button; phones fold the index behind its own <summary>. */
+.index-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  /* The same width as the column it keeps when the index is hidden. */
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.index-toggle:hover {
+  border-color: var(--accent);
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 720px;
+}
+
+/* Map */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* An unfolded card grows on its own; its neighbour keeps its folded height. */
+  align-items: start;
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+/* A foldable card: the <summary> folds it, and the read link sits in the top-right corner, outside it. */
+.card {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.card summary {
+  /* Room on the right for the read link. */
+  padding: 1rem 5.5rem 1rem 1rem;
+  cursor: pointer;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.card summary .learn-tags {
+  margin-top: 0.5rem;
+}
+
+.card details > p {
+  margin: 0;
+  padding: 0 1rem;
+  color: var(--muted);
+}
+
+.card-sections {
+  margin: 0.5rem 0 0;
+  padding: 0 1rem 1rem 2.25rem;
+  font-size: 0.95rem;
+}
+
+.card-read {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.card-read:hover {
+  text-decoration: underline;
+}
+
+/* What a topic teaches, on its map card and under its summary. */
+.learn-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learn-tag {
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 0.8rem;
+}
+
+.learn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.learn-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Map and topic pages: the site index, then the page. On wide screens the index is a sticky left column. */
+.layout {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+#main {
+  max-width: 760px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -10rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+.site-index {
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.site-index > summary {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-index nav {
+  padding: 0.25rem 0.75rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.site-index ul,
+.site-index ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-index li {
+  margin-top: 0.4rem;
+}
+
+.site-index a {
+  text-decoration: none;
+}
+
+.site-index a:hover {
+  text-decoration: underline;
+}
+
+.site-index a[aria-current='page'] {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.index-group > summary {
+  cursor: pointer;
+}
+
+.index-group {
+  margin-top: 0.5rem;
+}
+
+/* The first group starts the index; a margin here would collapse into the menu button's only when scripts run. */
+.site-index nav > :first-child {
+  margin-top: 0;
+}
+
+.index-group > summary {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.index-group > ul {
+  margin-left: 0.75rem;
+}
+
+/* A topic row: the sections toggle, the topic link, and below the link its sections while the toggle is open. */
+.index-topic {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.index-topic > details > summary {
+  width: 1.5rem;
+  min-height: 1.5rem;
+  cursor: pointer;
+}
+
+.index-topic > a {
+  grid-column: 2;
+}
+
+.index-topic > ol {
+  grid-column: 2;
+  margin-top: 0.1rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.index-topic > details:not([open]) ~ ol {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 760px);
+    column-gap: 3rem;
+    padding-top: 1.5rem;
+  }
+
+  /* Hidden, the column keeps only the button, at a fixed width so the page does not shift once it appears. */
+  :root[data-index='hidden'] .layout {
+    grid-template-columns: 2rem minmax(0, 760px);
+  }
+
+  :root[data-index='hidden'] .site-index {
+    display: none;
+  }
+
+  .index-column {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+
+  .index-toggle {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+
+  /* The button's place (2rem and its margin) before scripts add it, so the index does not move down then. */
+  .index-column:not(:has(.index-toggle)) {
+    padding-top: 3rem;
+  }
+
+  /* Always open here: the <summary> toggle is only for narrow screens. */
+  .site-index {
+    margin: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* A browser that cannot force the content open keeps the <summary> toggle. */
+  @supports selector(::details-content) {
+    .site-index > summary {
+      display: none;
+    }
+
+    .site-index::details-content {
+      content-visibility: visible;
+    }
+  }
+
+  .site-index nav {
+    padding: 0;
+  }
+}
+
+.ratings {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.ratings h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.ratings p {
+  margin: 0.25rem 0;
+}
+
+.ratings dl {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+  gap: 0.25rem 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.ratings dl div {
+  display: contents;
+}
+
+.ratings dt {
+  font-weight: 600;
+}
+
+.ratings dd {
+  margin: 0;
+}
+
+.disclaimer {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.section-block {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.section-block h2 {
+  margin: 0;
+}
+
+.book-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.source-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.25rem 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.rating-exception {
+  padding: 0.25rem 0.5rem;
+  border-left: 3px solid var(--warn-text);
+  background: var(--warn);
+  color: var(--warn-text);
+  font-size: 0.9rem;
+}
+
+.facts dt {
+  font-weight: 600;
+}
+
+.facts dd {
+  margin: 0 0 0.75rem;
+}
+
+.questions {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+}
+
+.questions h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.questions ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.section-block > h3 {
+  font-size: 1rem;
+  margin: 1rem 0 0.25rem;
+}
+
+.examples {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.examples li + li {
+  margin-top: 0.75rem;
+}
+
+.tag {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Sequence diagram: one column per lane, a vertical line down the middle of each, time running downwards. */
+.sequence {
+  margin: 1.5rem 0 0;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.sequence figcaption {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.sequence-lanes,
+.sequence-steps {
+  display: grid;
+  grid-template-columns: repeat(var(--lanes), minmax(0, 1fr));
+}
+
+.sequence-lanes span {
+  margin: 0 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sequence-steps {
+  --half-lane: calc(50% / var(--lanes));
+  row-gap: 1.25rem;
+  margin: 0;
+  padding: 1rem 0 0.5rem;
+  list-style: none;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(var(--half-lane) - 1px),
+    var(--border) calc(var(--half-lane) - 1px) calc(var(--half-lane) + 1px),
+    transparent calc(var(--half-lane) + 1px) calc(2 * var(--half-lane))
+  );
+}
+
+.sequence-message {
+  position: relative;
+  padding: 0 0.25rem 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* The label hides the lane lines behind it, so they never run through the words. */
+.sequence-message > span:first-of-type + span {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0 0.25rem;
+  background: var(--surface);
+}
+
+/* The arrow runs between the centres of the two outer lanes the message spans. */
+.sequence-message .arrow {
+  position: absolute;
+  bottom: 0.35rem;
+  left: calc(50% / var(--span));
+  right: calc(50% / var(--span));
+  height: 2px;
+  background: var(--accent);
+}
+
+.sequence-message .arrow::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  border-block: 6px solid transparent;
+}
+
+.rightward .arrow::after {
+  right: -2px;
+  border-left: 9px solid var(--accent);
+}
+
+.leftward .arrow::after {
+  left: -2px;
+  border-right: 9px solid var(--accent);
+}
+
+/* Lost: a dashed line that stops halfway and never arrives. */
+.lost .arrow {
+  background: repeating-linear-gradient(to right, var(--muted) 0 6px, transparent 6px 10px);
+}
+
+.lost.rightward .arrow {
+  right: 50%;
+}
+
+.lost.leftward .arrow {
+  left: 50%;
+}
+
+/* …and ends in a cross where it was lost. */
+.lost .arrow::after {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  background:
+    linear-gradient(45deg, transparent calc(50% - 1px), var(--muted) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(-45deg, transparent calc(50% - 1px), var(--muted) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px));
+}
+
+.lost.rightward .arrow::after {
+  right: -12px;
+}
+
+.lost.leftward .arrow::after {
+  left: -12px;
+}
+
+/* Rejected: arrives, and ends in a bar instead of a head. */
+.rejected .arrow::after {
+  top: -7px;
+  width: 3px;
+  height: 16px;
+  border: 0;
+  background: var(--warn-text);
+}
+
+.rejected.rightward .arrow::after {
+  right: -1px;
+}
+
+.rejected.leftward .arrow::after {
+  left: -1px;
+}
+
+.sequence-note {
+  margin: 0 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px dashed var(--muted);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.9rem;
+}
+
+.note-lane {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Fixed slots, so "All topics" sits in the same place on every topic page. */
+.pager-prev {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.pager-map {
+  grid-column: 2;
+}
+
+.pager-next {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.pager a {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+@media (max-width: 600px) {
+  .pager {
+    grid-template-columns: 1fr;
+  }
+
+  .pager a {
+    grid-column: 1;
+    justify-self: stretch;
+  }
+}
+
+/* 404: one block per language, side by side when there is room. */
+.bilingual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  max-width: 820px;
+  margin: 3rem auto 0;
+}
+
+.bilingual section {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.bilingual h1 {
+  font-size: 1.4rem;
+  margin-top: 0;
+}

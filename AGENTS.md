@@ -47,4 +47,6 @@ Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-24-phase-1-p
 - A deliberate non-change needs a caption saying why.
 - One vocabulary across question, timeline, dry run and feedback, per language.
 - Less prose, more structure. A diagram must earn its place: its caption says what it shows that the prose
-  does not, and it redraws when the reader acts. If a table says it better, use the table.
+  does not. In a lab it redraws when the reader acts. On a topic page, add a static sequence diagram
+  (`SequenceDiagram`, data in the section's `diagram`) where the order of events across browser, server and
+  database is the point and the text alone is hard to follow. If a table says it better, use the table.
