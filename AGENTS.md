@@ -1,6 +1,6 @@
 # data-systems-lab — working rules
 
-Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-24-phase-1-plan.md`. Process rules follow
+Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-28-phase-2-plan.md`. Process rules follow
 `~/github/cpp-concurrency-lab/CLAUDE.md` (the same author's earlier lab), adapted below.
 
 ## Process
@@ -24,7 +24,7 @@ Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-24-phase-1-p
 - Write `zh-TW` first, then `en`, in the same change. English terms and titles follow the book; see
   `docs/glossary.md`. In Chinese, write a term as 中文（English） the first time it appears in each section
   block or question, then Chinese only.
-- Page numbers inside text are PDF-page tokens such as `{p:372}`; the screen shows printed pages (PDF − 24).
+- No page numbers or chapter references on screen; the map credits the book once, below its intro.
 - Named placeholders (`{count}`) in interpolated strings; numbers through `Intl`.
 - Internal links are base-absolute paths ending in `/`, never relative.
 - Only live things are shown (`CURRENT_PHASE` in `src/config.ts`); no "coming soon" placeholders.

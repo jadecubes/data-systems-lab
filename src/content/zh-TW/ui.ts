@@ -3,6 +3,7 @@ export const ui = {
   siteTitle: '給 Technical Project Manager 的資料系統',
   mapIntro:
     '從《Designing Data-Intensive Applications》第二版挑出 Technical Project Manager（以下簡稱 PM）用得到的段落，依 PM 的工作分組。每個主題寫結論、取捨、該問工程師的問題與例子。本站只收篩選後的段落，不是全書摘要。',
+  bookSource: '內容來源：Martin Kleppmann、Chris Riccomini 著《Designing Data-Intensive Applications》第二版（O’Reilly，2026），以本站自己的話整理。',
   groups: {
     spec: '寫進 spec 的需求',
     anomalies: '使用者會碰到的異常',
@@ -32,13 +33,6 @@ export const ui = {
   index: { label: '目錄', skip: '跳到本頁內容', sections: '{topic}的段落' },
   laneNames: { browser: '瀏覽器', server: '網頁伺服器', database: '資料庫' },
   diagram: { message: '{from}傳給{to}：', note: '{lane}：' },
-  fromChapter: '整理自本章',
-  sectionSource: '第 {chapter} 章，第 {pages} 頁',
-  pageSingle: '{page}',
-  pageRange: '{from}–{to}',
-  listSeparator: '、',
-  pageRef: '第 {page} 頁',
-  pageRefRange: '第 {from}–{to} 頁',
   nav: {
     label: '主題導覽',
     map: '所有主題',

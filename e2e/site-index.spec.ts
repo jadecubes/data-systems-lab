@@ -96,7 +96,7 @@ test('nothing moves when scripts add the menu button and the language select', a
     await page.goto(routePath({ kind: 'topic', lang, topic: 'T4' }, BASE))
     if (javaScriptEnabled) await expect(page.locator('.language-switch select')).toBeVisible()
     const box = await page.evaluate(() =>
-      ['#site-index', '#main', '.language-switch > *'].map((s) => {
+      ['#site-index', '#main', '.site-name', '.language-switch > *'].map((s) => {
         const { top, left, width } = document.querySelector(s)!.getBoundingClientRect()
         return { s, top, left, width }
       }),

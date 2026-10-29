@@ -8,6 +8,8 @@
   --accent-soft: #eaf3fc;
   --warn: #fff4e0;
   --warn-text: #7a4a00;
+  /* The sticky header's height; the index and in-page link targets start below it. */
+  --header-height: 4.25rem;
   color-scheme: light dark;
 }
 
@@ -40,6 +42,8 @@ html {
   text-wrap: pretty;
   background: var(--bg);
   color: var(--text);
+  /* A link to a section scrolls it to just below the sticky header, not under it. */
+  scroll-padding-top: calc(var(--header-height) + 1rem);
 }
 
 html:lang(zh-TW) {
@@ -61,12 +65,15 @@ h3 {
   text-wrap: balance;
 }
 
+/* Stays at the top while the reader scrolls, so the site name (the way back to the map) is always in reach. */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
+  gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+  min-height: var(--header-height);
   /* Full-width bar, but its contents line up with the 1120px page below. */
   padding: 0.75rem max(1rem, (100% - 1120px) / 2 + 1rem);
   border-bottom: 1px solid var(--border);
@@ -74,7 +81,13 @@ h3 {
 }
 
 .site-name {
+  /* Pushes the language switch to the far end. */
+  margin-right: auto;
+  min-width: 0;
+  /* Two lines at most beside the language switch on a 375px phone, so the sticky header stays short. */
+  font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.3;
   color: var(--text);
   text-decoration: none;
 }
@@ -108,11 +121,14 @@ h3 {
 }
 
 /* Only wide screens show the index button; phones fold the index behind its own <summary>. */
-.index-toggle {
+.header-menu {
   display: none;
+}
+
+.index-toggle {
+  display: flex;
   align-items: center;
   justify-content: center;
-  /* The same width as the column it keeps when the index is hidden. */
   width: 2rem;
   height: 2rem;
   padding: 0;
@@ -136,6 +152,12 @@ h3 {
 .lead {
   color: var(--muted);
   max-width: 720px;
+}
+
+.book-source {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 /* Map */
@@ -244,6 +266,8 @@ h3 {
 
 .skip-link {
   position: absolute;
+  /* Above the sticky header. */
+  z-index: 2;
   left: 1rem;
   top: -10rem;
   padding: 0.5rem 0.75rem;
@@ -356,31 +380,38 @@ h3 {
     padding-top: 1.5rem;
   }
 
-  /* Hidden, the column keeps only the button, at a fixed width so the page does not shift once it appears. */
-  :root[data-index='hidden'] .layout {
-    grid-template-columns: 2rem minmax(0, 760px);
+  :root {
+    /* One line: the select (2.25rem) and the header's padding. */
+    --header-height: 3.75rem;
   }
 
-  :root[data-index='hidden'] .site-index {
+  .site-name {
+    font-size: 1rem;
+  }
+
+  /* Hidden, the index column goes and the page moves left; the header keeps the button. */
+  :root[data-index='hidden'] .layout {
+    grid-template-columns: minmax(0, 760px);
+  }
+
+  :root[data-index='hidden'] .index-column {
     display: none;
   }
 
   .index-column {
     position: sticky;
-    top: 1rem;
+    top: calc(var(--header-height) + 1rem);
     align-self: start;
-    max-height: calc(100vh - 2rem);
+    max-height: calc(100vh - var(--header-height) - 2rem);
     overflow-y: auto;
   }
 
-  .index-toggle {
-    display: flex;
-    margin-bottom: 1rem;
-  }
-
-  /* The button's place (2rem and its margin) before scripts add it, so the index does not move down then. */
-  .index-column:not(:has(.index-toggle)) {
-    padding-top: 3rem;
+  /* The button's slot is there before scripts add the button, so the site name does not move then. */
+  .header-menu {
+    display: block;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
   }
 
   /* Always open here: the <summary> toggle is only for narrow screens. */
@@ -450,7 +481,6 @@ h3 {
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
   margin-top: 1.5rem;
-  scroll-margin-top: 1rem;
 }
 
 .section-block h2 {
@@ -462,16 +492,6 @@ h3 {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--muted);
-}
-
-.source-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  margin: 0.25rem 0 0.75rem;
-  color: var(--muted);
-  font-size: 0.9rem;
 }
 
 .rating-exception {
@@ -520,17 +540,6 @@ h3 {
 
 .examples li + li {
   margin-top: 0.75rem;
-}
-
-.tag {
-  display: inline-block;
-  margin-right: 0.5rem;
-  padding: 0 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: var(--accent-soft);
-  color: var(--text);
 }
 
 .visually-hidden {

@@ -5,7 +5,7 @@ export const t3: Translation<typeof zh> = {
   title: 'Timeouts: not knowing whether it worked',
   summary:
     'When a request times out, the server may have finished the work or may never have received it. What the screen says, and whether to send again, both start from that uncertainty.',
-  tags: ['Timeout', 'Unreliable networks', 'Retry', 'Idempotence'],
+  tags: ['timeout', 'unreliable networks', 'retry', 'idempotence'],
   sections: {
     'ch1-problems-with-distributed-systems': {
       conclusion:

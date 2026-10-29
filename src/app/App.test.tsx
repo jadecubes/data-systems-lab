@@ -7,7 +7,7 @@ import { afterEach, expect, test, vi } from 'vitest'
 import { SectionBlock } from '../components/SectionBlock'
 import { liveTopics, sectionsOf } from '../content/live'
 import { contentFor, sectionText } from '../i18n/content'
-import { expandPageRefs, interpolate } from '../i18n/format'
+import { interpolate } from '../i18n/format'
 import { langs } from '../i18n/langs'
 import { pseudoContents, unwrapped } from '../test/pseudo'
 import { App, htmlLang, pageTitle } from './App'
@@ -53,7 +53,8 @@ test.each(['ch13-how-to-choose', 'ch2-how-important-is-reliability'] as const)(
     const { container } = render(<SectionBlock content={pseudo} meta={pseudo.sections[id]} text={text} zone="first" />)
     if (id === 'ch13-how-to-choose') {
       expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('⟦Our title⟧')
-      expect(container).toHaveTextContent(pseudo.ui.fromChapter)
+      // The map credits the book once; a block says nothing about where its heading or text came from.
+      expect(container.querySelector('.source-line')).toBeNull()
     } else {
       expect(container.querySelector('.rating-exception')).not.toBeNull()
     }
@@ -136,7 +137,10 @@ test.each(langs)('a menu button named after the index hides and shows it, and re
   const { ui } = contents[lang]
   render(<App route={{ kind: 'map', lang }} contents={contents} phase={1} base={base} />)
   const nav = screen.getByRole('navigation', { name: ui.index.label })
-  const toggle = screen.getByRole('button', { name: ui.index.label, expanded: true })
+  // It sits in the header, before the site name, where readers look for a menu button.
+  const header = screen.getByRole('banner')
+  const toggle = within(header).getByRole('button', { name: ui.index.label, expanded: true })
+  expect(toggle.compareDocumentPosition(within(header).getByRole('link', { name: ui.siteTitle })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   expect(toggle).toHaveAttribute('aria-controls', nav.id)
   expect(toggle).toHaveAttribute('title', ui.index.label)
   fireEvent.click(toggle)
@@ -237,13 +241,32 @@ test.each(langs.flatMap((lang) => (['T3', 'T4'] as const).map((topic) => [lang, 
       const text = sectionText(content, topic, id)
       const block = container.querySelector(`[id="${id}"]`)!
       for (const s of [text.conclusion, text.tradeoff, ...text.questions, ...text.examples.map((e) => e.text)]) {
-        expect(block.textContent, id).toContain(expandPageRefs(s, content))
+        expect(block.textContent, id).toContain(s)
       }
       // Each example is its text alone, with no source tag in front of it.
-      expect([...block.querySelectorAll('.examples li')].map((li) => li.textContent)).toEqual(text.examples.map((e) => expandPageRefs(e.text, content)))
+      expect([...block.querySelectorAll('.examples li')].map((li) => li.textContent)).toEqual(text.examples.map((e) => e.text))
     }
   },
 )
+
+test.each(langs)('the map credits the book once, below its intro; topic pages do not repeat it (%s)', (lang) => {
+  const { ui } = contents[lang]
+  const map = render(<App route={{ kind: 'map', lang }} contents={contents} phase={2} base={base} />)
+  const credit = within(screen.getByRole('main')).getByText(ui.bookSource)
+  expect(credit.previousElementSibling).toHaveTextContent(ui.mapIntro)
+  map.unmount()
+  const { container } = render(<App route={{ kind: 'topic', lang, topic: 'T1' }} contents={contents} phase={2} base={base} />)
+  expect(container).not.toHaveTextContent(ui.bookSource)
+  expect(container).not.toHaveTextContent('Kleppmann')
+})
+
+test.each(langs)('section blocks show no chapter or page numbers (%s)', (lang) => {
+  const { container } = render(<App route={{ kind: 'topic', lang, topic: 'T1' }} contents={contents} phase={2} base={base} />)
+  for (const { id } of sectionsOf('T1')) {
+    const block = container.querySelector(`[id="${id}"]`)!
+    expect(block.textContent, id).not.toMatch(/第\s*\d+\s*章|第\s*[\d–]+\s*頁|Chapter \d|\bpp?\.\s*\d/)
+  }
+})
 
 const diagrammed = [
   ['T3', 'ch5-the-problems-with-remote-procedure-calls'],

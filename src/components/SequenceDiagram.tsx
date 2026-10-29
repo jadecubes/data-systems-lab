@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import type { SequenceDiagram as Diagram } from '../content/types'
 import type { Content } from '../i18n/content'
 import { interpolate } from '../i18n/format'
@@ -9,12 +9,12 @@ import { interpolate } from '../i18n/format'
  * whom, so the order survives without the picture. A note is wider than one lane, so it names its lane on screen
  * too.
  */
-export function SequenceDiagram({ content, diagram, prose }: { content: Content; diagram: Diagram; prose: (s: string) => ReactNode }) {
+export function SequenceDiagram({ content, diagram }: { content: Content; diagram: Diagram }) {
   const { ui } = content
   const column = (lane: Diagram['lanes'][number]) => diagram.lanes.indexOf(lane) + 1
   return (
     <figure className="sequence" style={{ '--lanes': diagram.lanes.length } as CSSProperties}>
-      <figcaption>{prose(diagram.caption)}</figcaption>
+      <figcaption>{diagram.caption}</figcaption>
       <div className="sequence-lanes" aria-hidden="true">
         {diagram.lanes.map((lane) => (
           <span key={lane}>{ui.laneNames[lane]}</span>
@@ -28,7 +28,7 @@ export function SequenceDiagram({ content, diagram, prose }: { content: Content;
             return (
               <li key={step.text} className="sequence-note" style={{ gridColumn: `${start} / span 2` }}>
                 <span className="note-lane">{interpolate(ui.diagram.note, { lane: ui.laneNames[step.at] })}</span>
-                <span>{prose(step.text)}</span>
+                <span>{step.text}</span>
               </li>
             )
           }
@@ -44,7 +44,7 @@ export function SequenceDiagram({ content, diagram, prose }: { content: Content;
               <span className="visually-hidden">
                 {interpolate(ui.diagram.message, { from: ui.laneNames[step.from], to: ui.laneNames[step.to] })}
               </span>
-              <span>{prose(step.text)}</span>
+              <span>{step.text}</span>
               <span className="arrow" aria-hidden="true" />
             </li>
           )

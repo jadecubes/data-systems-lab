@@ -16,8 +16,9 @@ test('phase 1 shows only T3 and T4, in one zone and one group', () => {
 })
 
 test('later phases add topics and the second zone', () => {
-  expect(liveTopics(2)).toHaveLength(13)
+  expect(liveTopics(2)).toEqual(mapOrder.slice(0, 13))
   expect(mapLayout(2).map((z) => z.zone)).toEqual(['first'])
+  expect(mapLayout(2)[0].groups.map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data'])
   expect(mapLayout(4).map((z) => z.zone)).toEqual(['first', 'second'])
   expect(mapLayout(4)[1].groups).toEqual([{ group: null, topics: mapOrder.slice(13) }])
 })
