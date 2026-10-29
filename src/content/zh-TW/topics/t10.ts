@@ -20,7 +20,7 @@ export const t10 = {
     'ch13-batch-and-stream-processing': {
       conclusion: '批次和串流可以從相同來源建立新的衍生視圖。若來源資料仍在，就能重建（rebuild）新索引或報表，讓結構遷移（schema migration）先在旁邊驗證，再切換讀取。',
       tradeoff: '雙軌維護與重建需要額外算力、儲存及比對，但讓切換可測量、可回退。',
-      questions: ['衍生資料能從哪個來源完整重建？', '新舊視圖的結果如何比對後再切換？'],
+      questions: ['衍生資料（derived data）能從哪個來源完整重建？', '新舊視圖的結果如何比對後再切換？'],
       examples: [{ source: 'book', text: '書中討論從同一事件來源同時建立舊視圖和新視圖，等新視圖追上並核對結果，再逐步把讀取轉過去。' }],
     },
   },

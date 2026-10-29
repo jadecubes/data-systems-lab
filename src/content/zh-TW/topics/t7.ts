@@ -15,7 +15,7 @@ export const t7 = {
       conclusion: '寫偏斜（write skew）發生在兩筆交易讀取同一條件，卻寫入不同資料列；各自看見可行，合起來就違反一致性（consistency）規則。只鎖定自己要寫的列，可能擋不住。',
       tradeoff: '較強隔離可阻止這種並行異常，但會增加等待、衝突或重試。',
       questions: ['兩個人同時看到「還有一個名額」時，能否都提交？', '檢查規則涉及的所有資料有被同一交易保護嗎？'],
-      examples: [{ source: 'book', text: '書中列出兩個使用者同時搶同一個名稱的情況：若只先查「還沒人用」，兩人都可能通過檢查；資料庫唯一約束才能在提交時分出勝者。' }],
+      examples: [{ source: 'book', text: '書中列出兩個使用者同時搶同一個名稱的情況：若只先查「還沒人用」，兩人都可能通過檢查；資料庫唯一約束（uniqueness constraint）才能在提交時分出勝者。' }],
     },
     'ch13-enforcing-constraints': {
       conclusion: '唯一約束（uniqueness constraint）應由同一個能決定寫入順序的地方執行。若相互衝突的請求分散到不同節點，必須讓同一鍵的競爭者會合，才能確保一致性（consistency）。',

@@ -2,7 +2,7 @@ import type { Translation } from '../../types'
 import type { t2 as zh } from '../../zh-TW/topics/t2'
 
 export const t2: Translation<typeof zh> = {
-  title: 'Do not let averages hide slow requests',
+  title: 'Use percentiles to see slow requests',
   summary: 'Use the median for typical experience and high percentiles for the slowest requests, then make the target measurable.',
   tags: ['median', 'percentile', 'tail latency', 'service level objective'],
   sections: {

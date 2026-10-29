@@ -8,7 +8,7 @@ export const t8: Translation<typeof zh> = {
   sections: {
     'ch13-timeliness-and-integrity': {
       conclusion: 'Timeliness asks when a change becomes visible; integrity asks whether data remains correct, complete, and within its constraints. A credit-card bill arriving a day late is usually a timeliness problem; charging the card without paying the merchant is an integrity problem.',
-      tradeoff: 'Asynchronous processing improves availability and speed but delays visibility. A delay must not conceal corruption or loss.',
+      tradeoff: 'Asynchronous processing can acknowledge work sooner and improve availability, but the final result may arrive later. A delay must not conceal corruption or loss.',
       questions: ['How long can users wait to see the result?', 'If it arrives late, how will we verify the final state is correct?'],
       examples: [{ source: 'book', text: 'The book contrasts a credit-card statement delivered a day late with a card charge that never reaches the merchant: one is a delay, the other breaks accounting correctness.' }],
     },
