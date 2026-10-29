@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest'
+import { CURRENT_PHASE } from '../config'
 import { isLiveTopic, liveTopics, mapLayout, mapOrder, neighbours, ratingExceptions, sectionsOf } from './live'
 import { sections } from './sections'
 import { topics } from './structure'
@@ -20,6 +21,12 @@ test('later phases add topics and the second zone', () => {
   expect(mapLayout(2).map((z) => z.zone)).toEqual(['first'])
   expect(mapLayout(4).map((z) => z.zone)).toEqual(['first', 'second'])
   expect(mapLayout(4)[1].groups).toEqual([{ group: null, topics: mapOrder.slice(13) }])
+})
+
+test('current publication exposes all 13 first-line topics in four groups', () => {
+  expect(CURRENT_PHASE).toBe(2)
+  expect(liveTopics(CURRENT_PHASE)).toEqual(mapOrder.slice(0, 13))
+  expect(mapLayout(CURRENT_PHASE)[0].groups.map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data'])
 })
 
 test('prev and next stay among live topics', () => {

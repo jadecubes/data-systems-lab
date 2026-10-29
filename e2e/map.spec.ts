@@ -14,7 +14,7 @@ for (const lang of langs) {
     await card.locator('summary').click()
     await expect(summary).toBeHidden()
     await card.locator('.card-read').click()
-    await expect(page).toHaveURL(routePath({ kind: 'topic', lang, topic: 'T3' }, BASE))
+    await expect(page).toHaveURL(routePath({ kind: 'topic', lang, topic: 'T1' }, BASE))
   })
 }
 

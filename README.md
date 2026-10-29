@@ -38,6 +38,7 @@ Set `BASE_PATH` (for example `BASE_PATH=/data-systems-lab/ pnpm build`) to deplo
 
 - `docs/2026-10-24-site-design.md`: site design
 - `docs/2026-10-24-phase-1-plan.md`: phase 1 implementation plan
+- `docs/2026-10-28-phase-2-plan.md`: phase 2 topic-page implementation plan
 - `docs/2026-10-24-d1-timeout-retry-design.md`: first lab design
 - `docs/content-index.md`: where every section of the notes goes (generated)
 - `docs/glossary.md`: terms in both languages, for writers

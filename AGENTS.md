@@ -1,6 +1,6 @@
 # data-systems-lab — working rules
 
-Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-24-phase-1-plan.md`. Process rules follow
+Spec: `docs/2026-10-24-site-design.md`. Current plan: `docs/2026-10-28-phase-2-plan.md`. Process rules follow
 `~/github/cpp-concurrency-lab/CLAUDE.md` (the same author's earlier lab), adapted below.
 
 ## Process
