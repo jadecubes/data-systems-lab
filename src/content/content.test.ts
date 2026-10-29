@@ -27,8 +27,9 @@ test('no Chinese characters or full-width punctuation in English content files',
   for (const [path, source] of english) expect(source.match(CJK), path).toBeNull()
 })
 
-test('no raw page numbers in content; in-text pages are {p:N} tokens', () => {
-  for (const [path, source] of Object.entries(files)) expect(source.match(/\bpp?\.\s*\d|\bpages?\s+\d|第\s*\d+\s*頁/i), path).toBeNull()
+// The map credits the book once (Debra 2026-10-29); text cites no pages, written out or as {p:N} tokens.
+test('no page numbers in content', () => {
+  for (const [path, source] of Object.entries(files)) expect(source.match(/\bpp?\.\s*\d|\bpages?\s+\d|第\s*\d+\s*頁|\{p:/i), path).toBeNull()
 })
 
 test.each(langs)('every live topic has complete text in %s', (lang) => {

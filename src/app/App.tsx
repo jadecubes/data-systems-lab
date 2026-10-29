@@ -1,3 +1,4 @@
+import { IndexToggle } from '../components/IndexToggle'
 import { LanguageSwitch } from '../components/LanguageSwitch'
 import { MapPage } from '../components/MapPage'
 import { NotFoundPage } from '../components/NotFoundPage'
@@ -25,6 +26,7 @@ export function App({ route, contents, phase, base }: { route: PageRoute | null;
         {content.ui.index.skip}
       </a>
       <header className="site-header">
+        <IndexToggle content={content} />
         <a className="site-name" href={routePath({ kind: 'map', lang: route.lang }, base)} aria-current={route.kind === 'map' ? 'page' : undefined}>
           {content.ui.siteTitle}
         </a>

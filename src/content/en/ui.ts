@@ -4,6 +4,7 @@ export const ui: Ui = {
   siteTitle: 'Data Systems for Technical Project Managers',
   mapIntro:
     'The parts of Designing Data-Intensive Applications (2nd edition) that technical project managers (PMs) use, grouped by PM work. Each topic gives the conclusion, the trade-off, the questions to ask engineers, and examples. Only these selected sections are covered; this is not a summary of the book.',
+  bookSource: 'Source: Designing Data-Intensive Applications, 2nd edition, by Martin Kleppmann and Chris Riccomini (O’Reilly, 2026), summarised in this site’s own words.',
   groups: {
     spec: 'Requirements that belong in the spec',
     anomalies: 'Failures users will run into',
@@ -33,13 +34,6 @@ export const ui: Ui = {
   index: { label: 'Contents', skip: 'Skip to page content', sections: 'Sections of {topic}' },
   laneNames: { browser: 'Browser', server: 'Web server', database: 'Database' },
   diagram: { message: '{from} to {to}: ', note: '{lane}: ' },
-  fromChapter: 'Summarised from this chapter',
-  sectionSource: 'Chapter {chapter}, {pages}',
-  pageSingle: 'p. {page}',
-  pageRange: 'pp. {from}–{to}',
-  listSeparator: ', ',
-  pageRef: 'p. {page}',
-  pageRefRange: 'pp. {from}–{to}',
   nav: {
     label: 'Topic navigation',
     map: 'All topics',
