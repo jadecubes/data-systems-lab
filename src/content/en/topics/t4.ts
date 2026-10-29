@@ -5,7 +5,7 @@ export const t4: Translation<typeof zh> = {
   title: 'Safe retries: request IDs and deduplication',
   summary:
     'For a resend not to duplicate anything, the server has to recognise “this is the same request”: each submission carries a unique request ID, and the database executes it only once.',
-  tags: ['Transaction', 'Deduplication', 'Request ID', 'Uniqueness constraint', 'End-to-end argument'],
+  tags: ['transaction', 'deduplication', 'request ID', 'uniqueness constraint', 'end-to-end argument'],
   sections: {
     'ch8-handling-errors-and-aborts': {
       conclusion:

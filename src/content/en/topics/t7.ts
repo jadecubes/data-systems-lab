@@ -7,10 +7,10 @@ export const t7: Translation<typeof zh> = {
   tags: ['consistency', 'write skew', 'uniqueness constraint', 'linearizability'],
   sections: {
     'ch8-consistency': {
-      conclusion: 'Transaction consistency means application invariants remain true across a commit, such as balanced accounting entries. A database can enforce particular constraints, but the application must express rules spanning multiple records through correct transaction design.',
-      tradeoff: 'Single-field checks are easy; cross-record invariants require stronger transaction design and testing.',
-      questions: ['Which rules must be true after every commit?', 'Where are those rules checked at write time?'],
-      examples: [{ source: 'book', text: 'The book uses accounting: if a transfer debits one account, the other must receive the same amount. This is an invariant defined by the application.' }],
+      conclusion: 'Transaction consistency means invariants the application defines hold after every commit, such as balanced accounting entries. The database enforces only the rules you declare as constraints (unique, foreign key, check); a rule it cannot express depends on the application writing its transactions correctly.',
+      tradeoff: 'Rules declared as constraints are guaranteed by the database; rules left to application code are easier to get wrong under concurrency.',
+      questions: ['Is this rule declared as a database constraint?', 'If not, which code enforces it, and does it still hold when two people act at once?'],
+      examples: [{ source: 'book', text: 'In the book’s example, debits and credits across all accounts in an accounting system must balance.' }],
     },
     'ch8-more-examples-of-write-skew': {
       conclusion: 'Write skew occurs when two transactions read the same condition but write different rows. Each sees a valid state, yet together they break a consistency rule. Locking only the rows each transaction writes may not help.',
@@ -19,16 +19,16 @@ export const t7: Translation<typeof zh> = {
       examples: [{ source: 'book', text: 'The book includes two users trying to claim the same name. Both can read “available” at once; a database uniqueness constraint decides which write succeeds.' }],
     },
     'ch13-enforcing-constraints': {
-      conclusion: 'A uniqueness constraint needs one place that can order competing writes. If conflicting requests reach different nodes, requests for the same key must meet to keep consistency.',
-      tradeoff: 'Coordinating a key preserves a hard rule, but a hot key may become a bottleneck and writes may be refused during a partition.',
-      questions: ['Do two writes for the same key encounter the same constraint?', 'If the coordinator is unavailable, should the write wait or fail?'],
-      examples: [{ source: 'book', text: 'The book describes routing the same username to one partition, which orders the claims and accepts only one. Independent replicas could each promise the name.' }],
+      conclusion: 'To reject a duplicate at write time, a uniqueness constraint needs every request for the same value (say, the same username) to go to one decider that orders them: a single leader, or the one shard that value maps to. If nodes accept writes independently and sync later (asynchronous multi-leader replication), it cannot be done.',
+      tradeoff: 'Every request for the same value must go through one decider, even from a client on the other side of the world; that limits throughput, and while the decider is unavailable, writes can only wait or fail.',
+      questions: ['If two people create the same record (say, the same name) at once, who succeeds, and what does the other one see?', 'If the node that decides is unavailable, should the write wait or fail?'],
+      examples: [{ source: 'book', text: 'In the book’s example, several people claim the same username. Each request goes to the log shard chosen by the name, and a processor reads them in order: if the name is free it records the claim and replies success, otherwise it replies with a rejection.' }],
     },
     'ch10-relying-on-linearizability': {
-      conclusion: 'Linearizability makes reads and writes appear to take effect at one instant. It suits locks, unique names, or authorization decisions that need the latest global state. Identify operations that truly require that order.',
+      conclusion: 'Linearizability makes each read and write appear to take effect at one instant, so every later read sees it. It is needed for locks and electing a single leader, for names or seats that must not be taken twice, and when one step writes a file and another channel (such as a message queue) tells someone to read it. A score shown a few seconds late does not need it, and rules the business can compensate for later can be relaxed.',
       tradeoff: 'Linearizability gives a clear order but increases cross-region latency and limits availability under network faults.',
       questions: ['Can this decision tolerate a briefly stale value?', 'If not, which read and write must share one order?'],
-      examples: [{ source: 'book', text: 'The book discusses file storage and video transcoding: if a worker reads an old file after an update, it may transcode the wrong input. The workflow must decide whether it needs the newest version.' }],
+      examples: [{ source: 'book', text: 'In the book’s example, a user uploads a video; the web server writes it to file storage, then puts a transcode command on a message queue. The queue can outrun replication inside the storage, so the transcoder fetches an old version or nothing at all; if it transcodes the old version, the original and the transcoded copy stay inconsistent for good.' }],
     },
   },
 }

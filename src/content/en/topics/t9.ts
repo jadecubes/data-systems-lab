@@ -9,15 +9,15 @@ export const t9: Translation<typeof zh> = {
     'ch5-intro-why-versions-coexist': {
       title: 'Why old and new versions coexist',
       conclusion: 'A rolling upgrade leaves old and new nodes running together. Backward compatibility lets new code read old data; forward compatibility lets old code read new data. Both matter because data does not change version when code is deployed.',
-      tradeoff: 'Version coexistence avoids an all-at-once deployment but limits how freely a format can change in one step.',
+      tradeoff: 'Letting versions coexist avoids downtime during deployment, but limits how freely a format can change in one step.',
       questions: ['Will an old node read data written by a new node during deployment?', 'After rollback, can the old version still read records left by the new one?'],
-      examples: [{ source: 'book', text: 'The book warns that old code can read a record with a new field and then encode only the fields it knows, silently deleting the new data.' }],
+      examples: [{ source: 'book', text: 'In the book’s example, new code adds a field to a record; old code reads the record, updates another field, and writes it back, and if it keeps only the fields it knows, the new field is lost.' }],
     },
     'ch5-data-encoding-and-evolution-for-rpc': {
       conclusion: 'RPC servers usually upgrade before clients. Requests therefore need backward compatibility and responses need forward compatibility. Adding optional request fields or unknown fields to responses is usually safe, provided old clients ignore the extras.',
-      tradeoff: 'Compatibility lets clients upgrade on their own schedule. External clients may remain old for years, so a breaking change can require multiple API versions.',
+      tradeoff: 'External clients may never upgrade; a breaking change then means maintaining several API versions side by side, possibly indefinitely.',
       questions: ['Does this API change only add optional fields, or will it break old clients?', 'If multiple API versions are needed, how long must each remain supported?'],
-      examples: [{ source: 'book', text: 'The book explains the RPC upgrade order: servers can first accept an optional request parameter and add a response field; old clients continue working if they ignore the extra response field.' }],
+      examples: [{ source: 'book', text: 'The book notes that when several API versions coexist, RESTful APIs often put the version number in the URL or the HTTP Accept header; services that identify clients by API key can instead store each client’s chosen version on the server.' }],
     },
   },
 }

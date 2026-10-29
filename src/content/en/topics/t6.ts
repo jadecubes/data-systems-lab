@@ -7,16 +7,16 @@ export const t6: Translation<typeof zh> = {
   tags: ['lost update', 'concurrent writes', 'conflict resolution', 'last write wins'],
   sections: {
     'ch8-preventing-lost-updates': {
-      conclusion: 'When two readers derive changes from the same old value, the later commit can overwrite the first: a lost update. Atomic operations, version checks, or a suitable database isolation mechanism keep concurrent writes from silently replacing one another.',
+      conclusion: 'In a read-modify-write cycle—read a value, change it, write it back—the later of two concurrent writes can overwrite the earlier one’s change: a lost update. Preventing it takes deliberate design: let the database apply the change in one step (for example, add one), lock the record first, or check at write time that the value is still the version you read.',
       tradeoff: 'Detecting a conflict preserves work, but a user or program then must retry or merge it.',
       questions: ['If two people edit one record, whose changes survive?', 'Does the commit check the version that was read?'],
       examples: [{ source: 'book', text: 'The book uses two editors changing a wiki page from the same old revision. Blindly saving the second revision erases the first editor’s work.' }],
     },
     'ch6-dealing-with-conflicting-writes': {
-      conclusion: 'Multi-leader or offline writes can conflict. Last write wins chooses one version and can cause a lost update. Conflict resolution should follow the data’s meaning: merge, keep multiple versions, or ask a person to decide.',
-      tradeoff: 'Automatically picking a winner is fast and simple but drops work. Keeping conflicts avoids silent loss at the cost of storage and user effort.',
+      conclusion: 'With multi-leader replication or offline edits, writes that each succeeded locally are found to conflict later. Avoid conflicts where you can, for example by routing all writes to a record through one leader. Last write wins silently discards other writes that were already reported as successful, causing a lost update; when that is unacceptable, conflict resolution can merge automatically, keep multiple versions for the user to choose, or ask a person.',
+      tradeoff: 'Last write wins is simple and makes replicas agree, at the cost of lost data; automatic merging keeps everyone’s changes but is complex to build; asking users to merge by hand is the most work, and users may not understand what is being asked.',
       questions: ['If two locations edit one field, which value remains?', 'Can users see unresolved conflicts?'],
-      examples: [{ source: 'book', text: 'The book discusses two replicas changing a wiki title from A to B and from A to C. Selecting one by timestamp discards the other edit.' }],
+      examples: [{ source: 'book', text: 'In the book, two users on different leaders change a wiki page title from A to B and from A to C at the same time, and both are told it succeeded; last write wins keeps one by timestamp and the other edit silently disappears.' }],
     },
   },
 }

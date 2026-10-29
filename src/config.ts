@@ -1,4 +1,4 @@
 import type { Phase } from './content/types'
 
-/** The phase included by this build; review a phase before merging its change. */
+/** The last phase Debra has approved for publishing; everything later stays hidden. */
 export const CURRENT_PHASE: Phase = 2

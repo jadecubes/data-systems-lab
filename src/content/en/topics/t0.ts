@@ -2,15 +2,15 @@ import type { Translation } from '../../types'
 import type { t0 as zh } from '../../zh-TW/topics/t0'
 
 export const t0: Translation<typeof zh> = {
-  title: 'Separate source records from derived data',
+  title: 'Separate systems of record from derived data',
   summary: 'Knowing which data is authoritative and which can be recomputed makes indexes, caches, and new views safer.',
   tags: ['system of record', 'derived data', 'normalization', 'denormalization'],
   sections: {
     'ch1-systems-of-record-and-derived-data': {
-      conclusion: 'A system of record holds authoritative facts. Derived data, such as a cache, search index, or report, is built from it. Its source and rebuild process must be clear or the copy may be mistaken for another truth.',
+      conclusion: 'A system of record holds the authoritative version, storing each fact once. Derived data, such as a cache, search index, or data warehouse, is transformed from it and can be rebuilt if lost. When they disagree, the system of record wins.',
       tradeoff: 'Derived data speeds reads or supports different queries, but requires an update path and a policy for lag.',
-      questions: ['Which copy is the final authority?', 'If an index fails, can it be rebuilt from the source?'],
-      examples: [{ source: 'book', text: 'The book treats caches, search indexes, and data warehouses as derived from systems of record. Each can optimize a different query while the original facts keep one authority.' }],
+      questions: ['Does this screen read the system of record or derived data? How long after a change in the source does it show?', 'If an index fails, can it be rebuilt from the source?'],
+      examples: [{ source: 'book', text: 'The book’s classic example is a cache: a hit is served from the cache, and a miss goes back to the underlying database. The same database can serve as a system of record or as derived data, depending on how the application uses it.' }],
     },
     'ch3-normalization-denormalization-and-joins': {
       conclusion: 'Normalization stores a shared fact once and refers to it by ID, avoiding contradictory copies. Denormalization copies data near its readers and can avoid joins, but updates must reach every copy.',
