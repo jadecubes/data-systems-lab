@@ -50,6 +50,7 @@ export function MapPage({ content, phase, base }: { content: Content; phase: Pha
     <>
       <h1>{ui.siteTitle}</h1>
       <p className="lead">{ui.mapIntro}</p>
+      <p className="book-source">{ui.bookSource}</p>
       {mapLayout(phase).flatMap(({ zone, groups }) =>
         groups.map(({ group, topics }) => (
           <Fragment key={group ?? zone}>

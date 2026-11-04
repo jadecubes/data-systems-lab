@@ -22,7 +22,6 @@ export type Phase = 1 | 2 | 3 | 4 | 5 | 6
 export type ZoneId = 'first' | 'second'
 export type GroupId = 'spec' | 'anomalies' | 'change' | 'data'
 export type LabId = 'd1' | 'd2' | 'd3'
-export type RoleRatings = { readonly product: Rating; readonly platform: Rating }
 
 export type ExampleSource = 'book' | 'ours'
 export type Example = { readonly source: ExampleSource; readonly text: string }

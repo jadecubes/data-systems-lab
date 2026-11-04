@@ -1,3 +1,4 @@
+import { flushSync } from 'react-dom'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { App, pageTitle } from './app/App'
 import { parseRoute, routePath } from './app/routes'
@@ -20,9 +21,24 @@ if (route?.kind === 'root') {
   // serves the empty template, which is rendered from the route.
   if (!container.firstElementChild) {
     document.title = pageTitle(route, contents)
-    createRoot(container).render(app)
+    // Synchronously, so the header exists when it is measured below.
+    flushSync(() => createRoot(container).render(app))
   } else if (route) hydrateRoot(container, app)
   // Left as served, the page has no menu button, so an index the reader hid elsewhere must show here (it appears
   // once this script runs, moving the page; these aliases are rare, and an index with no way back is worse).
   else delete document.documentElement.dataset.index
+
+  // CSS cannot read the sticky header's height, which grows when it wraps; section links and the index start below it.
+  const header = document.querySelector<HTMLElement>('.site-header')
+  if (header) {
+    // On a fresh visit, a linked section was scrolled to before the height was known, so it is scrolled to again once
+    // measured. A reload or a return keeps the place the browser restores.
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+    let rescroll = navigation?.type === 'navigate'
+    new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`)
+      if (rescroll) document.querySelector(':target')?.scrollIntoView()
+      rescroll = false
+    }).observe(header)
+  }
 }
