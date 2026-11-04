@@ -3,7 +3,7 @@ import { INDEX_KEY } from '../src/app/indexToggle'
 import { langs } from '../src/i18n/langs'
 import { BASE, inspect } from './helpers'
 
-for (const path of ['en/topics/x/y', 'fr/', 'en/topics/t5/']) {
+for (const path of ['en/topics/x/y', 'fr/', 'en/topics/q1/']) {
   test(`${path} is a 404 whose links reach both maps`, async ({ page }) => {
     const res = await page.goto(BASE + path)
     expect(res!.status()).toBe(404)
