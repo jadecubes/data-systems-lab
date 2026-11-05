@@ -38,12 +38,11 @@ export function sectionText(content: Content, topic: TopicId, id: SectionId): Se
 
 /**
  * zh-TW shows the Chinese name with the book's English heading beside it; English shows the book heading.
- * A section with no book heading uses our own title and is marked "summarised from this chapter".
+ * A section with no book heading uses our own title.
  */
 export function sectionTitle(content: Content, meta: SectionMeta, text: SectionText) {
-  const ours = meta.bookTitle === null
   const title = (content.lang === 'en' ? meta.bookTitle : meta.zhName) ?? text.title ?? ''
-  return { title, bookTitle: content.lang === 'en' ? null : meta.bookTitle, ours }
+  return { title, bookTitle: content.lang === 'en' ? null : meta.bookTitle }
 }
 
 export type Contents = Readonly<Record<Lang, Content>>

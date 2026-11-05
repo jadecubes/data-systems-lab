@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest'
-import { isLiveTopic, liveTopics, mapLayout, mapOrder, neighbours, ratingExceptions, sectionsOf } from './live'
-import { sections } from './sections'
+import { isLiveTopic, liveTopics, mapLayout, mapOrder, neighbours, sectionsOf } from './live'
 import { topics } from './structure'
 
 test('map order follows the groups, then the second line', () => {
@@ -16,8 +15,9 @@ test('phase 1 shows only T3 and T4, in one zone and one group', () => {
 })
 
 test('later phases add topics and the second zone', () => {
-  expect(liveTopics(2)).toHaveLength(13)
+  expect(liveTopics(2)).toEqual(mapOrder.slice(0, 13))
   expect(mapLayout(2).map((z) => z.zone)).toEqual(['first'])
+  expect(mapLayout(2)[0].groups.map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data'])
   expect(mapLayout(4).map((z) => z.zone)).toEqual(['first', 'second'])
   expect(mapLayout(4)[1].groups).toEqual([{ group: null, topics: mapOrder.slice(13) }])
 })
@@ -33,12 +33,4 @@ test('isLiveTopic rejects unknown and not-yet-live topics', () => {
   expect(isLiveTopic('T5', 1)).toBe(false)
   expect(isLiveTopic('X9', 6)).toBe(false)
   expect(isLiveTopic('toString', 6)).toBe(false)
-})
-
-test('rating exceptions: only the roles that differ from the zone default; 12 sections in all', () => {
-  const reliability = sections.find((s) => s.id === 'ch2-how-important-is-reliability')!
-  expect(ratingExceptions(reliability, 'first')).toEqual({ platform: 'ask' })
-  expect(sectionsOf('T3').map((s) => ratingExceptions(s, 'first'))).toEqual([{}, {}, {}])
-  const all = sections.filter((s) => Object.keys(ratingExceptions(s, topics[s.topic].zone)).length)
-  expect(all).toHaveLength(12)
 })

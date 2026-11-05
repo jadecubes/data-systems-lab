@@ -7,13 +7,13 @@ export const t4 = {
   sections: {
     'ch8-handling-errors-and-aborts': {
       conclusion:
-        '交易（transaction）被中止（abort）後重試（retry）是對的，資料庫回滾，正是為了讓重試安全。但如果交易其實成功，只是提交確認遺失，重試會讓它執行兩次，所以需要去重（deduplication）。而且只有暫時性錯誤（transient error）值得重試。',
+        '交易（transaction）被中止（abort）後重試（retry）是對的，資料庫回滾（rollback），正是為了讓重試安全。但如果交易其實成功，只是提交確認遺失，重試會讓它執行兩次，所以需要去重（deduplication）。而且只有暫時性錯誤（transient error）值得重試。',
       tradeoff:
         '自動重試能救回暫時性錯誤，但可能重複執行，或在系統過載時讓情況更糟；需要去重、次數上限與指數退避（exponential backoff）。',
       questions: [
-        '如果交易其實成功、只是回應遺失，使用者再按一次會發生什麼？',
-        '我們用什麼去重？',
-        '哪些錯誤會自動重試？過載時有次數上限和退避嗎？',
+        '如果交易（transaction）其實成功、只是回應遺失，使用者再按一次會發生什麼？',
+        '我們用什麼去重（deduplication）？',
+        '哪些錯誤會自動重試（retry）？過載時有次數上限和退避嗎？',
       ],
       examples: [
         {
@@ -30,7 +30,7 @@ export const t4 = {
       conclusion:
         '不需要分散式交易（distributed transaction），也能做到恰好一次（exactly-once）：在處理訊息的同一筆資料庫交易（transaction）裡，記下這則訊息的 ID，並加上唯一約束（uniqueness constraint），重送就只會生效一次。',
       tradeoff: '多一張記錄 ID 的表，每次多一次查詢與寫入，換來可以安全重試（retry）。',
-      questions: ['每個請求或訊息都有唯一 ID 嗎？', '重送時，後端會用這個 ID 認出重複嗎？', '這個 ID 和訂單是在同一筆交易裡寫入的嗎？'],
+      questions: ['每個請求或訊息都有唯一 ID 嗎？', '重送時，後端會用這個 ID 認出重複嗎？', '這個 ID 和訂單是在同一筆交易（transaction）裡寫入的嗎？'],
       examples: [
         {
           source: 'book',
@@ -48,14 +48,14 @@ export const t4 = {
       tradeoff:
         '端到端的請求 ID 需要前端、後端與資料表一起配合：ID 在送出前建立、重送時沿用，資料表加上唯一約束（uniqueness constraint）。不做，就可能重複收費或重複建立。',
       questions: [
-        '使用者在逾時後重按「送出訂單」，後端靠什麼認出這是同一次購買？',
+        '使用者在逾時（timeout）後重按「送出訂單」，後端靠什麼認出這是同一次購買？',
         '重新整理頁面或換一個分頁再送，帶的還是同一個 ID 嗎？',
         '這個 ID 是一次購買一個，還是整個登入 session 共用？',
       ],
       examples: [
         {
           source: 'book',
-          text: '書中的例子：一筆轉帳交易從一個帳戶扣 $11、另一個帳戶加 $11；客戶端斷線重連後重試（retry），可能轉了 $22。修法是在 requests 表的 request_id 欄位加唯一約束，交易先插入請求 ID，重送時插入失敗，整筆交易中止（abort）。',
+          text: '書中的例子：一筆轉帳交易從一個帳戶扣 $11、另一個帳戶加 $11；用戶端斷線重連後重試（retry），可能轉了 $22。修法是在 requests 表的 request_id 欄位加唯一約束，交易先插入請求 ID，重送時插入失敗，整筆交易中止（abort）。',
         },
         {
           source: 'book',

@@ -1,7 +1,7 @@
 // Queries that only ever return what is live in a phase, so no screen can link to an unpublished page.
 import { sections, type TopicId } from './sections'
-import { groups, topics, zoneDefaults } from './structure'
-import type { GroupId, Phase, RoleRatings, SectionMeta, ZoneId } from './types'
+import { groups, topics } from './structure'
+import type { GroupId, Phase, ZoneId } from './types'
 
 const allTopics = Object.keys(topics) as TopicId[]
 
@@ -48,12 +48,4 @@ export function neighbours(topic: TopicId, phase: Phase): { prev?: TopicId; next
 
 export function sectionsOf(topic: TopicId) {
   return sections.filter((s) => s.topic === topic)
-}
-
-export function ratingExceptions(section: SectionMeta, zone: ZoneId): Partial<RoleRatings> {
-  const defaults = zoneDefaults[zone]
-  return {
-    ...(section.product !== defaults.product && { product: section.product }),
-    ...(section.platform !== defaults.platform && { platform: section.platform }),
-  }
 }

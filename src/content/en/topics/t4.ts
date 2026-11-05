@@ -4,8 +4,8 @@ import type { t4 as zh } from '../../zh-TW/topics/t4'
 export const t4: Translation<typeof zh> = {
   title: 'Safe retries: request IDs and deduplication',
   summary:
-    'For a resend not to duplicate anything, the server has to recognise “this is the same request”: each submission carries a unique request ID, and the database executes it only once.',
-  tags: ['Transaction', 'Deduplication', 'Request ID', 'Uniqueness constraint', 'End-to-end argument'],
+    'For a resend not to duplicate anything, the server has to recognize “this is the same request”: each submission carries a unique request ID, and the database executes it only once.',
+  tags: ['transaction', 'deduplication', 'request ID', 'uniqueness constraint', 'end-to-end argument'],
   sections: {
     'ch8-handling-errors-and-aborts': {
       conclusion:
@@ -54,7 +54,7 @@ export const t4: Translation<typeof zh> = {
       tradeoff:
         'An end-to-end request ID needs the frontend, backend and schema to cooperate: the ID is created before submission and reused on every resend, and the table gets a uniqueness constraint. Without it, customers can be charged twice or records created twice.',
       questions: [
-        'When a user presses “Place order” again after a timeout, what lets the backend recognise the same purchase?',
+        'When a user presses “Place order” again after a timeout, what lets the backend recognize the same purchase?',
         'After a page reload, or from another tab, does the resend still carry the same ID?',
         'Is the ID one per purchase, or shared by the whole login session?',
       ],

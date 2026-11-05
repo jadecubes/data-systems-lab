@@ -1,5 +1,5 @@
 import type { TopicId } from './sections'
-import type { GroupId, LabId, Phase, RoleRatings, ZoneId } from './types'
+import type { GroupId, LabId, Phase, ZoneId } from './types'
 
 type Placement = { readonly zone: ZoneId; readonly group?: GroupId; readonly phase: Phase }
 
@@ -47,9 +47,3 @@ export const labs = {
   d2: { topics: ['T5'], phase: 5 },
   d3: { topics: ['T6', 'T7'], phase: 6 },
 } as const satisfies Record<LabId, { readonly topics: readonly TopicId[]; readonly phase: Phase }>
-
-/** Each zone's default rating; topic pages flag only sections that differ (design §4). */
-export const zoneDefaults = {
-  first: { product: 'use', platform: 'use' },
-  second: { product: 'ask', platform: 'use' },
-} as const satisfies Record<ZoneId, RoleRatings>

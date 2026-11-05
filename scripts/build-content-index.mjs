@@ -1,5 +1,5 @@
 // Builds docs/content-index.md (every section of the DDIA notes, mapped to where the site plan puts it)
-// and src/content/sections.ts (the topic sections the site renders: id, book title, printed pages, ratings).
+// and src/content/sections.ts (the topic sections the site renders: id, book title, and the pages and ratings kept as selection notes).
 // Usage: node scripts/build-content-index.mjs [--check]
 //   --check: write nothing; exit 1 if either committed file differs from a fresh build.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
@@ -91,7 +91,7 @@ for (const e of entries) {
   const found = sections.filter((s) => s.chapter === e.chapter && s.title === e.title)
   if (found.length !== 1) problems.push(`${found.length ? '重複' : '找不到'}：第 ${e.chapter} 章 ${e.title}`)
   e.section = found[0]
-  // A topic section shows its printed pages and ratings; a missing one would show page −24 or no rating.
+  // content-index.md lists each topic section's printed pages and ratings; a missing one would read page −24 or no rating.
   if (e.kind !== 'topic') continue
   if (!e.pages || ranges(e.pages).some(([from, to]) => !(from > 0 && from <= to))) problems.push(`頁碼缺少或不對（${e.pages}）：第 ${e.chapter} 章 ${e.title}`)
   if (!(Object.hasOwn(ratingCodes, e.product) && Object.hasOwn(ratingCodes, e.platform))) problems.push(`評級缺少或認不得：第 ${e.chapter} 章 ${e.title}`)
