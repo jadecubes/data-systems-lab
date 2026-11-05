@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import { routePath } from '../app/routes'
-import { mapLayout, sectionsOf } from '../content/live'
+import { labOf, mapLayout, sectionsOf } from '../content/live'
 import type { TopicId } from '../content/sections'
 import type { Phase } from '../content/types'
-import { sectionText, sectionTitle, type Content } from '../i18n/content'
+import { labTitle, sectionText, sectionTitle, type Content } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 
 export function MapPage({ content, phase, base }: { content: Content; phase: Phase; base: string }) {
@@ -14,6 +14,7 @@ export function MapPage({ content, phase, base }: { content: Content; phase: Pha
   const card = (topic: TopicId) => {
     const text = content.topics[topic]!
     const here = routePath({ kind: 'topic', lang, topic }, base)
+    const lab = labOf(topic, phase)
     return (
       <li key={topic} className="card">
         {/* First in the DOM: Tab reaches it before the card's toggle and section links, as it is drawn top-right. */}
@@ -40,6 +41,11 @@ export function MapPage({ content, phase, base }: { content: Content; phase: Pha
               </li>
             ))}
           </ol>
+          {lab && (
+            <p className="lab-link">
+              <a href={routePath({ kind: 'lab', lang, lab }, base)}>{interpolate(ui.lab.link, { title: labTitle(content, lab) })}</a>
+            </p>
+          )}
         </details>
       </li>
     )

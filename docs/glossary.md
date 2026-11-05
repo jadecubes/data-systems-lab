@@ -22,6 +22,7 @@
 | 送出後轉址的做法 | Post/Redirect/Get | 表單用 POST 送出後，伺服器轉址到一個 GET 頁面，重新整理就不會再送一次表單；擋不住逾時後的重送 |
 | 遠端程序呼叫 | remote procedure call (RPC) | 讓網路請求看起來像本地函式呼叫的做法 |
 | 訊息代理 | message broker | 在服務之間暫存、轉送訊息的系統 |
+| 驗收條件 | acceptance criterion（本站用詞，書中沒有） | 一條可以檢查是否做到的需求，例如逾時時畫面該說什麼 |
 | 功能性需求 | functional requirements | 應用要有哪些畫面與按鈕、每個操作做什麼 |
 | 非功能性需求 | nonfunctional requirements | 描述可靠性、效能等系統品質的需求 |
 | 可靠性 | reliability | 故障或錯誤下仍能提供正確服務的能力 |

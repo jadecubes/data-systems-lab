@@ -1,8 +1,8 @@
 import { routePath } from '../app/routes'
-import { neighbours, sectionsOf } from '../content/live'
+import { labOf, neighbours, sectionsOf } from '../content/live'
 import type { TopicId } from '../content/sections'
 import type { Phase } from '../content/types'
-import { sectionText, type Content } from '../i18n/content'
+import { labTitle, sectionText, type Content } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 import { SectionBlock } from './SectionBlock'
 
@@ -12,6 +12,7 @@ export function TopicPage({ content, topic, phase, base }: { content: Content; t
   // Section data comes through `content`, like every other string on the page.
   const blocks = sectionsOf(topic).map(({ id }) => ({ meta: content.sections[id], text: sectionText(content, topic, id) }))
   const { prev, next } = neighbours(topic, phase)
+  const lab = labOf(topic, phase)
   const link = (t: TopicId) => routePath({ kind: 'topic', lang, topic: t }, base)
   return (
     <>
@@ -29,6 +30,11 @@ export function TopicPage({ content, topic, phase, base }: { content: Content; t
           ))}
         </ul>
       </div>
+      {lab && (
+        <p className="lab-link">
+          <a href={routePath({ kind: 'lab', lang, lab }, base)}>{interpolate(ui.lab.link, { title: labTitle(content, lab) })}</a>
+        </p>
+      )}
       {blocks.map(({ meta, text }) => (
         <SectionBlock key={meta.id} content={content} meta={meta} text={text} />
       ))}

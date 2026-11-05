@@ -6,6 +6,7 @@ import { CURRENT_PHASE } from './config'
 import { contents } from './i18n/content'
 import { pickLang, readStoredLang } from './i18n/pickLang'
 import './styles/app.css'
+import './styles/lab.css'
 
 const base = import.meta.env.BASE_URL
 const route = parseRoute(location.pathname, base, CURRENT_PHASE)

@@ -1,7 +1,7 @@
 // Queries that only ever return what is live in a phase, so no screen can link to an unpublished page.
 import { sections, type TopicId } from './sections'
-import { groups, topics } from './structure'
-import type { GroupId, Phase, ZoneId } from './types'
+import { groups, labs, topics } from './structure'
+import type { GroupId, LabId, Phase, ZoneId } from './types'
 
 const allTopics = Object.keys(topics) as TopicId[]
 
@@ -48,4 +48,17 @@ export function neighbours(topic: TopicId, phase: Phase): { prev?: TopicId; next
 
 export function sectionsOf(topic: TopicId) {
   return sections.filter((s) => s.topic === topic)
+}
+
+export function liveLabs(phase: Phase): LabId[] {
+  return (Object.keys(labs) as LabId[]).filter((lab) => labs[lab].phase <= phase)
+}
+
+export function isLiveLab(id: string, phase: Phase): id is LabId {
+  return Object.hasOwn(labs, id) && labs[id as LabId].phase <= phase
+}
+
+/** The live lab that practises a topic, if any. */
+export function labOf(topic: TopicId, phase: Phase): LabId | undefined {
+  return liveLabs(phase).find((lab) => (labs[lab].topics as readonly TopicId[]).includes(topic))
 }
