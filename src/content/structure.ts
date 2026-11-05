@@ -1,45 +1,45 @@
 import type { TopicId } from './sections'
-import type { GroupId, LabId, Phase, ZoneId } from './types'
+import type { GroupId, LabId, Phase } from './types'
 
-type Placement = { readonly zone: ZoneId; readonly group?: GroupId; readonly phase: Phase }
+type Placement = { readonly group: GroupId; readonly phase: Phase }
 
-/** First-line groups, in map order (design §5.1). */
-export const groups = ['spec', 'anomalies', 'change', 'data'] as const satisfies readonly GroupId[]
+/** Groups in map order (design §5.1). */
+export const groups = ['spec', 'anomalies', 'change', 'data', 'systems', 'storage', 'concurrency', 'flow'] as const satisfies readonly GroupId[]
 
 /**
  * Every topic exactly once (the mapped type rejects a missing, extra or misspelt key). Key order is map
  * order and prev/next order.
  */
 export const topics = {
-  T1: { zone: 'first', group: 'spec', phase: 2 },
-  T2: { zone: 'first', group: 'spec', phase: 2 },
-  T8: { zone: 'first', group: 'spec', phase: 2 },
-  T12: { zone: 'first', group: 'spec', phase: 2 },
-  T3: { zone: 'first', group: 'anomalies', phase: 1 },
-  T4: { zone: 'first', group: 'anomalies', phase: 1 },
-  T5: { zone: 'first', group: 'anomalies', phase: 2 },
-  T6: { zone: 'first', group: 'anomalies', phase: 2 },
-  T7: { zone: 'first', group: 'anomalies', phase: 2 },
-  T9: { zone: 'first', group: 'change', phase: 2 },
-  T10: { zone: 'first', group: 'change', phase: 2 },
-  T0: { zone: 'first', group: 'data', phase: 2 },
-  T11: { zone: 'first', group: 'data', phase: 2 },
-  Q1: { zone: 'second', phase: 4 },
-  Q2: { zone: 'second', phase: 4 },
-  Q3: { zone: 'second', phase: 4 },
-  Q4: { zone: 'second', phase: 4 },
-  Q5: { zone: 'second', phase: 4 },
-  Q6: { zone: 'second', phase: 4 },
-  Q7: { zone: 'second', phase: 4 },
-  Q8: { zone: 'second', phase: 4 },
-  Q9: { zone: 'second', phase: 4 },
-  Q10: { zone: 'second', phase: 4 },
-  Q11: { zone: 'second', phase: 4 },
-  Q12: { zone: 'second', phase: 4 },
-  Q13: { zone: 'second', phase: 4 },
-  Q14: { zone: 'second', phase: 4 },
-  Q15: { zone: 'second', phase: 4 },
-  Q16: { zone: 'second', phase: 4 },
+  T1: { group: 'spec', phase: 2 },
+  T2: { group: 'spec', phase: 2 },
+  T8: { group: 'spec', phase: 2 },
+  T12: { group: 'spec', phase: 2 },
+  T3: { group: 'anomalies', phase: 1 },
+  T4: { group: 'anomalies', phase: 1 },
+  T5: { group: 'anomalies', phase: 2 },
+  T6: { group: 'anomalies', phase: 2 },
+  T7: { group: 'anomalies', phase: 2 },
+  T9: { group: 'change', phase: 2 },
+  T10: { group: 'change', phase: 2 },
+  T0: { group: 'data', phase: 2 },
+  T11: { group: 'data', phase: 2 },
+  Q1: { group: 'systems', phase: 4 },
+  Q2: { group: 'systems', phase: 4 },
+  Q3: { group: 'systems', phase: 4 },
+  Q4: { group: 'systems', phase: 4 },
+  Q5: { group: 'storage', phase: 4 },
+  Q6: { group: 'storage', phase: 4 },
+  Q7: { group: 'storage', phase: 4 },
+  Q8: { group: 'storage', phase: 4 },
+  Q9: { group: 'concurrency', phase: 4 },
+  Q10: { group: 'concurrency', phase: 4 },
+  Q11: { group: 'concurrency', phase: 4 },
+  Q12: { group: 'flow', phase: 4 },
+  Q13: { group: 'flow', phase: 4 },
+  Q14: { group: 'flow', phase: 4 },
+  Q15: { group: 'flow', phase: 4 },
+  Q16: { group: 'flow', phase: 4 },
 } as const satisfies { readonly [T in TopicId]: Placement }
 
 /** `topics` are the ones a lab practises and links from; `related` are read next, linked from the lab's end. */

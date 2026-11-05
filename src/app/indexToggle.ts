@@ -20,3 +20,14 @@ export function setIndexHidden(hidden: boolean): void {
     // Nothing to do.
   }
 }
+
+/**
+ * On wide screens the index column scrolls on its own, and a topic late in a long index sits below its fold: bring the
+ * current topic a third of the way down, when the page loads and when a hidden index is shown again. A topic already
+ * in view, or a column that does not scroll (phones fold the index; a hidden one measures nothing), stays as it is.
+ */
+export function revealCurrent(): void {
+  const column = document.querySelector<HTMLElement>('.index-column')
+  const here = column?.querySelector<HTMLElement>('[aria-current="page"]')
+  if (column && here && here.offsetTop + here.offsetHeight > column.scrollTop + column.clientHeight) column.scrollTop = here.offsetTop - column.clientHeight / 3
+}

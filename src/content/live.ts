@@ -1,32 +1,15 @@
 // Queries that only ever return what is live in a phase, so no screen can link to an unpublished page.
 import { sections, type TopicId } from './sections'
 import { groups, labs, topics } from './structure'
-import type { GroupId, LabId, Phase, ZoneId } from './types'
+import type { LabId, Phase } from './types'
 
 const allTopics = Object.keys(topics) as TopicId[]
 
-/** Second-line topics have no group. */
-export function groupOf(id: TopicId): GroupId | undefined {
-  return (topics[id] as { group?: GroupId }).group
-}
-const zones: ZoneId[] = ['first', 'second']
-
 function layout(ids: readonly TopicId[]) {
-  return zones
-    .map((zone) => {
-      const inZone = ids.filter((id) => topics[id].zone === zone)
-      const zoneGroups = zone === 'first' ? groups : [undefined]
-      return {
-        zone,
-        groups: zoneGroups
-          .map((group) => ({ group: group ?? null, topics: inZone.filter((id) => groupOf(id) === group) }))
-          .filter((g) => g.topics.length),
-      }
-    })
-    .filter((z) => z.groups.length)
+  return groups.map((group) => ({ group, topics: ids.filter((id) => topics[id].group === group) })).filter((g) => g.topics.length)
 }
 
-export const mapOrder: readonly TopicId[] = layout(allTopics).flatMap((z) => z.groups.flatMap((g) => g.topics))
+export const mapOrder: readonly TopicId[] = layout(allTopics).flatMap((g) => g.topics)
 
 export function liveTopics(phase: Phase): TopicId[] {
   return mapOrder.filter((id) => topics[id].phase <= phase)

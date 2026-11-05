@@ -2,30 +2,36 @@ import { expect, test } from 'vitest'
 import { isLiveTopic, labOf, liveLabs, liveTopics, mapLayout, mapOrder, neighbours, sectionsOf } from './live'
 import { topics } from './structure'
 
-test('map order follows the groups, then the second line', () => {
+test('map order follows the groups', () => {
   expect(mapOrder).toEqual([
     'T1', 'T2', 'T8', 'T12', 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T10', 'T0', 'T11',
     'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16',
   ])
 })
 
-test('phase 1 shows only T3 and T4, in one zone and one group', () => {
+test('phase 1 shows only T3 and T4, in one group', () => {
   expect(liveTopics(1)).toEqual(['T3', 'T4'])
-  expect(mapLayout(1)).toEqual([{ zone: 'first', groups: [{ group: 'anomalies', topics: ['T3', 'T4'] }] }])
+  expect(mapLayout(1)).toEqual([{ group: 'anomalies', topics: ['T3', 'T4'] }])
 })
 
-test('later phases add topics and the second zone', () => {
+test('later phases add topics and groups, all at one level', () => {
   expect(liveTopics(2)).toEqual(mapOrder.slice(0, 13))
-  expect(mapLayout(2).map((z) => z.zone)).toEqual(['first'])
-  expect(mapLayout(2)[0].groups.map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data'])
-  expect(mapLayout(4).map((z) => z.zone)).toEqual(['first', 'second'])
-  expect(mapLayout(4)[1].groups).toEqual([{ group: null, topics: mapOrder.slice(13) }])
+  expect(mapLayout(2).map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data'])
+  expect(mapLayout(4).map(({ group }) => group)).toEqual(['spec', 'anomalies', 'change', 'data', 'systems', 'storage', 'concurrency', 'flow'])
+  expect(mapLayout(4).slice(4).map(({ topics }) => topics)).toEqual([
+    ['Q1', 'Q2', 'Q3', 'Q4'],
+    ['Q5', 'Q6', 'Q7', 'Q8'],
+    ['Q9', 'Q10', 'Q11'],
+    ['Q12', 'Q13', 'Q14', 'Q15', 'Q16'],
+  ])
 })
 
 test('prev and next stay among live topics', () => {
   expect(neighbours('T3', 1)).toEqual({ next: 'T4' })
   expect(neighbours('T4', 1)).toEqual({ prev: 'T3' })
   expect(neighbours('T4', 2)).toEqual({ prev: 'T3', next: 'T5' })
+  // Next and previous run on across the groups.
+  expect(neighbours('Q1', 4)).toEqual({ prev: 'T11', next: 'Q2' })
 })
 
 test('isLiveTopic rejects unknown and not-yet-live topics', () => {

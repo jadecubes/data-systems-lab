@@ -324,8 +324,9 @@ h3 {
   cursor: pointer;
 }
 
+/* Space between groups, more than between topics, so each group reads as one block. */
 .index-group {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 /* The first group starts the index, so it needs no space above it. */
@@ -338,37 +339,21 @@ h3 {
   font-weight: 600;
 }
 
+/* A wrapped group name lines up with its first line, not under the marker; the topics line up with it too. */
+.index-group > summary,
 .index-group > ul {
-  margin-left: 0.75rem;
+  padding-left: 1.1rem;
 }
 
-/* A topic row: the sections toggle, the topic link, and below the link its sections while the toggle is open. */
-.index-topic {
-  display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr);
-  align-items: baseline;
-}
-
-.index-topic > details > summary {
-  width: 1.5rem;
-  min-height: 1.5rem;
-  cursor: pointer;
-}
-
-.index-topic > a {
-  grid-column: 2;
+.index-group > summary {
+  text-indent: -1.1rem;
 }
 
 .index-topic > ol {
-  grid-column: 2;
   margin-top: 0.1rem;
   padding-left: 0.75rem;
   border-left: 2px solid var(--border);
   font-size: 0.9rem;
-}
-
-.index-topic > details:not([open]) ~ ol {
-  display: none;
 }
 
 @media (min-width: 1024px) {

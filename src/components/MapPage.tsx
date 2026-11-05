@@ -51,20 +51,17 @@ export function MapPage({ content, phase, base }: { content: Content; phase: Pha
     )
   }
 
-  // Groups are the top level while one zone is live; zone headings come with the second zone (phase 4).
   return (
     <>
       <h1>{ui.siteTitle}</h1>
       <p className="lead">{ui.mapIntro}</p>
       <p className="book-source">{ui.bookSource}</p>
-      {mapLayout(phase).flatMap(({ zone, groups }) =>
-        groups.map(({ group, topics }) => (
-          <Fragment key={group ?? zone}>
-            {group && <h2>{ui.groups[group]}</h2>}
-            <ul className="cards">{topics.map(card)}</ul>
-          </Fragment>
-        )),
-      )}
+      {mapLayout(phase).map(({ group, topics }) => (
+        <Fragment key={group}>
+          <h2>{ui.groups[group]}</h2>
+          <ul className="cards">{topics.map(card)}</ul>
+        </Fragment>
+      ))}
     </>
   )
 }
