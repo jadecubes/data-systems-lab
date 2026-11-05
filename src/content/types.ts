@@ -1,7 +1,5 @@
 import type { SectionIdOf, TopicId } from './sections'
 
-/** Rating codes: 要會用 / 要能問 / 懂名詞 / 跳過. */
-export type Rating = 'use' | 'ask' | 'term' | 'skip'
 /** Printed book pages, inclusive. */
 export type PageRange = readonly [from: number, to: number]
 
@@ -14,13 +12,10 @@ export type SectionMeta = {
   /** Chinese name of the book heading; null whenever bookTitle is null. */
   readonly zhName: string | null
   readonly pages: readonly PageRange[]
-  readonly product: Rating
-  readonly platform: Rating
 }
 
 export type Phase = 1 | 2 | 3 | 4 | 5 | 6
-export type ZoneId = 'first' | 'second'
-export type GroupId = 'spec' | 'anomalies' | 'change' | 'data'
+export type GroupId = 'spec' | 'anomalies' | 'change' | 'data' | 'systems' | 'storage' | 'concurrency' | 'flow'
 export type LabId = 'd1' | 'd2' | 'd3'
 
 export type ExampleSource = 'book' | 'ours'

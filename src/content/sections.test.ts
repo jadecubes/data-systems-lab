@@ -3,7 +3,7 @@ import { sections } from './sections'
 
 const byId = (id: string) => sections.find((s) => s.id === id)
 
-test('covers the 89 topic sections: 31 first-line, 58 second-line, unique ids', () => {
+test('covers the 89 topic sections: 31 T-topic, 58 Q-topic, unique ids', () => {
   expect(sections).toHaveLength(89)
   expect(sections.filter((s) => s.topic.startsWith('T'))).toHaveLength(31)
   expect(new Set(sections.map((s) => s.id)).size).toBe(89)
@@ -40,7 +40,3 @@ test('pages are printed pages (PDF − 24), including multi-range', () => {
   expect(byId('ch5-the-merits-of-schemas')!.pages).toEqual([[177, 178], [192, 192]])
 })
 
-test('ratings are codes', () => {
-  expect(byId('ch2-how-important-is-reliability')).toMatchObject({ product: 'use', platform: 'ask' })
-  expect(byId('ch5-message-brokers')).toMatchObject({ product: 'term', platform: 'use' })
-})

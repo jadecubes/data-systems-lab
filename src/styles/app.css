@@ -296,8 +296,7 @@ h3 {
   font-size: 0.95rem;
 }
 
-.site-index ul,
-.site-index ol {
+.site-index ul {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -315,60 +314,18 @@ h3 {
   text-decoration: underline;
 }
 
-.site-index a[aria-current='page'] {
+.site-index a[aria-current] {
   font-weight: 700;
-  color: var(--text);
 }
 
-.index-group > summary {
-  cursor: pointer;
+/* A topic's sections, under its summary, so a long page is crossed in one click. */
+.topic-sections {
+  margin-bottom: 1.5rem;
 }
 
-.index-group {
-  margin-top: 0.5rem;
-}
-
-/* The first group starts the index, so it needs no space above it. */
-.site-index nav > :first-child {
-  margin-top: 0;
-}
-
-.index-group > summary {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.index-group > ul {
-  margin-left: 0.75rem;
-}
-
-/* A topic row: the sections toggle, the topic link, and below the link its sections while the toggle is open. */
-.index-topic {
-  display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr);
-  align-items: baseline;
-}
-
-.index-topic > details > summary {
-  width: 1.5rem;
-  min-height: 1.5rem;
-  cursor: pointer;
-}
-
-.index-topic > a {
-  grid-column: 2;
-}
-
-.index-topic > ol {
-  grid-column: 2;
-  margin-top: 0.1rem;
-  padding-left: 0.75rem;
-  border-left: 2px solid var(--border);
-  font-size: 0.9rem;
-}
-
-.index-topic > details:not([open]) ~ ol {
-  display: none;
+.topic-sections ol {
+  margin: 0.25rem 0 0;
+  padding-left: 1.5rem;
 }
 
 @media (min-width: 1024px) {

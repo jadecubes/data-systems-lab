@@ -1,5 +1,5 @@
 // Builds docs/content-index.md (every section of the DDIA notes, mapped to where the site plan puts it)
-// and src/content/sections.ts (the topic sections the site renders: id, book title, and the pages and ratings kept as selection notes).
+// and src/content/sections.ts (the topic sections the site renders: id, book title and pages).
 // Usage: node scripts/build-content-index.mjs [--check]
 //   --check: write nothing; exit 1 if either committed file differs from a fresh build.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
@@ -27,6 +27,8 @@ const bookTitleOverrides = {
   '5 訊息代理（Message brokers）': ['Message brokers', '訊息代理'],
   '8 一致性（Consistency）': ['Consistency', '一致性'],
   '8 側欄：Replication and Durability（複製與持久性）': ['Replication and Durability', '複製與持久性'],
+  // The site's word for operations is 營運; the notes' heading says 運維.
+  '7 Operations: Automatic Versus Manual Rebalancing（運維：自動與手動再平衡）': ['Operations: Automatic Versus Manual Rebalancing', '營運：自動與手動再平衡'],
 }
 // Sections with no book heading get a hand-written id ("Replication and Backups" is not a book heading:
 // the book has "Backups and Replication").
@@ -39,7 +41,6 @@ const idOverrides = {
   '11 章首：線上系統與批次處理': 'ch11-intro-online-and-batch',
   ...Object.fromEntries([5, 6, 8, 9, 10, 11, 12, 13].map((c) => [`${c} 怎麼選（判準）`, `ch${c}-how-to-choose`])),
 }
-const ratingCodes = { 要會用: 'use', 要能問: 'ask', 懂名詞: 'term', 跳過: 'skip' }
 
 // 1. Note sections: every heading of level 3–5 inside a chapter, with its own line range.
 const sections = []
@@ -75,8 +76,6 @@ for (const line of guide) {
     chapter: Number(head[1]),
     title: head[2],
     pages: line.match(/p\.([\d–\-]+(?:, p\.[\d–\-]+)*)/)?.[1]?.replaceAll(', p.', ', ') ?? '',
-    product: line.match(/產品：(要會用|要能問|懂名詞|跳過)/)?.[1] ?? '',
-    platform: line.match(/平台：(要會用|要能問|懂名詞|跳過)/)?.[1] ?? '',
   })
 }
 
@@ -91,10 +90,9 @@ for (const e of entries) {
   const found = sections.filter((s) => s.chapter === e.chapter && s.title === e.title)
   if (found.length !== 1) problems.push(`${found.length ? '重複' : '找不到'}：第 ${e.chapter} 章 ${e.title}`)
   e.section = found[0]
-  // content-index.md lists each topic section's printed pages and ratings; a missing one would read page −24 or no rating.
+  // content-index.md lists each topic section's printed pages; a missing one would read page −24.
   if (e.kind !== 'topic') continue
   if (!e.pages || ranges(e.pages).some(([from, to]) => !(from > 0 && from <= to))) problems.push(`頁碼缺少或不對（${e.pages}）：第 ${e.chapter} 章 ${e.title}`)
-  if (!(Object.hasOwn(ratingCodes, e.product) && Object.hasOwn(ratingCodes, e.platform))) problems.push(`評級缺少或認不得：第 ${e.chapter} 章 ${e.title}`)
 }
 // One section belongs to one topic page; two topic entries on it would drop it from one of them.
 for (const s of sections) {
@@ -117,8 +115,7 @@ const siteSections = entries
     }
     if (!id) problems.push(`沒有書中標題，也不在 idOverrides：第 ${e.chapter} 章 ${e.title}`)
     e.id = id
-    return { id, topic: e.topic, chapter: e.chapter, bookTitle, zhName, pages: ranges(e.pages),
-      product: ratingCodes[e.product], platform: ratingCodes[e.platform] }
+    return { id, topic: e.topic, chapter: e.chapter, bookTitle, zhName, pages: ranges(e.pages) }
   })
 for (const [id, n] of Object.entries(Object.groupBy(siteSections, (s) => s.id))) {
   if (n.length > 1) problems.push(`段落 id 重複：${id}`)
@@ -136,7 +133,7 @@ for (const s of sections) {
   s.entry = mine.find((e) => e.kind === 'topic') ?? mine[0]
 }
 const destination = (s) =>
-  s.topics.length ? s.topics.map((t) => `${t} 主題頁`).join('；') : s.entry ? '一行版（這版不做）' : '不收（懂名詞／跳過）'
+  s.topics.length ? s.topics.map((t) => `${t} 主題頁`).join('；') : s.entry ? '一行版（這版不做）' : '不收'
 
 // 4. Render.
 const count = (pred) => sections.filter(pred).length
@@ -151,10 +148,9 @@ const out = [
   '',
   '- 「去處」寫主題頁的段落，網站上必須找得到。有沒有漏由測試核對（設計稿第 9.2 節），不在這裡打勾。',
   '- 篩選版每筆條目用「章＋標題」對到筆記的一個段落；對不上、重複或解析不出來，產生器就失敗。',
-  '- 評級是篩選版的判斷（模型依筆記評，未經 PM 實務驗證）。「不收」的段落篩選版沒有逐段列出評級，評級欄空白。',
   '- 章末的「名詞」「怎麼選」「容易誤解」「小結」也是段落，照樣列出。',
   `- 篩選版開頭寫評了 416 段，筆記各章實際有 ${sections.length} 個標題，以本索引為準。`,
-  '- 「PDF 頁」對照筆記用；「印刷頁」＝PDF 頁 − 24，是書上印的、網站上顯示的頁碼。',
+  '- 「PDF 頁」對照筆記用；「印刷頁」＝PDF 頁 − 24，是書上印的頁碼；網站不顯示頁碼。',
   '- 「段落 id」就是網站主題頁上該段區塊的 `id`，也是 `src/content/sections.ts` 與各語言內容檔的鍵。',
   '',
   '## 總覽',
@@ -162,11 +158,9 @@ const out = [
   '| 項目 | 段數 |',
   '|---|---|',
   `| 筆記段落（各章 ###–##### 標題） | ${sections.length} |`,
-  `| 收進主題頁（第一、二線） | ${covered} |`,
-  `| 　其中第一線 T | ${count((s) => s.topics.some((t) => t.startsWith('T')))} |`,
-  `| 　其中第二線 Q | ${count((s) => s.topics.some((t) => t.startsWith('Q')))} |`,
+  `| 收進主題頁 | ${covered} |`,
   `| 一行版（這版不做） | ${count((s) => !s.topics.length && s.entry)} |`,
-  `| 不收（懂名詞／跳過） | ${count((s) => !s.entry)} |`,
+  `| 不收 | ${count((s) => !s.entry)} |`,
   '',
   '## 依主題：每頁必須涵蓋的段落',
   '',
@@ -174,10 +168,10 @@ const out = [
 for (const id of [...new Set(entries.filter((e) => e.topic).map((e) => e.topic))]) {
   // Drop the guide's personal study-progress note (e.g. "已上過，只複習："); it is not site content.
   out.push(guide.find((l) => l.startsWith(`### ${id} `)).replace(/已上過，只複習：/, ''), '')
-  out.push('| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |', '|---|---|---|---|---|---|---|---|')
+  out.push('| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 |', '|---|---|---|---|---|---|')
   for (const e of entries.filter((x) => x.topic === id)) {
     const s = e.section
-    out.push(`| ${s.line}-${s.end} | ${s.chapter} | ${s.title} | \`${e.id}\` | ${e.pages} | ${printed(e.pages)} | ${e.product} | ${e.platform} |`)
+    out.push(`| ${s.line}-${s.end} | ${s.chapter} | ${s.title} | \`${e.id}\` | ${e.pages} | ${printed(e.pages)} |`)
   }
   out.push('')
 }
@@ -187,10 +181,10 @@ for (const s of sections) {
   if (s.chapter !== current) {
     current = s.chapter
     out.push('', notes.find((l) => l.startsWith(`## 第 ${current} 章 `)).replace(/^## /, '### '), '')
-    out.push('| 筆記行 | 段落 | 產品 | 平台 | 去處 |', '|---|---|---|---|---|')
+    out.push('| 筆記行 | 段落 | 去處 |', '|---|---|---|')
   }
   const indent = '　'.repeat(s.level - 3)
-  out.push(`| ${s.line}-${s.end} | ${indent}${s.title} | ${s.entry?.product ?? ''} | ${s.entry?.platform ?? ''} | ${destination(s)} |`)
+  out.push(`| ${s.line}-${s.end} | ${indent}${s.title} | ${destination(s)} |`)
 }
 out.push('')
 

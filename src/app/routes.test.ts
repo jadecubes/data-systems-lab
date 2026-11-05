@@ -6,13 +6,24 @@ const b = '/data-systems-lab/'
 test('paths round-trip for every live route', () => {
   expect(livePaths(1, b)).toEqual([
     `${b}zh-TW/`,
+    `${b}zh-TW/groups/anomalies/`,
     `${b}zh-TW/topics/t3/`,
     `${b}zh-TW/topics/t4/`,
     `${b}en/`,
+    `${b}en/groups/anomalies/`,
     `${b}en/topics/t3/`,
     `${b}en/topics/t4/`,
   ])
   for (const p of livePaths(1, b)) expect(routePath(parseRoute(p, b, 1)!, b)).toBe(p)
+})
+
+test('a group has a page once one of its topics is live', () => {
+  expect(parseRoute(`${b}en/groups/anomalies/`, b, 1)).toEqual({ kind: 'group', lang: 'en', group: 'anomalies' })
+  expect(parseRoute(`${b}en/groups/spec/`, b, 1)).toBeNull()
+  expect(parseRoute(`${b}en/groups/spec/`, b, 2)).toEqual({ kind: 'group', lang: 'en', group: 'spec' })
+  for (const p of [`${b}en/groups/Spec/`, `${b}en/groups/`, `${b}en/groups/spec/x/`, `${b}en/groups/toString/`, `${b}en/groups/zones/`]) {
+    expect(parseRoute(p, b, 6), p).toBeNull()
+  }
 })
 
 test('a missing trailing slash still parses', () => {

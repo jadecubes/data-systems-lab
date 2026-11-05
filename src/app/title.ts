@@ -10,6 +10,7 @@ export function pageTitle(route: Route | null, contents: Texts): string {
   if (route.kind === 'root') return both((ui) => ui.siteTitle)
   const { ui, topics } = contents[route.lang]
   if (route.kind === 'map') return interpolate(ui.pageTitle.map, { site: ui.siteTitle })
+  if (route.kind === 'group') return interpolate(ui.pageTitle.group, { group: ui.groups[route.group], site: ui.siteTitle })
   if (route.kind === 'lab') return interpolate(ui.pageTitle.lab, { lab: labTitle(contents[route.lang], route.lab), site: ui.siteTitle })
   return interpolate(ui.pageTitle.topic, { topic: topics[route.topic]!.title, site: ui.siteTitle })
 }
