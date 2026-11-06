@@ -40,7 +40,3 @@ test('pages are printed pages (PDF − 24), including multi-range', () => {
   expect(byId('ch5-the-merits-of-schemas')!.pages).toEqual([[177, 178], [192, 192]])
 })
 
-test('ratings are codes', () => {
-  expect(byId('ch2-how-important-is-reliability')).toMatchObject({ product: 'use', platform: 'ask' })
-  expect(byId('ch5-message-brokers')).toMatchObject({ product: 'term', platform: 'use' })
-})

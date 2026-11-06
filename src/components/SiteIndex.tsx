@@ -1,41 +1,42 @@
+import { useEffect } from 'react'
+import { revealCurrent } from '../app/indexToggle'
 import { routePath, type PageRoute } from '../app/routes'
-import { groupOf, mapLayout, sectionsOf } from '../content/live'
+import { mapLayout, sectionsOf } from '../content/live'
+import { labs } from '../content/structure'
 import type { TopicId } from '../content/sections'
 import type { Phase } from '../content/types'
 import { sectionText, sectionTitle, type Content } from '../i18n/content'
-import { interpolate } from '../i18n/format'
 
 /**
- * The left column on every map and topic page: each live topic under its group (zones come with the second
- * zone, in phase 4). Groups and each topic's sections fold. The path to the current topic starts open, and so
- * does every group on the map. On wide screens the index is shown unless the reader hides it with the header's menu
- * button (IndexToggle); on narrow ones the reader opens it.
+ * The left column on every page: each live topic under its group, and under the current topic its sections. Groups
+ * fold; topics do not, since a toggle beside each link reads as a bullet and any topic's sections are one click away.
+ * The path to the current topic (on a lab page, to the topics it practises) starts open, and so does everything on the
+ * map. On wide screens the index is shown unless the reader hides it with the header's menu button (IndexToggle); on
+ * narrow ones the reader opens it.
  */
 export function SiteIndex({ content, route, phase, base }: { content: Content; route: PageRoute; phase: Phase; base: string }) {
   const { ui, lang } = content
   const current = route.kind === 'topic' ? route.topic : null
-  const currentGroup = current && groupOf(current)
-  const onMap = route.kind === 'map'
+  const pathTo: readonly TopicId[] = current ? [current] : route.kind === 'lab' ? labs[route.lab].topics : []
+  const opens = (topics: readonly TopicId[]) => route.kind === 'map' || topics.some((t) => pathTo.includes(t))
+  useEffect(revealCurrent, [])
 
   const topicItem = (topic: TopicId) => {
     const here = routePath({ kind: 'topic', lang, topic }, base)
-    const title = content.topics[topic]!.title
-    // The toggle and the link are siblings: a link inside a <summary> would be a control inside a control.
     return (
       <li key={topic} className="index-topic">
-        <details open={topic === current}>
-          <summary aria-label={interpolate(ui.index.sections, { topic: title })} />
-        </details>
         <a href={here} aria-current={topic === current ? 'page' : undefined}>
-          {title}
+          {content.topics[topic]!.title}
         </a>
-        <ol>
-          {sectionsOf(topic).map(({ id }) => (
-            <li key={id}>
-              <a href={`${here}#${id}`}>{sectionTitle(content, content.sections[id], sectionText(content, topic, id)).title}</a>
-            </li>
-          ))}
-        </ol>
+        {topic === current && (
+          <ol>
+            {sectionsOf(topic).map(({ id }) => (
+              <li key={id}>
+                <a href={`${here}#${id}`}>{sectionTitle(content, content.sections[id], sectionText(content, topic, id)).title}</a>
+              </li>
+            ))}
+          </ol>
+        )}
       </li>
     )
   }
@@ -45,18 +46,12 @@ export function SiteIndex({ content, route, phase, base }: { content: Content; r
       <details className="site-index">
         <summary>{ui.index.label}</summary>
         <nav id="site-index" aria-label={ui.index.label}>
-          {mapLayout(phase).flatMap(({ zone, groups }) =>
-            groups.map(({ group, topics }) =>
-              group ? (
-                <details key={group} className="index-group" open={onMap || group === currentGroup}>
-                  <summary>{ui.groups[group]}</summary>
-                  <ul>{topics.map(topicItem)}</ul>
-                </details>
-              ) : (
-                <ul key={zone}>{topics.map(topicItem)}</ul>
-              ),
-            ),
-          )}
+          {mapLayout(phase).map(({ group, topics }) => (
+            <details key={group} className="index-group" open={opens(topics)}>
+              <summary>{ui.groups[group]}</summary>
+              <ul>{topics.map(topicItem)}</ul>
+            </details>
+          ))}
         </nav>
       </details>
     </div>

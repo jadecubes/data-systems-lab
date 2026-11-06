@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { isIndexHidden, setIndexHidden } from '../app/indexToggle'
+import { isIndexHidden, revealCurrent, setIndexHidden } from '../app/indexToggle'
 import type { Content } from '../i18n/content'
 
 /**
@@ -16,6 +16,7 @@ export function IndexToggle({ content }: { content: Content }) {
     const next = !isIndexHidden()
     setIndexHidden(next)
     setHidden(next)
+    if (!next) revealCurrent()
   }
   return (
     <span className="header-menu">

@@ -1,5 +1,5 @@
 // Builds docs/content-index.md (every section of the DDIA notes, mapped to where the site plan puts it)
-// and src/content/sections.ts (the topic sections the site renders: id, book title, and the pages and ratings kept as selection notes).
+// and src/content/sections.ts (the topic sections the site renders: id, book title and pages).
 // Usage: node scripts/build-content-index.mjs [--check]
 //   --check: write nothing; exit 1 if either committed file differs from a fresh build.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
@@ -39,7 +39,6 @@ const idOverrides = {
   '11 章首：線上系統與批次處理': 'ch11-intro-online-and-batch',
   ...Object.fromEntries([5, 6, 8, 9, 10, 11, 12, 13].map((c) => [`${c} 怎麼選（判準）`, `ch${c}-how-to-choose`])),
 }
-const ratingCodes = { 要會用: 'use', 要能問: 'ask', 懂名詞: 'term', 跳過: 'skip' }
 
 // 1. Note sections: every heading of level 3–5 inside a chapter, with its own line range.
 const sections = []
@@ -75,8 +74,6 @@ for (const line of guide) {
     chapter: Number(head[1]),
     title: head[2],
     pages: line.match(/p\.([\d–\-]+(?:, p\.[\d–\-]+)*)/)?.[1]?.replaceAll(', p.', ', ') ?? '',
-    product: line.match(/產品：(要會用|要能問|懂名詞|跳過)/)?.[1] ?? '',
-    platform: line.match(/平台：(要會用|要能問|懂名詞|跳過)/)?.[1] ?? '',
   })
 }
 
@@ -91,10 +88,9 @@ for (const e of entries) {
   const found = sections.filter((s) => s.chapter === e.chapter && s.title === e.title)
   if (found.length !== 1) problems.push(`${found.length ? '重複' : '找不到'}：第 ${e.chapter} 章 ${e.title}`)
   e.section = found[0]
-  // content-index.md lists each topic section's printed pages and ratings; a missing one would read page −24 or no rating.
+  // content-index.md lists each topic section's printed pages; a missing one would read page −24.
   if (e.kind !== 'topic') continue
   if (!e.pages || ranges(e.pages).some(([from, to]) => !(from > 0 && from <= to))) problems.push(`頁碼缺少或不對（${e.pages}）：第 ${e.chapter} 章 ${e.title}`)
-  if (!(Object.hasOwn(ratingCodes, e.product) && Object.hasOwn(ratingCodes, e.platform))) problems.push(`評級缺少或認不得：第 ${e.chapter} 章 ${e.title}`)
 }
 // One section belongs to one topic page; two topic entries on it would drop it from one of them.
 for (const s of sections) {
@@ -117,8 +113,7 @@ const siteSections = entries
     }
     if (!id) problems.push(`沒有書中標題，也不在 idOverrides：第 ${e.chapter} 章 ${e.title}`)
     e.id = id
-    return { id, topic: e.topic, chapter: e.chapter, bookTitle, zhName, pages: ranges(e.pages),
-      product: ratingCodes[e.product], platform: ratingCodes[e.platform] }
+    return { id, topic: e.topic, chapter: e.chapter, bookTitle, zhName, pages: ranges(e.pages) }
   })
 for (const [id, n] of Object.entries(Object.groupBy(siteSections, (s) => s.id))) {
   if (n.length > 1) problems.push(`段落 id 重複：${id}`)
@@ -162,9 +157,7 @@ const out = [
   '| 項目 | 段數 |',
   '|---|---|',
   `| 筆記段落（各章 ###–##### 標題） | ${sections.length} |`,
-  `| 收進主題頁（第一、二線） | ${covered} |`,
-  `| 　其中第一線 T | ${count((s) => s.topics.some((t) => t.startsWith('T')))} |`,
-  `| 　其中第二線 Q | ${count((s) => s.topics.some((t) => t.startsWith('Q')))} |`,
+  `| 收進主題頁 | ${covered} |`,
   `| 一行版（這版不做） | ${count((s) => !s.topics.length && s.entry)} |`,
   `| 不收（懂名詞／跳過） | ${count((s) => !s.entry)} |`,
   '',
@@ -174,10 +167,10 @@ const out = [
 for (const id of [...new Set(entries.filter((e) => e.topic).map((e) => e.topic))]) {
   // Drop the guide's personal study-progress note (e.g. "已上過，只複習："); it is not site content.
   out.push(guide.find((l) => l.startsWith(`### ${id} `)).replace(/已上過，只複習：/, ''), '')
-  out.push('| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 | 產品 | 平台 |', '|---|---|---|---|---|---|---|---|')
+  out.push('| 筆記行 | 章 | 段落 | 段落 id | PDF 頁 | 印刷頁 |', '|---|---|---|---|---|---|')
   for (const e of entries.filter((x) => x.topic === id)) {
     const s = e.section
-    out.push(`| ${s.line}-${s.end} | ${s.chapter} | ${s.title} | \`${e.id}\` | ${e.pages} | ${printed(e.pages)} | ${e.product} | ${e.platform} |`)
+    out.push(`| ${s.line}-${s.end} | ${s.chapter} | ${s.title} | \`${e.id}\` | ${e.pages} | ${printed(e.pages)} |`)
   }
   out.push('')
 }
@@ -187,10 +180,10 @@ for (const s of sections) {
   if (s.chapter !== current) {
     current = s.chapter
     out.push('', notes.find((l) => l.startsWith(`## 第 ${current} 章 `)).replace(/^## /, '### '), '')
-    out.push('| 筆記行 | 段落 | 產品 | 平台 | 去處 |', '|---|---|---|---|---|')
+    out.push('| 筆記行 | 段落 | 去處 |', '|---|---|---|')
   }
   const indent = '　'.repeat(s.level - 3)
-  out.push(`| ${s.line}-${s.end} | ${indent}${s.title} | ${s.entry?.product ?? ''} | ${s.entry?.platform ?? ''} | ${destination(s)} |`)
+  out.push(`| ${s.line}-${s.end} | ${indent}${s.title} | ${destination(s)} |`)
 }
 out.push('')
 

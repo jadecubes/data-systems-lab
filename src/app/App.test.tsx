@@ -6,6 +6,7 @@ import { renderToString } from 'react-dom/server'
 import { afterEach, expect, test, vi } from 'vitest'
 import { SectionBlock } from '../components/SectionBlock'
 import { liveTopics, sectionsOf } from '../content/live'
+import { groups } from '../content/structure'
 import { contentFor, sectionText } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 import { langs } from '../i18n/langs'
@@ -30,12 +31,14 @@ const routes: (PageRoute | null)[] = [
     { kind: 'map', lang },
     { kind: 'topic', lang, topic: 'T3' },
     { kind: 'topic', lang, topic: 'T4' },
+    { kind: 'topic', lang, topic: 'Q7' },
   ]),
 ]
 
 test.each(routes)('no hard-coded text: every visible string and label comes from content (%o)', (route) => {
   const pseudo = pseudoContents()
-  const { container } = render(<App route={route} contents={pseudo} phase={1} base={base} />)
+  // The current phase, so every group heading is checked too.
+  const { container } = render(<App route={route} contents={pseudo} phase={4} base={base} />)
   const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT)
   for (let n = walker.nextNode(); n; n = walker.nextNode()) expect(unwrapped(n.textContent!)).toBe('')
   for (const el of container.querySelectorAll('[aria-label],[alt],[title]')) {
@@ -54,9 +57,8 @@ test('no hard-coded text in a section block with no book title', () => {
   for (let n = walker.nextNode(); n; n = walker.nextNode()) expect(unwrapped(n.textContent!)).toBe('')
 })
 
-test('map at phase 1: one zone, left unnamed; one group, two folded cards, each with a read link to its base-absolute topic path', () => {
+test('map at phase 1: one group, two folded cards, each with a read link to its base-absolute topic path', () => {
   const { container } = render(<App route={{ kind: 'map', lang: 'zh-TW' }} contents={contents} phase={1} base={base} />)
-  // With a single live zone its name says nothing the page does not, so the group heading is the top level.
   expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual(['使用者會碰到的異常'])
   expect(screen.queryAllByRole('heading', { level: 3 })).toHaveLength(0)
   const cards = [...container.querySelectorAll('.card')]
@@ -102,26 +104,23 @@ test('topic page has one block per section, and the site index opens the path to
   expect(current).toHaveAttribute('href', '/b/en/topics/t3/')
   const item = current.closest('li')!
   expect(within(item).getAllByRole('link').slice(1).map((a) => a.getAttribute('href'))).toEqual(ids.map((id) => `/b/en/topics/t3/#${id}`))
-  // Every enclosing level and the current topic's sections are open; the other topic's sections are not.
+  // Its group is open; only the current topic lists its sections.
   for (let el = item.parentElement; el && el !== index; el = el.parentElement) if (el.tagName === 'DETAILS') expect(el).toHaveAttribute('open')
-  expect(item.querySelector('details')).toHaveAttribute('open')
   const other = within(index).getByRole('link', { name: contents.en.topics.T4!.title }).closest('li')!
-  expect(other.querySelector('details')).not.toHaveAttribute('open')
+  expect(within(other).getAllByRole('link')).toHaveLength(1)
 })
 
-test.each(langs)('the site index lists every live topic in map order and no map entry, with each topic folded on the map (%s)', (lang) => {
+test.each(langs)('the site index lists every live topic in map order and no map entry; on the map no topic lists its sections (%s)', (lang) => {
   render(<App route={{ kind: 'map', lang }} contents={contents} phase={1} base={base} />)
   const { ui } = contents[lang]
   const index = screen.getByRole('navigation', { name: ui.index.label })
   const topicLinks = within(index).getAllByRole('link').filter((a) => !a.getAttribute('href')!.includes('#'))
   expect(topicLinks.map((a) => a.getAttribute('href'))).toEqual(liveTopics(1).map((t) => `/b/${lang}/topics/${t.toLowerCase()}/`))
-  // A single live zone is not listed: its group comes first, open, with a toggle named after it; each topic's sections toggle is closed.
+  // Its group comes first, open, with a toggle named after it; topics have no toggle of their own, which would read as a bullet.
   expect(index.firstElementChild).toHaveTextContent(ui.groups.anomalies)
   expect(within(index).getByText(ui.groups.anomalies).closest('details')).toHaveAttribute('open')
-  for (const topic of liveTopics(1)) {
-    const toggle = within(index).getByLabelText(interpolate(ui.index.sections, { topic: contents[lang].topics[topic]!.title }))
-    expect(toggle.closest('details')).not.toHaveAttribute('open')
-  }
+  expect(index.querySelectorAll('details')).toHaveLength(1)
+  expect(topicLinks).toHaveLength(within(index).getAllByRole('link').length)
 })
 
 test.each(langs)('a menu button named after the index hides and shows it, and remembers the choice for the next page (%s)', (lang) => {
@@ -302,14 +301,6 @@ test('zh-TW shows the book title beside the Chinese name, marked as English', ()
   expect(within(heading).getByText('Unreliable Networks')).toHaveAttribute('lang', 'en')
 })
 
-// Everything on the site is worth knowing, so pages carry no ratings; the codes stay in sections.ts as selection notes.
-test.each(langs)('a topic page shows no ratings (%s)', (lang) => {
-  const { container } = render(<App route={{ kind: 'topic', lang, topic: 'T1' }} contents={contents} phase={2} base={base} />)
-  // This section's platform rating differs from its zone's, which used to add a note under its heading.
-  expect(container.querySelector('[id="ch2-how-important-is-reliability"]')).not.toBeNull()
-  expect(container).not.toHaveTextContent(lang === 'zh-TW' ? '評級' : /\bratings?\b/i)
-})
-
 test('prev/next only among live topics', () => {
   const { unmount } = render(<App route={{ kind: 'topic', lang: 'en', topic: 'T3' }} contents={contents} phase={1} base={base} />)
   let pager = screen.getByRole('navigation', { name: 'Topic navigation' })
@@ -349,4 +340,36 @@ test('the not-found page offers both languages, each marked with its lang', () =
   ])
   expect(container.querySelectorAll('h1')).toHaveLength(2)
   expect(htmlLang(null)).toBe('en')
+})
+
+test.each(langs)('from phase 4 the map has one level: every topic sits under a group heading, none of which names a kind of PM (%s)', (lang) => {
+  const { ui } = contents[lang]
+  render(<App route={{ kind: 'map', lang }} contents={contents} phase={4} base={base} />)
+  const main = screen.getByRole('main')
+  const headings = within(main).getAllByRole('heading', { level: 2 })
+  expect(headings.map((h) => h.textContent)).toEqual(groups.map((g) => ui.groups[g]))
+  expect(within(main).queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+  for (const h of headings) expect(h.nextElementSibling).toHaveClass('cards')
+  expect(main.querySelectorAll('.card')).toHaveLength(29)
+})
+
+test.each(langs)('from phase 4 the site index lists the groups at the top level, and only the current topic\'s group is open (%s)', (lang) => {
+  const { ui } = contents[lang]
+  render(<App route={{ kind: 'topic', lang, topic: 'Q7' }} contents={contents} phase={4} base={base} />)
+  const index = screen.getByRole('navigation', { name: ui.index.label })
+  const top = [...index.querySelectorAll(':scope > details.index-group')]
+  expect(top.map((g) => g.querySelector(':scope > summary')!.textContent)).toEqual(groups.map((g) => ui.groups[g]))
+  expect(top.map((g) => g.hasAttribute('open'))).toEqual(groups.map((g) => g === 'storage'))
+  const current = within(index).getByRole('link', { current: 'page' })
+  expect(current).toHaveAttribute('href', `/b/${lang}/topics/q7/`)
+  expect(top[groups.indexOf('storage')].contains(current)).toBe(true)
+})
+
+test.each(langs)('on the lab page the site index opens the group of the topics the lab practises (%s)', (lang) => {
+  const { ui } = contents[lang]
+  render(<App route={{ kind: 'lab', lang, lab: 'd1' }} contents={contents} phase={4} base={base} />)
+  const index = screen.getByRole('navigation', { name: ui.index.label })
+  const top = [...index.querySelectorAll(':scope > details.index-group')]
+  expect(top.map((g) => g.hasAttribute('open'))).toEqual(groups.map((g) => g === 'anomalies'))
+  for (const topic of ['T3', 'T4'] as const) expect(within(index).getByRole('link', { name: contents[lang].topics[topic]!.title }).closest('details')).toHaveAttribute('open')
 })

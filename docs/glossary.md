@@ -82,3 +82,105 @@
 | 租戶隔離 | tenant isolation | 以租戶為界限制資料與操作的影響 |
 | 存取控制 | access control | 決定誰能讀寫哪些資料 |
 | 跨租戶查詢 | cross-tenant query | 讀取多個租戶資料的查詢 |
+| 營運系統 | operational system | 資料產生的地方；應用依使用者的動作讀寫自己的資料庫 |
+| 分析系統 | analytical system | 存營運資料的唯讀副本，為分析師與資料科學家的查詢最佳化 |
+| 資料孤島 | data silos | 資料散在多個系統，難以在一個查詢裡合併 |
+| 雲端服務 | cloud services | 把軟體的營運外包給雲端供應商 |
+| 自行託管 | self-hosting | 自己部署並營運系統，不交給雲端供應商 |
+| 廠商鎖定 | vendor lock-in | 服務沒有相容的替代品，換掉的成本很高 |
+| 微服務 | microservices | 每個服務一個目的、一個負責團隊、自己的資料庫，可獨立部署 |
+| 無伺服器 | serverless | 由雲端供應商依請求配置機器，只為程式實際執行的時間付費 |
+| 可擴展性 | scalability | 系統應付負載增加的能力 |
+| 吞吐量 | throughput | 單位時間處理的量，例如每秒請求數 |
+| 重試風暴 | retry storm | 系統變慢時用戶端逾時重送，讓負載更重 |
+| 物化視圖 | materialized view | 預先算好並持續更新的查詢結果 |
+| 容錯 | fault tolerance | 某些故障發生時，系統仍持續提供服務 |
+| 單點故障 | single point of failure | 一壞就讓整個系統停擺的部分 |
+| 故障注入 | fault injection | 刻意製造故障，讓容錯機制持續被演練 |
+| 可營運性 | operability | 讓營運團隊容易維持系統正常運作 |
+| 可觀測性 | observability | 從外部看見系統執行時行為的能力 |
+| 讀時 schema | schema-on-read | 資料庫不強制結構，讀取時才解讀 |
+| 寫時 schema | schema-on-write | 寫入時由資料庫確保資料符合明確的 schema |
+| 事件溯源 | event sourcing | 每個狀態改變都記成事件，附加在事件日誌上，以日誌為事實來源 |
+| 命令查詢職責分離 | command query responsibility segregation；CQRS | 寫入用一種表示，讀取用從它衍生、為讀取最佳化的其他表示 |
+| 資料立方體 | data cube | 依多個維度預先算好的彙總格網，固定查詢極快但不夠彈性 |
+| 索引 | index | 從主要資料衍生的結構，加快特定查詢，但佔空間、拖慢寫入 |
+| 備份 | backup | 資料在某個時間點的舊快照，能在誤刪或損壞後回到過去 |
+| 故障轉移 | failover | 領導者故障時，把一個追隨者升為新領導者 |
+| 持久性 | durability | 已確認的寫入不會因故障而遺失；沒有一種做法是完美的 |
+| 分區鍵 | partition key | 決定紀錄放在哪個分片（或日誌的哪個分區）的鍵，事後很難更改 |
+| 再平衡 | rebalancing | 把分片搬到其他節點，讓負載重新分配 |
+| 連鎖故障 | cascading failure | 一處過載或誤判讓負載轉到其他節點，接連拖垮更多節點 |
+| 隔離等級 | isolation level | 資料庫對並行交易保證到什麼程度；名稱各家不一，要看實際行為 |
+| 快照隔離 | snapshot isolation | 每個交易只讀它開始時已提交的一致快照 |
+| 可序列化 | serializable / serializability | 並行交易的結果和某種依序執行的結果相同 |
+| 租約 | lease | 有期限的鎖；到期沒續約就失效，由別的節點取得 |
+| 隔離權杖 | fencing token | 每次授予鎖或租約時遞增的數字；儲存端拒絕較舊的數字，擋住殭屍與延遲的請求 |
+| 強一致性 | strong consistency | 系統表現得像只有一份資料；精確的定義是線性一致性 |
+| 網路分區 | network partition | 網路中斷，讓節點分成彼此連不上的幾群 |
+| 協調服務 | coordination service | 以共識提供鎖、選出領導者等功能的服務，只存少量、變化慢的資料（例如 ZooKeeper、etcd） |
+| 持久執行 | durable execution | 記下工作流程每一步的結果，失敗重跑時跳過已成功的步驟 |
+| 死信佇列 | dead letter queue | 存放一再處理失敗的訊息，讓後面的訊息繼續前進 |
+| 雙寫 | dual writes | 應用程式自己依序寫資料庫、搜尋索引、快取等多個系統；並行或部分失敗時會靜默地不一致 |
+| 競爭條件 | race condition | 結果取決於並行操作碰巧的先後順序 |
+| 變更資料擷取 | change data capture / CDC | 擷取資料庫的每筆變更，依寫入順序送給下游系統套用 |
+| 外寄匣模式 | outbox pattern | 在同一筆交易裡另寫一張對外的表，只把它開放給變更資料擷取，內部資料表就能自由修改 |
+| 資料合約 | data contract | 上下游團隊對發布資料的格式與意義的約定，避免上游改動弄壞下游 |
+| 不可變性 | immutability | 資料寫入後不再修改，只新增新的紀錄 |
+| 拆解式資料庫 | unbundled database | 用變更資料擷取與事件日誌把多套專門的儲存系統接成一個整體 |
+| 線上系統 | online systems | 收到請求就要盡快回應的系統，例如網站後端、資料庫、快取 |
+| 串流處理 | stream processing | 持續處理新進的事件，在資料變更後不久就產生結果 |
+| 批量載入 | bulk-load | 批次作業先建好整份資料庫檔，再一次匯入線上資料庫 |
+| 時間旅行 | time travel | 保留舊版本的輸出或資料，出錯時直接切回去 |
+| 事件時間 | event time | 事件實際發生的時間，記在事件本身 |
+| 處理時間 | processing time | 處理器處理該事件時，自己時鐘上的時間 |
+| 落後事件 | straggler events | 所屬時間視窗已經宣布結束後才到達的事件 |
+| 日誌壓縮 | log compaction | 每個鍵只保留最新一筆紀錄，讓日誌大小只取決於目前內容 |
+| 偏移量 | offset | 訊息在日誌分區中單調遞增的位置編號 |
+| 資料損壞 | data corruption | 資料因硬體、軟體 bug 或操作錯誤而變得不正確 |
+| 稽核 | auditing | 檢查資料完整性，發現損壞並追查來源 |
+| 擷取、轉換、載入 | ETL (extract–transform–load) | 從營運資料庫取出資料、轉成分析用的格式、載入資料倉儲 |
+| 混合式交易／分析處理 | HTAP | 同一套系統同時做交易處理與分析 |
+| 服務水準協議 | SLA (service-level agreement) | 對外承諾的效能或可用性水準 |
+| 線性擴展 | linear scalability | 資源加倍，能處理的負載也加倍 |
+| 自動擴縮 | autoscaling | 依負載自動增減機器 |
+| 水平擴展 | horizontal scaling (scaling out) | 加機器而不是換更大的機器 |
+| 亞穩態失效 | metastable failure | 負載降回來後系統仍卡在過載狀態，例如重試風暴 |
+| 負載卸除 | load shedding | 過載時主動拒絕部分請求 |
+| 背壓 | backpressure | 下游跟不上時，讓上游放慢或暫停送出 |
+| 物化 | materialization | 預先算好結果並持續更新 |
+| 扇出 | fan-out | 一個請求或事件要寫到或送到許多地方 |
+| 預備環境 | staging | 上線前用來驗證的、接近正式環境的環境 |
+| 事件 | event | 已經發生的事實，不可變 |
+| 命令 | command | 使用者的請求，驗證通過後才變成事件 |
+| 事件日誌 | event log | 只能附加的事件序列 |
+| 不可變 | immutable | 寫入後不再修改 |
+| 確定性 | deterministic | 同樣的輸入一定得到同樣的結果 |
+| 副作用 | side effect | 處理之外對外界造成的影響，例如寄信 |
+| 維度 | dimension | 分析時用來切分資料的欄位，例如日期、地區 |
+| 彙總 | aggregate | 由多筆資料算出的總數、平均等 |
+| 複製 | replication | 在多個節點保存同一份資料 |
+| 同步複製 | synchronous replication | 領導者等追隨者確認才回報寫入成功 |
+| 半同步 | semisynchronous | 只等一個追隨者同步確認，其餘非同步 |
+| 單主複製 | single-leader replication | 只有一個節點接受寫入，其他節點跟著複製 |
+| 無主複製 | leaderless replication | 沒有領導者，用戶端直接寫到多個節點 |
+| 腦裂 | split brain | 兩個節點都以為自己是領導者 |
+| 讀已提交 | read committed | 只讀到已提交的資料、只覆寫已提交的資料的隔離等級 |
+| 讀偏斜 | read skew | 一次讀取看到不同時間點的資料，前後對不起來 |
+| 原子操作 | atomic operation | 資料庫一步完成的讀取－修改－寫入，例如遞增 |
+| 網路延遲沒有上限 | unbounded delays | 網路不保證訊息多久會到 |
+| 日曆時鐘 | time-of-day clock | 回報目前日期時間的時鐘，可能被校正而跳動 |
+| 時間戳 | timestamp | 記在資料上的時間 |
+| 邏輯時鐘 | logical clock | 用計數而非實際時間來排定事件順序 |
+| 版本向量 | version vector | 記錄每個副本各自版本號的向量，用來判斷寫入是否並行 |
+| 殭屍 | zombie | 以為自己還持有租約或領導權、其實已被取代的節點 |
+| 條件寫入 | conditional write | 只在資料符合條件（例如版本沒變）時才寫入 |
+| 共識 | consensus | 多個節點對同一個值達成一致 |
+| 工作流程 | workflow | 跨服務的多步驟工作 |
+| 生產者 | producer | 送出訊息的一方 |
+| 消費者 | consumer | 接收並處理訊息的一方 |
+| 佇列 | queue | 每則訊息只交給一個消費者 |
+| 主題 | topic | 訊息發布的具名頻道；日誌式訊息代理裡由多個分區組成 |
+| 確認 | acknowledgment | 消費者告訴代理一則訊息已處理完 |
+| 日誌式訊息代理 | log-based message broker | 把訊息存成只能附加的日誌，消費者記住讀到的位置 |
+| 分區 | partition | 日誌或資料集切開的一塊；順序只在同一個分區內保證 |

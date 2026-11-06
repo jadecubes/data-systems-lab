@@ -23,7 +23,7 @@ export function pseudoContents(): Record<Lang, Content> {
           ...c,
           ui: wrap(c.ui),
           topics: wrap(c.topics, new Set(codeKeys)),
-          sections: wrap(c.sections, new Set(['id', 'topic', 'product', 'platform'])),
+          sections: wrap(c.sections, new Set(['id', 'topic'])),
           labs: wrap(c.labs, new Set(codeKeys)),
           code: wrap(c.code),
           number: (n: number) => `⟦${c.number(n)}⟧`,

@@ -8,6 +8,8 @@ import { langs, otherLang } from '../src/i18n/langs'
 import { BASE, CJK, inspect } from './helpers'
 
 test('every internal link from the maps loads directly; every live topic is reached with all its sections, and every live lab', async ({ page, request }) => {
+  // Every page is loaded, checked with axe and resized: about two seconds each, for over sixty pages.
+  test.setTimeout(240_000)
   const queue = langs.map((lang) => routePath({ kind: 'map', lang }, BASE))
   const seen = new Set<string>()
   while (queue.length) {
