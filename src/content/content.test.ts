@@ -128,3 +128,26 @@ test.each(langs)('every diagram step uses only its own lanes, and a message goes
     }
   }
 })
+
+test('placeholders match between languages in the lab text', () => {
+  expect(placeholders(contentFor('en').labs)).toEqual(placeholders(contentFor('zh-TW').labs))
+})
+
+test('every Chinese lab string has Chinese in it, apart from codes, empty fields and bare placeholders', () => {
+  const missing: string[] = []
+  const walk = (value: unknown, path: string) => {
+    if (typeof value === 'string') {
+      if (value.replace(/\{\w+\}/g, '').match(/\p{L}/u) && !CJK.test(value)) missing.push(`${path}: ${value}`)
+    } else if (value && typeof value === 'object') {
+      for (const [k, v] of Object.entries(value)) if (!(codeKeys as readonly string[]).includes(k)) walk(v, `${path}.${k}`)
+    }
+  }
+  walk(contentFor('zh-TW').labs, 'labs')
+  expect(missing).toEqual([])
+})
+
+test('every note beside the lab SQL points at a line the lab shows', () => {
+  const { code, labs } = contentFor('en')
+  const lines = Object.values(code.d1.versions).flatMap((v) => v.lines)
+  for (const { match } of labs.d1.code.notes) expect(lines.some((l) => l.includes(match)), match).toBe(true)
+})

@@ -29,7 +29,8 @@ export const ui: Ui = {
   },
   languageSwitchLabel: 'Change language',
   langName: 'English',
-  pageTitle: { map: '{site}', topic: '{topic} · {site}' },
+  pageTitle: { map: '{site}', topic: '{topic} · {site}', lab: '{lab} · {site}' },
+  lab: { link: 'Try the lab: {title}' },
   notFound: {
     title: 'Page not found',
     lead: 'The address may be mistyped, or this page is not published yet.',

@@ -32,3 +32,14 @@ test('unknown, not-yet-live and malformed paths are not found', () => {
     expect(parseRoute(p, b, 1), p).toBeNull()
   }
 })
+
+test('a lab has a page from its own phase on, after the topics', () => {
+  expect(livePaths(2, b).some((p) => p.includes('/labs/'))).toBe(false)
+  expect(parseRoute(`${b}en/labs/d1/`, b, 2)).toBeNull()
+  expect(parseRoute(`${b}en/labs/d1/`, b, 3)).toEqual({ kind: 'lab', lang: 'en', lab: 'd1' })
+  expect(livePaths(3, b).filter((p) => p.includes('/labs/'))).toEqual([`${b}zh-TW/labs/d1/`, `${b}en/labs/d1/`])
+  for (const p of livePaths(3, b)) expect(routePath(parseRoute(p, b, 3)!, b)).toBe(p)
+  for (const p of [`${b}en/labs/d2/`, `${b}en/labs/D1/`, `${b}en/labs/`, `${b}en/labs/d1/x/`, `${b}en/labs/toString/`]) {
+    expect(parseRoute(p, b, 3), p).toBeNull()
+  }
+})

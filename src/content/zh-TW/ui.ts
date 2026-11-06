@@ -28,7 +28,8 @@ export const ui = {
   },
   languageSwitchLabel: '切換語言',
   langName: '繁體中文',
-  pageTitle: { map: '{site}', topic: '{topic} · {site}' },
+  pageTitle: { map: '{site}', topic: '{topic} · {site}', lab: '{lab} · {site}' },
+  lab: { link: '動手做實驗：{title}' },
   notFound: {
     title: '找不到這個頁面',
     lead: '網址可能打錯了，或這一頁還沒上線。',

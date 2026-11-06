@@ -16,7 +16,8 @@ export function LanguageSwitch({ route, contents, base }: { route: PageRoute; co
   useEffect(() => setScripted(true), [])
   const go = (lang: Lang) => {
     storeLang(lang)
-    location.assign(routePath({ ...route, lang }, base))
+    // A lab keeps its progress in the query, so the other language opens at the same point.
+    location.assign(`${routePath({ ...route, lang }, base)}${route.kind === 'lab' ? location.search : ''}`)
   }
   const target = otherLang(route.lang)
   return (
