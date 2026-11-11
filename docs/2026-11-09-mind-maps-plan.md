@@ -39,7 +39,7 @@
 - 網址的 hash 是段落時顯示文字：從別處連到某一段、或在心智圖上點了段落，都直接讀到那段，焦點也移到那段；上一頁回到沒有 hash 的網址時，回到讀者選的方式。在心智圖上點段落不改存下來的選擇。其他 hash（跳過目錄的 `#main`）不改顯示方式。上一頁回到心智圖時，焦點移到剛才那一段的節點。代價：心智圖→跳過目錄→點段落→上一頁，網址是 `#main`、畫面是文字，重新整理卻是心智圖。
 - 切換鈕是兩個並排的按鈕（`aria-pressed`），群組名稱「顯示方式」，放在學習標籤與實驗課連結下面、內容上面，出現前先保留高度。和目錄開關一樣，JavaScript 執行後才出現；沒有 JavaScript、app 的腳本載入失敗、或別名頁時，只有文字，沒有切換鈕。按「心智圖」時拿掉網址的 hash（重新整理仍是心智圖），按「文字」不動網址。代價：在心智圖點了段落再按「心智圖」，第一次上一頁看起來沒變（兩筆紀錄網址相同）。
 - 切換鈕不放進固定的頁首（375px 的頁首只容得下兩行）：在文字裡讀到下面時，回心智圖靠捲回頂端或上一頁。上一篇／下一篇在兩種顯示方式下都在。
-- 名稱一律用 mind map（`mindMap`、`MindMap`、`.mind-map`、顯示方式 `'mindmap'`），不用單獨的 map：網站已經有「地圖」頁（`kind: 'map'`、`map.spec.ts`）。
+- 名稱一律用 mind map（`mindMap`、`MindMap`、`.mind-map`、`.topic-view-mind-map`、顯示方式 `'mindmap'`），不用單獨的 map：網站已經有「地圖」頁（`kind: 'map'`、`map.spec.ts`）。
 - 新增 UI 字串：`view.label`「顯示方式」／“View”、`view.mindMap`「心智圖」／“Mind map”、`view.text`「文字」／“Text”；面板提示 `view.hint` zh-TW「把滑鼠移到段落上，或用 Tab 鍵，這裡會顯示該段的結論；點一下讀那一段。」en “Point at a section, or Tab to it, to see its conclusion here; click to read it.”
 - 節點標籤只寫中文，不套「中文（English）」：標籤是短詞，括號會讓圖變寬；術語的英文在面板的結論裡。英文版的標籤用術語表的英文。
 - 心智圖是同一頁內容的另一種顯示方式，不另加圖說；AGENTS.md「圖要有圖說」那條註明這個例外。
@@ -49,7 +49,6 @@
 - Markmap 畫好之前顯示樹狀圖。代價：寬螢幕每次載入都先看到樹狀圖一下子，下面的內容會移動；從下一個主題按上一頁時，捲動位置可能對著樹狀圖的高度還原。換來的是 Markmap 載入慢或卡住時不會一片空白。
 - 面板固定在視窗底部，並讓鍵盤捲動的位置避開它：大的圖（Q7 約 70 個節點）比視窗高，指著上面的段落時面板仍看得到，焦點節點不會被它蓋住。
 - 螢幕閱讀器在桌機的心智圖上依大綱順序念，但聽不出層級（手機的樹狀圖是巢狀清單，聽得出）；接受，文字顯示方式就在切換鈕上。
-- 盤點裡有四層的大綱（T7、T9、Q5、Q11），`MindMapNode` 支援到段落下三層；盤點裡選項帶代價的（Q7），照 Global Constraints 只留名稱。
 - Task 1–4 是一隻新 PR，疊在 #4 上；不動 `CURRENT_PHASE`（圖附在已上線的主題頁上，沒有新頁面）。和「書中」那隻 PR 改同樣的主題檔，後合併的那隻要 rebase。
 
 ## Review Focus
@@ -98,7 +97,7 @@
 - Produces:
   - `index.html` 的腳本（顯示方式的規則只寫在這裡）：
     - 載入時：讀一次存的選擇（`data-systems-lab.view`），`data-view-choice` 設成 `'text'`（存的是 `'text'`）或 `'mindmap'`（其他，含 storage 丟錯）；`data-topic-view` 在 hash 非空且不是 `#main` 時設成 `'text'`，否則等於 `data-view-choice`。
-    - `hashchange`：沒有 `data-view-choice` 時不做事（app 沒起來，只有文字）。hash 空 → `data-view-choice`；hash 指的元素在 `.topic-view-text` 裡 → `'text'`；其他 hash 不變。從 `'mindmap'` 變成 `'text'` 時，對該元素 `scrollIntoView()`，再設 `tabIndex = -1` 並 `focus({ preventScroll: true })`（點的當下段落還是隱藏的，瀏覽器沒捲到，焦點也還在變隱藏的節點上）。從 `'text'` 變成 `'mindmap'` 時，焦點移到 `.topic-view-mindmap` 裡連到 `event.oldURL` 那個 hash、而且看得見（`getClientRects().length > 0`）的連結；不用 `preventScroll`，讓節點捲進視窗。
+    - `hashchange`：沒有 `data-view-choice` 時不做事（app 沒起來，只有文字）。hash 空 → `data-view-choice`；hash 指的元素在 `.topic-view-text` 裡 → `'text'`；其他 hash 不變。從 `'mindmap'` 變成 `'text'` 時，對該元素 `scrollIntoView()`，再設 `tabIndex = -1` 並 `focus({ preventScroll: true })`（點的當下段落還是隱藏的，瀏覽器沒捲到，焦點也還在變隱藏的節點上）。從 `'text'` 變成 `'mindmap'` 時，焦點移到 `.topic-view-mind-map` 裡連到 `event.oldURL` 那個 hash、而且看得見（`checkVisibility({ visibilityProperty: true })`，排除放不下而隱藏的 svg）的連結；不用 `preventScroll`，讓節點捲進視窗。
     - module 腳本載入失敗的那行（用現有的同一個條件）：拿掉 `data-topic-view` 與 `data-view-choice`。
   - `src/app/topicView.ts`（照 `indexToggle.ts` 的樣子）：`type TopicView = 'mindmap' | 'text'`；`VIEW_KEY = 'data-systems-lab.view'`；`currentView(): TopicView` 讀 `data-topic-view`，不是 `'mindmap'` 就是 `'text'`（和 CSS 一致）；`chooseView(view: TopicView): void` 設 `data-topic-view` 與 `data-view-choice`、存起來（storage 丟錯就略過），`view` 是 `'mindmap'` 且網址有 hash 時用 `history.replaceState` 拿掉。
   - `BRANCH_COLORS: readonly string[]`（`src/components/branchColors.ts`）：第 i 段用 `BRANCH_COLORS[i]`。值是 d3 `schemeCategory10` 去掉第一個（藍色留給根）：`['#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']`。
@@ -108,35 +107,34 @@
 
 - [ ] **Step 1: 寫失敗的測試**
   - `App.test.tsx`（T6、phase 4）：
-    - `頁首的腳本依網址與存的選擇設好顯示方式`（照現有 `index.html` 腳本測試的做法，`new Function(script)()`）：沒存、沒 hash → `mindMap`；存了 `text` → `text`；`#<段落>` → `text`；`#main` → 存的那一個；storage 丟錯加 `#<段落>` → `text`；storage 丟錯、沒 hash → `mindMap`。（`hashchange` 的行為由 e2e 在真的瀏覽器裡測。）
-    - `有圖的主題：預先產生的 HTML 有兩種顯示方式`：`renderToString` 的結果裡，`.topic-view-mindmap` 有樹狀圖，第一層連結的 `href` 依序等於各段連結、分支文字照順序出現、第 i 段的 `<li>` 的 `--branch` 等於 `BRANCH_COLORS[i]`；`.topic-view-text` 有「本頁段落」清單與每一段；有 `.view-switch` 但裡面沒有按鈕。
+    - `頁首的腳本依網址與存的選擇設好顯示方式`（照現有 `index.html` 腳本測試的做法，`new Function(script)()`）：沒存、沒 hash → `mindmap`；存了 `text` → `text`；`#<段落>` → `text`；`#main` → 存的那一個；storage 丟錯加 `#<段落>` → `text`；storage 丟錯、沒 hash → `mindmap`。（`hashchange` 的行為由 e2e 在真的瀏覽器裡測。）
+    - `有圖的主題：預先產生的 HTML 有兩種顯示方式`：`renderToString` 的結果裡，`.topic-view-mind-map` 有樹狀圖，第一層連結的 `href` 依序等於各段連結、分支文字照順序出現、第 i 段的 `<li>` 的 `--branch` 等於 `BRANCH_COLORS[i]`；`.topic-view-text` 有「本頁段落」清單與每一段；有 `.view-switch` 但裡面沒有按鈕。
     - `切換鈕：點「文字」後顯示文字並記住`（測試先像 `index.html` 一樣設 `data-topic-view='mindmap'`）：`data-topic-view` 變成 `'text'`、兩個按鈕的 `aria-pressed` 互換、`localStorage` 存了 `'text'`、網址不變；網址先用 `history.replaceState` 設成 `#<段落>`（不觸發 `hashchange`），再點「心智圖」換回來，網址沒有 hash。
     - `沒有圖的主題：沒有切換鈕，本頁段落仍是原本的編號清單`（現有測試保留並加上這條）。
     - hydration 測試的路由清單加入 T6。
-  - `e2e/mind-map.spec.ts`（desktop 與 mobile project 都跑；只看 `.topic-view-mindmap`／`.topic-view-text` 是否可見，節點用 `.topic-view-mindmap` 裡的 `getByRole('link', { name })` 點，Task 3 換成 Markmap 後照樣成立）：
+  - `e2e/mind-map.spec.ts`（desktop 與 mobile project 都跑；只看 `.topic-view-mind-map`／`.topic-view-text` 是否可見，節點用 `.topic-view-mind-map` 裡的 `getByRole('link', { name })` 點，Task 3 換成 Markmap 後照樣成立）：
     - `沒選過時先看到心智圖；選了文字後，另一種語言的 T6 與重新整理都是文字`（Task 4 之前只有 T6 有圖）。
     - `帶 hash 打開時顯示文字，該段在頁首下方`。
-    - `在心智圖上點一段：顯示文字、捲到該段、焦點在該段；上一頁回到心智圖，焦點在那一段的節點，而且節點在視窗裡`。
-    - `React 接手前點段落也一樣`：`page.route` 讓 `**/assets/*.js` 晚 3 秒才回，期間點一段，文字可見、該段在頁首下方。
+    - `在心智圖上點一段：顯示文字、捲到該段、焦點在該段；上一頁回到心智圖，焦點在那一段的節點，而且節點在視窗裡`：`page.route` 先扣住 `**/assets/*.js`，扣住期間點一段並檢查文字可見、該段在頁首下方（放行後 `entry-client` 會再捲一次 `:target`，會蓋掉沒捲到的錯）；放行後按上一頁，檢查焦點。樹狀圖的連結沒有 click handler，React 接手前後走的是同一段頁首腳本，不另寫一個測試。
     - `跳過目錄的連結不換顯示方式`：心智圖上按它仍是心智圖；從 `#<段落>` 打開（文字）再按它，仍是文字。
     - `沒有 JavaScript：只有文字，沒有切換鈕`（`javaScriptEnabled: false` 的 context）。
     - `app 的腳本載入失敗：只有文字，沒有切換鈕；點「本頁段落」的一段再按上一頁，仍是文字`（和 `site-index.spec.ts` 一樣，`page.route` 擋掉 `**/assets/*.js`）。
-    - `storage 丟錯時`（`addInitScript` 讓 `localStorage.getItem`／`setItem` 丟錯）：先看到心智圖；帶 hash 打開仍是文字並停在該段；按「文字」、點「本頁段落」的一段、上一頁，仍是文字。
-  - `e2e/crawl.spec.ts`：有切換鈕的頁面，axe、375px／200% 寬度與 `{p:` 的檢查在兩種顯示方式各做一次（心智圖那邊等它畫好或確定是樹狀圖之後），段落區塊不會因為預設是心智圖而沒被檢查。
+    - `storage 丟錯時`（`addInitScript` 讓 `localStorage.getItem`／`setItem` 丟錯）：按「文字」、點「本頁段落」的一段、上一頁，仍是文字（storage 丟錯時的載入規則在 vitest 的表裡）。
+  - `e2e/crawl.spec.ts`：有切換鈕的頁面，axe 與 375px／200% 寬度的檢查在兩種顯示方式各做一次（心智圖那邊等它畫好或確定是樹狀圖之後），段落區塊不會因為預設是心智圖而沒被檢查。crawl 會接近 240 秒的上限，需要時調高。
   - `e2e/not-found.spec.ts`：現有的別名頁測試加上有圖的 T6（`en/topics/t6/index.html`、`en//topics/t6/`）：文字看得見，或切換鈕看得見。
 - [ ] **Step 2:** `pnpm vitest run src/app`，預期新測試 FAIL；`BASE_PATH=/data-systems-lab/ pnpm build && BASE_PATH=/data-systems-lab/ pnpm exec playwright test e2e/mind-map.spec.ts e2e/not-found.spec.ts`，預期新測試 FAIL。
 - [ ] **Step 3:** 實作：
   - `index.html`：照上面的規則改現有腳本。
   - `entry-client.tsx`：別名頁「照原樣留著」的那個分支，除了 `data-index` 也拿掉 `data-topic-view` 與 `data-view-choice`（那頁沒有切換鈕）。
-  - `TopicPage`：`mindMapOf(...)` 不是 `null` 時，學習標籤與實驗課連結下面放 `<ViewSwitch />`、`<div className="topic-view-mindmap"><MindMap … /></div>`、`<div className="topic-view-text">`（原本的「本頁段落」與各段）；是 `null` 時和現在一樣。
-  - CSS：`:root[data-topic-view='mindmap'] .topic-view-text` 與 `:root:not([data-topic-view='mindmap']) .topic-view-mindmap` 不顯示；`.view-switch` 只在 `:root[data-topic-view]` 時保留高度（沒有 JavaScript 時不留空白）。切換鈕兩個按鈕並排，按下的那個用實心底色。樹狀圖照「決定」的樣子，純 CSS，線用 `var(--branch)`。
+  - `TopicPage`：`mindMapOf(...)` 不是 `null` 時，學習標籤與實驗課連結下面放 `<ViewSwitch />`、`<div className="topic-view-mind-map"><MindMap … /></div>`、`<div className="topic-view-text">`（原本的「本頁段落」與各段）；是 `null` 時和現在一樣。
+  - CSS：`:root[data-topic-view='mindmap'] .topic-view-text` 與 `:root:not([data-topic-view='mindmap']) .topic-view-mind-map` 不顯示；`.view-switch` 只在 `:root[data-topic-view]` 時保留高度（沒有 JavaScript 時不留空白）。切換鈕兩個按鈕並排，按下的那個用實心底色。樹狀圖照「決定」的樣子，純 CSS，線用 `var(--branch)`。
 - [ ] **Step 4:** 同樣的指令預期 PASS；`pnpm test && pnpm build && pnpm test:e2e` 通過。
 - [ ] **Step 5: Commit**（等 Debra 說 commit）
 
 ### Task 3: 有滑鼠時畫成心智圖
 
 **Files:**
-- Modify: `package.json`、`src/components/MindMap.tsx`（加 `content: Content` prop，面板提示要用）、`src/components/TopicPage.tsx`（傳 `content`）、`src/styles/app.css`、`src/test/setup.ts`（jsdom 沒有 `matchMedia`：回傳 `matches: false` 的 stub；`matchMedia` 先判斷，不符就不建立 `ResizeObserver`）、`src/content/{zh-TW,en}/ui.ts`（`view.hint`）、`e2e/mind-map.spec.ts`
+- Modify: `package.json`、`src/components/MindMap.tsx`（加 `content: Content` prop，面板提示要用）、`src/components/TopicPage.tsx`（傳 `content`）、`src/styles/app.css`、`src/test/setup.ts`（jsdom 沒有 `matchMedia`：回傳 `matches: false` 的 stub）、`src/content/{zh-TW,en}/ui.ts`（`view.hint`）、`e2e/mind-map.spec.ts`
 - Create: `src/components/drawMindMap.ts`（唯一 import markmap 的檔案）
 
 **Interfaces:**
@@ -147,36 +145,34 @@
   - `ui.view.hint`（兩種語言，文字見「我做的決定」）
 
 - [ ] **Step 1: 寫失敗的 e2e**，加在 `e2e/mind-map.spec.ts`（desktop project 1440px，除非另寫）：
-  - `有滑鼠時畫出原尺寸的心智圖，取代樹狀圖`：T6 頁上 `.mind-map svg` 可見，`.mind-map-list` 隱藏；節點文字的字級等於網站內文的字級（沒有縮小）；面板顯示 `ui.view.hint`。
+  - `有滑鼠時畫出原尺寸的心智圖，取代樹狀圖`：T6 頁上 `.mind-map svg` 可見，`.mind-map-list` 隱藏；圖沒有縮放（節點標籤方框的高度等於同字級一行字的高度，或 svg 內 `g` 的 transform 比例是 1）；面板顯示 `ui.view.hint`。
   - `滑鼠停在段落節點上，面板顯示該段標題與結論；移開後保留`：文字等於該段結論。
-  - `圖比視窗高時，面板仍在視窗裡`：視窗設成 1440×500，停在第一個段落節點上，面板在視窗內。
-  - `鍵盤依段落順序 Tab 到每個段落節點，焦點框看得到、不被面板蓋住，面板顯示結論；Enter 切到文字並跳到該段`：視窗 1440×500；焦點節點的 `outline-style` 不是 `none`，它的方框在面板上面；URL 的 hash 變成該段 id，該段在頁首下方。
+  - `鍵盤依段落順序 Tab 到每個段落節點，焦點框看得到、不被面板蓋住，面板顯示結論；Enter 切到文字並跳到該段`：視窗 1440×500（圖比視窗高）；面板一直在視窗內；焦點節點的 `outline-style` 不是 `none`；從短的面板文字 Tab 到視窗外、結論較長的節點，它的方框仍在面板上面；URL 的 hash 變成該段 id，該段在頁首下方。
   - `先選文字，再切回心智圖，心智圖畫得出來`：切回後 svg 的高度大於 0，`.mind-map-list` 隱藏。
   - `Markmap 在文字顯示方式時才載入完成，切回後仍畫得對`：`page.route` 先扣住 markmap 的 chunk，點一段（切到文字）再放行，按上一頁，svg 的高度大於 0。
   - `螢幕閱讀器的順序依大綱`：svg 裡節點文字的 DOM 順序等於 `mindMapOf` 的深度優先順序。
   - `點圓點不會收合任何分支`：用 `page.mouse.click` 點第一個段落節點圓點的座標（圓點是 `pointer-events: none`，locator 的 click 會等不到），分支節點數不變。
-  - `主欄變窄到放不下圖時換成樹狀圖，沒有橫向捲動`：T6 英文頁 1440px 打開，把 `.topic-view-mindmap` 的寬度設成比 svg 窄（`page.evaluate`），樹狀圖出現、`scrollWidth - innerWidth <= 1`；寬度還原後換回心智圖。
-  - `Markmap 載入失敗或一直沒回應時顯示樹狀圖`：`page.route` 讓 markmap 的 chunk 回 404；另一次讓它永遠不回應。
+  - `主欄變窄到放不下圖時換成樹狀圖，沒有橫向捲動`：T6 英文頁 1440px 打開，把 `.topic-view-mind-map` 的寬度設成比 svg 窄（`page.evaluate`），樹狀圖出現、`scrollWidth - innerWidth <= 1`；寬度還原後換回心智圖。
+  - `Markmap 載入失敗時顯示樹狀圖`：`page.route` 讓 markmap 的 chunk 回 404；樹狀圖可見，沒有 `pageerror`。
   - `每一段的分支顏色和樹狀圖相同`：T6 第一段的分支線 `stroke` 等於 `BRANCH_COLORS[0]`。
   - `深色模式下節點文字用網站的文字顏色`：`colorScheme: 'dark'` 時，節點文字的 `color` 等於 `--text` 的值。
   - `畫好後字級改成 200%，換成樹狀圖`：`Page.setFontSizes`（`map.spec.ts` 的做法）。
   - `滑鼠滾輪在圖上捲動的是頁面`：T6 視窗 1440×500，在 svg 上 `page.mouse.wheel`，`scrollY` 變大。
-  - `沒有圖的主題不載入 Markmap`：T1 頁沒有請求 markmap 的 chunk。
   - mobile project：`沒有滑鼠時只有樹狀圖，沒有 svg`。
 - [ ] **Step 2:** `BASE_PATH=/data-systems-lab/ pnpm build && BASE_PATH=/data-systems-lab/ pnpm exec playwright test e2e/mind-map.spec.ts`，預期新測試 FAIL。
 - [ ] **Step 3:** 實作：
-  - `pnpm add markmap-view@0.18.12 markmap-common@0.18.9`（精確版本；確認 0.18.12 要的 markmap-common 是 0.18.9）。先對照 0.18.12 原始碼確認，不符時照實際的 API 做：關掉縮放、拖曳與滾輪的選項名稱（`zoom`／`pan`）、標籤換行的選項（`maxWidth`？）、`fitRatio`（預設 0.95，會讓 `fit()` 縮小）、讀內容寬高的方法（`mm.state.rect`？）、`create` 是否畫完才 resolve、量節點大小時 svg 是否必須已排版（不能是 `display: none`）、節點在 DOM 裡的順序（廣度優先時，畫好後依大綱順序把 `g.markmap-node` 重新 append，確認畫面不變、之後不會重畫）。
-  - 先定版面：用 T6 兩種語言量畫出來的寬度（主欄最寬 760px，1024px 時約 700px）。英文的根標題與長標籤會超過，所以在這裡定下標籤換行寬度、水平間距、根標題是否換行，讓 T6 兩種語言在 1024px 留一成餘裕畫得下；之後的測試都靠這組設定。字型寬度在不同機器上不同，餘裕就是為此留的。
-  - `MindMap`：畫好之前顯示樹狀圖（第一次 render 與預先產生的 HTML 相同）。`matchMedia('(hover: hover)')` 不符就不畫。用 `ResizeObserver` 看容器寬度：寬度是 0（文字顯示方式）的回報一律略過；第一次有寬度時 `await import('./drawMindMap')`，回來後容器寬度若已變回 0（讀者在等的時候切到文字），等下一次有寬度的回報再畫；畫的時候 svg 已排版但看不到（`visibility: hidden; position: absolute`，`.mind-map` 是 `position: relative; overflow: clip`，量的時候不會撐寬頁面；`clip` 不會破壞面板的 sticky），畫一次並留著；之後每次回報只比較容器寬度與圖的寬度，放得下、而且根元素的字級和畫的時候相同，就加上 `is-drawn`，否則拿掉，不重畫。沒有 `is-drawn` 時（還沒畫好或放不下），svg 和畫的時候一樣是 `visibility: hidden; position: absolute`。import 失敗時維持樹狀圖。
-  - 面板：圖正下方的 `<p className="mind-map-conclusion" aria-live="polite">`，`position: sticky; bottom: 0`，一開始是 `ui.view.hint`；在 svg 容器上監聽 `mouseover` 與 `focusin`，用 `closest('a[href*="#"]')` 找到段落，顯示該段標題與 `conclusion`。用同一個 `ResizeObserver` 把面板高度寫到 `document.documentElement` 的 `--panel-height`，CSS 在 `:root[data-topic-view='mindmap']` 時 `scroll-padding-bottom: var(--panel-height)`。
-  - CSS：`html { scrollbar-gutter: stable }`（傳統捲軸出現或消失會讓主欄寬度差約 15px，在臨界寬度來回切換）。圓點 `pointer-events: none`、游標不變（Markmap 只在圓點上綁收合的 click，已對照 0.18.12 原始碼）。節點連結的焦點框用內縮的 `outline`（`foreignObject` 會切掉外面的部分）。顏色與字級只設 Markmap 自己的 CSS 變數，不覆寫它的選擇器：`--markmap-text-color: var(--text)`、`--markmap-circle-open-bg: var(--surface)`、`--markmap-a-color` 用網站的連結色、`--markmap-font` 用 `1rem` 與網站字型；深色模式自動跟著網站的變數。
+  - `pnpm add markmap-view@0.18.12 markmap-common@0.18.9`（精確版本；確認 0.18.12 要的 markmap-common 是 0.18.9）。先對照 0.18.12 原始碼確認，不符時照實際的 API 做：關掉縮放、拖曳與滾輪的選項名稱（`zoom`／`pan`）、標籤換行的選項（`maxWidth`？）、`fitRatio`（預設 0.95，會讓 `fit()` 縮小）與 `maxScale`（小的圖可能被放大）、Markmap 是否只在圓點上綁收合的 click、讀內容寬高的方法（`mm.state.rect`？）、`create` 是否畫完才 resolve、量節點大小時 svg 是否必須已排版（不能是 `display: none`）、節點在 DOM 裡的順序（廣度優先時，畫好後依大綱順序把 `g.markmap-node` 重新 append，確認畫面不變、之後不會重畫）。
+  - 先定版面：用 T6 兩種語言量畫出來的寬度。英文的根標題與長標籤會超過，所以在這裡定下標籤換行寬度、水平間距、根標題是否換行，讓 T6 兩種語言在 1024px 留一成餘裕畫得下；之後的測試都靠這組設定。字型寬度在不同機器上不同，餘裕就是為此留的。
+  - `MindMap`：畫好之前顯示樹狀圖（第一次 render 與預先產生的 HTML 相同）。`matchMedia('(hover: hover)')` 不符就不畫，也不建立 `ResizeObserver`。用 `ResizeObserver` 看容器寬度：寬度是 0（文字顯示方式）的回報一律略過；第一次有寬度時 `await import('./drawMindMap')`，回來後容器寬度若已變回 0（讀者在等的時候切到文字），等下一次有寬度的回報再畫；畫一次並留著；之後每次回報只比較容器寬度與圖的寬度，放得下、而且根元素的字級和畫的時候相同，就加上 `is-drawn`，否則拿掉，不重畫。import 失敗時維持樹狀圖。CSS 只有一條隱藏規則：`.mind-map:not(.is-drawn) svg { visibility: hidden; position: absolute }`（畫的時候已排版、量得到大小），`.mind-map` 是 `position: relative; overflow: clip`（不撐寬頁面；`clip` 不會破壞面板的 sticky）。
+  - 面板：圖正下方的 `<p className="mind-map-conclusion" aria-live="polite">`，`position: sticky; bottom: 0`，一開始是 `ui.view.hint`；在 svg 容器上監聽 `mouseover` 與 `focusin`，用 `closest('a[href*="#"]')` 找到段落，顯示該段標題與 `conclusion`。用同一個 `ResizeObserver` 把面板高度寫到 `document.documentElement` 的 `--panel-height`，CSS 在 `:root[data-topic-view='mindmap']` 時 `scroll-padding-bottom: var(--panel-height)`。寫完高度後，焦點若在 svg 裡，`document.activeElement.scrollIntoView({ block: 'nearest' })`：`focusin` 換了面板文字、瀏覽器已經用舊的高度捲過，面板長高會蓋住焦點節點。
+  - CSS：`html { scrollbar-gutter: stable }`（傳統捲軸出現或消失會讓主欄寬度差約 15px，在臨界寬度來回切換）。圓點 `pointer-events: none`、游標不變（不能收合）。節點連結的焦點框用內縮的 `outline`（`foreignObject` 會切掉外面的部分）。顏色與字級只設 Markmap 自己的 CSS 變數，不覆寫它的選擇器：`--markmap-text-color: var(--text)`、`--markmap-circle-open-bg: var(--surface)`、`--markmap-a-color` 用網站的連結色、`--markmap-font` 用 `1rem` 與網站字型；深色模式自動跟著網站的變數。
 - [ ] **Step 4:** 同一 e2e 指令預期 PASS；再跑 `pnpm test && pnpm build && pnpm test:e2e`。
 - [ ] **Step 5: Commit**（等 Debra 說 commit）
 
 ### Task 4: 其餘 19 個主題的分支與規則
 
 **Files:**
-- Modify: 其餘 19 個主題的 `src/content/{zh-TW,en}/topics/*.ts`（加 `mindMap`）、`docs/glossary.md`（若有新詞）、`docs/2026-10-24-site-design.md`（§5.2 加入心智圖與切換鈕；文字顯示方式的「本頁段落」那條不變）、`AGENTS.md` 與 `CLAUDE.md`（Learner-facing rules 加心智圖的規則；圖說那條註明心智圖例外）
+- Modify: 其餘 19 個主題的 `src/content/{zh-TW,en}/topics/*.ts`（加 `mindMap`）、`docs/glossary.md`（若有新詞）、`docs/2026-10-24-site-design.md`（§5.2 加入心智圖與切換鈕；文字顯示方式的「本頁段落」那條不變）、`AGENTS.md` 與 `CLAUDE.md`（Learner-facing rules 加心智圖的規則；圖說那條註明心智圖例外；開頭的 Current plan 指向這份計畫）
 - Test: `src/content/content.test.ts`、`e2e/mind-map.spec.ts`
 
 **Interfaces:**
