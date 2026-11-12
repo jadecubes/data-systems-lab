@@ -20,7 +20,7 @@ export const d1: Translation<typeof zh> = {
     heading: 'The idea: a timeout only means no response yet',
     caption: 'Three ways to handle a timeout',
     columns: { pattern: 'Approach and what it means', rightWhen: 'Right when', wrongWhen: 'Wrong when', problem: 'The problem it causes' },
-    locked: 'The other three columns answer questions 3 to 5; they open once you have answered question 5.',
+    locked: 'The other three columns answer questions 3 to 5; they open once you answer question 5 correctly.',
     rows: [
       {
         pattern: 'Say it failed',
@@ -63,6 +63,7 @@ export const d1: Translation<typeof zh> = {
     checkedHere: 'Done · continue with question {n}',
     complete: 'Done · lab complete',
     current: 'Current question',
+    viewing: 'Showing now',
     ready: 'Ready · press to continue',
     locked: 'Unlocks after question {n}',
   },
@@ -84,7 +85,7 @@ export const d1: Translation<typeof zh> = {
       howTo: [
         'Press the buttons of each role, one step at a time; the order you press them in is the timeline.',
         'The network decides each message’s fate: delivered or lost. Delivered after the browser timed out means it arrived late.',
-        'When every message has a fate and the browser is no longer waiting, press Check this question.',
+        'When every message has a fate, the server has handled every request that reached it, and the browser is no longer waiting, press Check this question.',
       ],
     },
     {
@@ -95,7 +96,7 @@ export const d1: Translation<typeof zh> = {
       howTo: [
         'Press the buttons of each role, one step at a time; the order you press them in is the timeline.',
         'Have the network lose request 1; after the browser times out, the user resends.',
-        'When every message has a fate and the browser is no longer waiting, press Check this question.',
+        'When every message has a fate, the server has handled every request that reached it, and the browser is no longer waiting, press Check this question.',
       ],
     },
     {
@@ -127,7 +128,7 @@ export const d1: Translation<typeof zh> = {
       howTo: [
         'First choose both numbers below.',
         'Then press the buttons of each role to build the order of steps; after a timeout, press App resends to stand in for the app.',
-        'When every message has a fate and the browser is no longer waiting, press Check this question.',
+        'When every message has a fate, the server has handled every request that reached it, and the browser is no longer waiting, press Check this question.',
       ],
     },
   ],
@@ -136,13 +137,13 @@ export const d1: Translation<typeof zh> = {
 
   reference: {
     heading: 'Reason first, then reveal',
-    caption: 'The code has changed, but this timeline is deliberately still your original run from question 1: that is the order you are judging. After you check, it is redrawn under the new code.',
-    standard: 'The code has changed. This timeline is the standard order (see why above): that is the order you are judging. After you check, it is redrawn under the new code.',
+    caption: 'The code has changed, but this timeline is deliberately still your original run from question 1: that is the order you are judging. Once you answer correctly, it is redrawn under the new code.',
+    standard: 'The code has changed. This timeline is the standard order (see why above): that is the order you are judging. Once you answer correctly, it is redrawn under the new code.',
   },
   stage: {
     note: 'Simulation: nothing runs on its own, and you decide the network’s fate too. The SQL above comes from the example file, which the tests really run; it does not run here.',
     heading: 'One order, three roles',
-    passed: 'This question has passed, so its steps stay as they are; press Reset this question to build another order.',
+    passed: 'This question has passed, so its steps stay as they are.',
     guided: 'Run the next step for me',
     guidedFirst: 'Not sure where to start? This takes one step and stops; press again for the next.',
     guidedMore: 'Takes one more step and stops.',
@@ -259,6 +260,7 @@ export const d1: Translation<typeof zh> = {
     second: 'Question 2’s world: the request was lost on the way',
     hidden: 'the browser cannot see this',
     hiddenSteps: 'Steps the browser cannot see: {count}',
+    hiddenNone: 'No steps yet: request 1 is still on the way',
   },
 
   answers: {
@@ -271,7 +273,7 @@ export const d1: Translation<typeof zh> = {
         silent: 'Show no error, and resend in the background',
       },
       feedback: {
-        failed: 'No. In question 1’s world this is false: the order exists. And telling the user to try again causes exactly question 1’s duplicate.',
+        failed: 'No. In question 1’s world this is false: the first request does become an order. And telling the user to try again causes exactly question 1’s duplicate.',
         placed: 'No. In question 2’s world this is false: the request never arrived.',
         unknown: 'Right. It is true in both worlds, and it tells the user where to check. But if the request is still on the way (arriving late), the list may not show it yet, and a user who orders again still gets a duplicate. An honest screen only stops the lie; what stops the duplicate is question 4’s request ID.',
         silent: 'Not enough. The user sees nothing false, but in question 1’s world the order is still duplicated. An honest screen does not make the data right; that takes question 4.',
@@ -330,26 +332,26 @@ export const d1: Translation<typeof zh> = {
       'answered-in-time': 'The response arrived in time, the screen said “Order placed”, and the user does not resend. Press Reset this question and have the response lost or arrive late.',
       'no-resend': 'The user did not resend. After the timeout, press User resends, then deliver the resent request.',
       'first-request-lost': 'The first request was lost on the way and never reached the server. That is question 2’s world; here the first request has to reach the server.',
-      'resend-lost': 'The resent request was lost, so the server wrote only one order. Deliver the resent request.',
+      'resend-lost': 'The resent request was lost, so the server wrote only one order. Use Previous step to go back to before it was lost, and deliver it this time.',
     },
     q2: {
       q2: 'Same code, the same timeout and resend, and this time one order: the first request never arrived. Below, the two worlds side by side: does the browser see anything different?',
       'first-request-arrived': 'The question needs the first request never to reach the server. Press Reset this question and have the network lose request 1.',
       'no-resend': 'The user did not resend. After the timeout, press User resends, then deliver the resent request.',
-      'resend-lost': 'The resent request was lost too, so there is no order. Deliver the resent request.',
+      'resend-lost': 'The resent request was lost too, so there is no order. Use Previous step to go back to before it was lost, and deliver it this time.',
     },
     q6: {
       q6: 'Four, because all four requests reached the server and none of the first three responses came back in time, so the app kept resending. With a request ID made by the browser, the same order of steps gives 1 order.',
       'none-wrong': 'With no request ID, every request that reaches the server writes an order. It is sent at most 4 times (the first send and 3 resends), so at most 4 orders.',
       'client-wrong': 'With the same request ID, however many times it is sent, the uniqueness constraint lets only the first write through: at most 1 order.',
-      'too-few': 'The numbers are right, but the simulation has not reached 4 orders yet (it has {count}). Prove it by building 4: the first 3 responses must be lost or arrive late.',
+      'too-few': 'The numbers are right, but the simulation has not reached 4 orders yet (it has {count}). Prove it by building 4: the app has to resend 3 times and all 4 requests have to reach the server, while each of the first 3 responses is lost or arrives only after request 4 has gone out. A response that arrives earlier makes the screen say “Order placed”, and the app stops resending.',
     },
   },
 
   dryRun: {
     heading: 'Every case, dry-run',
     intro: 'The fates of the first request and response, plus whether the user resends, make only 9 cases. Each cell gives the number of orders and why. To keep it short, a resend and its response always arrive here.',
-    pending: 'The “browser makes the ID” column appears once you have answered question 4, and “server makes the ID” once you have answered question 5; showing them earlier would give the answers away.',
+    pending: 'The “browser makes the ID” column appears once you answer question 4 correctly, and “server makes the ID” once you answer question 5 correctly; showing them earlier would give the answers away.',
     caption: 'Orders in every case',
     columns: { request: 'First request', response: 'First response', resend: 'Resend', none: 'No request ID', server: 'Server makes the ID', client: 'Browser makes the ID' },
     request: { lost: 'lost', 'on-time': 'in time', late: 'late' },
@@ -376,22 +378,23 @@ export const d1: Translation<typeof zh> = {
     back: 'Back to question {n}',
   },
   hints: {
-    checked: 'Check this question is off because this question has passed. Press Next question to continue, or Reset this question to try again.',
-    checkedLast: 'Check this question is off because this question has passed. Write the last acceptance criterion below, or press Start over.',
-    failedBuild: 'Press Previous step or Reset this question, build a different order, and check again.',
+    checked: 'Check this question, Previous step and Reset this question are off because this question has passed. Press Next question to continue.',
+    checkedLast: 'Check this question, Previous step and Reset this question are off because this question has passed. Write the last acceptance criterion below, or press Start over.',
+    failedBuild: 'Change the order and check again: take more steps if the simulation still offers any, or go back with Previous step or Reset this question.',
     failedAnswer: 'Choose a different answer above and check again.',
     ready: 'Press Check this question.',
     choose: 'Check this question turns on once you choose an answer above.',
     chooseBoth: 'Check this question turns on once you choose both numbers.',
     empty: 'No steps yet. Use the buttons in the simulation, or press Run the next step for me.',
-    waiting: 'Check this question turns on when every message has a fate and the browser is no longer waiting.',
+    waiting: 'Check this question turns on when every message has a fate, the server has handled every request that reached it, and the browser is no longer waiting.',
+    unhandled: 'Check this question turns on once the server has handled every request that reached it: press Handle request {n} next.',
     next: 'Next question turns on when the check passes.',
     undo: 'Previous step, Reset this question and Start over are off because nothing has happened yet.',
-    reset: 'Reset this question is off because nothing has happened in this question yet.',
+    reset: 'Previous step and Reset this question are off because nothing has happened in this question yet.',
   },
   notices: {
     reset: 'This question was reset. Questions you finished earlier are unchanged.',
-    restart: 'Started over: the steps and choices in every question were cleared.',
+    restart: 'Started over: the steps and choices in every question were cleared; the acceptance criterion you wrote is kept.',
     invalid: 'This link is invalid, or from an earlier version of the lab. The lab starts from the beginning; no old answer was counted.',
     limit: 'Too many steps. Press Reset this question to redo just this one, or Start over to begin again.',
     pickAnswer: 'Choose an answer, then press Check this question to see the result and why.',

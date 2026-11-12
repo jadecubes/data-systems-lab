@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { outcome, scenarios, tasks, throughFirstTimeout, type Q3Answer, type StepEvent, type Version } from '../../lessons/retryWorkshop'
 import type { Content } from '../../i18n/content'
 import { interpolate } from '../../i18n/format'
@@ -119,12 +119,14 @@ function readDraft(): Draft {
   return { text: '', checks: [] }
 }
 
-/** Question 6 B: write an acceptance criterion, tick a checklist, then compare with a sample. Nothing is graded. */
+/**
+ * Question 6 B: write an acceptance criterion, tick a checklist, then compare with a sample. Nothing is graded. The
+ * workshop renders only once scripts run, so the draft is read on the first render; there is no prerendered one to match.
+ */
 export function FinalCriterion({ content }: { content: Content }) {
   const t = content.labs.d1.final
-  const [draft, setDraft] = useState<Draft>({ text: '', checks: [] })
+  const [draft, setDraft] = useState(readDraft)
   const [shown, setShown] = useState(false)
-  useEffect(() => setDraft(readDraft()), [])
   const save = (next: Draft) => {
     setDraft(next)
     try {

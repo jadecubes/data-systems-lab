@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import {
   STANDARD_Q1,
+  addEvent,
   canVerify,
   eventsThroughTask,
   guidedNext,
@@ -16,6 +17,7 @@ import {
   simulate,
   tasks,
   throughFirstTimeout,
+  undoStep,
   type LabEvent,
   type Setup,
   type StepEvent,
@@ -239,4 +241,33 @@ test('question 4 replays the reader\'s own order, leaving out timeouts that cann
 
 test('question 1 names the lost first request even before the reader resends', () => {
   expect(replay(['send', 'req1-lost', 'timeout', 'verify']).verdict).toEqual({ ok: false, code: 'first-request-lost' })
+})
+
+test('question 6: a response the honest screen hears stops the app resending, unless request 4 has already gone', () => {
+  const app = tasks[5].setup
+  expect(possibleSteps(app, ['send', 'req1-ok', 'process', 'timeout', 'res1-ok'])).not.toContain('resend')
+  const sent4 = ['send', ...[1, 2, 3].flatMap((n) => [`req${n}-ok`, 'process', 'timeout', 'resend']), 'req4-ok', 'process'] as StepEvent[]
+  expect(simulate(app, [...sent4, 'res1-ok', 'res2-ok', 'res3-ok', 'res4-ok']).orders).toHaveLength(4)
+})
+
+const toQ3: LabEvent[] = [...STANDARD_Q1, 'verify', 'next', 'send', 'req1-lost', 'timeout', 'resend', 'req2-ok', 'process', 'res2-ok', 'verify', 'next']
+const toQ6: LabEvent[] = [...toQ3, 'q3-unknown', 'verify', 'next', 'q4-blocked', 'verify', 'next', 'q5-two', 'verify', 'next']
+
+test('changing an answer replaces the earlier choice in its group and the failed check after it, so the link stays short', () => {
+  expect(addEvent([...toQ3, 'q3-failed', 'verify'], 'q3-placed')).toEqual([...toQ3, 'q3-placed'])
+  expect(addEvent([...toQ6, 'send', 'q6-none-1', 'q6-client-2', 'verify'], 'q6-none-3')).toEqual([...toQ6, 'send', 'q6-client-2', 'q6-none-3'])
+  // A step in between keeps the earlier choice, so Previous step can go back past it.
+  expect(addEvent([...toQ6, 'q6-none-1', 'send'], 'q6-none-2')).toEqual([...toQ6, 'q6-none-1', 'send', 'q6-none-2'])
+  expect(addEvent([...toQ6, 'send'], 'req1-ok')).toEqual([...toQ6, 'send', 'req1-ok'])
+})
+
+test('Previous step takes back the last step and any check after it, never an answer, unless the question has no steps', () => {
+  const start = toQ6.length
+  expect(undoStep([...toQ6, 'send', 'req1-ok', 'q6-none-4', 'q6-client-1', 'verify'], start)).toEqual([...toQ6, 'send', 'q6-none-4', 'q6-client-1'])
+  expect(undoStep([...toQ6, 'q6-none-4'], start)).toEqual(toQ6)
+  expect(undoStep(['send', 'req1-ok', 'verify'], 0)).toEqual(['send'])
+  expect(undoStep([...toQ3, 'q3-failed', 'verify'], toQ3.length)).toEqual(toQ3)
+  for (const events of [[...toQ6, 'send', 'req1-ok', 'q6-none-4', 'q6-client-1', 'verify'] as LabEvent[], [...toQ3, 'q3-failed', 'verify'] as LabEvent[]]) {
+    expect(() => replay(undoStep(events, events.lastIndexOf('next') + 1))).not.toThrow()
+  }
 })

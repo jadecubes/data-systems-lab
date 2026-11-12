@@ -157,14 +157,14 @@ export function simulate(setup: Setup, trace: readonly StepEvent[]): Run {
   return run
 }
 
-/** Nothing is still on its way, and the browser is not waiting: the run can be judged. */
-export function settled(run: Run): boolean {
-  return (
-    run.browser !== 'idle' &&
-    run.browser !== 'waiting' &&
-    run.attempts.every((a) => a.request !== 'flight' && !(a.request === 'delivered' && a.response === null) && a.response !== 'flight')
-  )
+/** What the run still waits on before it can be judged: the browser, a message on its way, or a request the server has not handled. */
+export function pending(run: Run): 'browser' | 'network' | 'server' | null {
+  if (run.browser === 'idle' || run.browser === 'waiting') return 'browser'
+  if (run.attempts.some((a) => a.request === 'flight' || a.response === 'flight')) return 'network'
+  return run.queue.length ? 'server' : null
 }
+
+export const settled = (run: Run) => pending(run) === null
 
 /** The screen says something the database contradicts. */
 export function screenLies(run: Run): boolean {
@@ -276,6 +276,9 @@ function judge(state: LabState): Verdict {
   return { ok: state.answers[0] === correct[state.task], code: 'answer', answer: state.answers[0].replace(/^q\d-/, '') }
 }
 
+/** A question passed: moved on from, or checked and passed where the reader is now. */
+export const passedQuestion = (state: LabState, index: number) => state.completed.includes(index) || (state.task === index && !!state.verdict?.ok)
+
 export interface LabState {
   task: number
   /** This question's trace; empty for the answer-only questions. */
@@ -308,6 +311,29 @@ const answersFor: Record<number, readonly string[]> = {
   3: q4Answers.map((a) => `q4-${a}`),
   4: q5Answers.map((a) => `q5-${a}`),
   5: maxOrders.flatMap((n) => [`q6-none-${n}`, `q6-client-${n}`]),
+}
+
+const isAnswer = (event: LabEvent) => /^q\d-/.test(event)
+const isStep = (event: LabEvent) => !isAnswer(event) && event !== 'verify' && event !== 'next'
+
+/**
+ * The events after the reader acts. Changing an answer replaces the earlier choice in its group and a failed check
+ * made since the last step, so trying answers never lengthens the link towards HISTORY_LIMIT.
+ */
+export function addEvent(events: readonly LabEvent[], event: LabEvent): LabEvent[] {
+  if (!isAnswer(event)) return [...events, event]
+  let start = events.length
+  while (start > 0 && (events[start - 1] === 'verify' || isAnswer(events[start - 1]))) start--
+  const kept = events.slice(start).filter((e) => e !== 'verify' && answerGroup(e) !== answerGroup(event))
+  return [...events.slice(0, start), ...kept, event]
+}
+
+/** Previous step: takes back this question's last step and a check after it, keeping the answers; a question without steps takes back its answer. */
+export function undoStep(events: readonly LabEvent[], taskStart: number): LabEvent[] {
+  const rest = events.at(-1) === 'verify' ? events.slice(0, -1) : events
+  let step = rest.length - 1
+  while (step >= taskStart && !isStep(rest[step])) step--
+  return step < taskStart ? rest.slice(0, -1) : rest.filter((_, i) => i !== step)
 }
 
 export function replay(events: readonly LabEvent[]): LabState {

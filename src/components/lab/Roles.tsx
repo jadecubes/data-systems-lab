@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { possibleSteps, simulate, type Setup, type StepEvent } from '../../lessons/retryWorkshop'
 import type { Content } from '../../i18n/content'
 import { interpolate } from '../../i18n/format'
@@ -32,6 +33,12 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
     ...(a.response === 'flight' ? [{ kind: 'res' as const, i, label: interpolate(t.messages.response, { n: n(i) }) }] : []),
   ])
   const waiting = run.queue[0] ?? -1
+  // A message's buttons go once it has a fate; keep focus on its card rather than losing it to the page body.
+  const networkTitle = useRef<HTMLHeadingElement>(null)
+  const fate = (event: StepEvent) => {
+    networkTitle.current?.focus()
+    onStep(event)
+  }
 
   return (
     <div className="lab-roles">
@@ -47,7 +54,7 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
         )}
       </section>
       <section className="lab-role" data-actor="network" aria-labelledby="role-network">
-        <h4 id="role-network">{t.actors.network.name}</h4>
+        <h4 id="role-network" ref={networkTitle} tabIndex={-1}>{t.actors.network.name}</h4>
         <p>{t.actors.network.role}</p>
         {inFlight.length ? (
           <ul className="lab-messages" aria-label={t.messages.label}>
@@ -56,10 +63,10 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
                 <span>{label}</span>
                 {interactive && (
                   <span className="lab-message-actions">
-                    <button type="button" aria-label={interpolate(t.messages.deliver, { message: label })} onClick={() => onStep(`${kind}${i + 1}-ok`)}>
+                    <button type="button" aria-label={interpolate(t.messages.deliver, { message: label })} onClick={() => fate(`${kind}${i + 1}-ok`)}>
                       {t.buttons.deliver}
                     </button>
-                    <button type="button" aria-label={interpolate(t.messages.lose, { message: label })} onClick={() => onStep(`${kind}${i + 1}-lost`)}>
+                    <button type="button" aria-label={interpolate(t.messages.lose, { message: label })} onClick={() => fate(`${kind}${i + 1}-lost`)}>
                       {t.buttons.lose}
                     </button>
                   </span>

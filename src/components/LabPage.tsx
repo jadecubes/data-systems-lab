@@ -4,7 +4,7 @@ import type { TopicId } from '../content/sections'
 import { labs } from '../content/structure'
 import type { LabId, Phase } from '../content/types'
 import type { Content } from '../i18n/content'
-import { replay } from '../lessons/retryWorkshop'
+import { passedQuestion, replay } from '../lessons/retryWorkshop'
 import { RetryWorkshop } from './lab/RetryWorkshop'
 import { useLabHistory } from './lab/useLabHistory'
 
@@ -17,7 +17,7 @@ export function LabPage({ content, lab, phase, base }: { content: Content; lab: 
   const history = useLabHistory()
   const live = replay(history.location.events)
   // The idea table's other columns answer questions 3 to 5.
-  const open = live.completed.includes(4) || (live.task === 4 && !!live.verdict?.ok)
+  const open = passedQuestion(live, 4)
   const topicLinks = (topics: readonly TopicId[]) =>
     topics
       .filter((topic) => isLiveTopic(topic, phase))

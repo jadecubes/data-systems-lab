@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { HISTORY_LIMIT, labHref, readLabLocation, replay, type LabEvent } from '../../lessons/retryWorkshop'
+import { HISTORY_LIMIT, addEvent, labHref, readLabLocation, replay, type LabEvent } from '../../lessons/retryWorkshop'
 
 export type Notice = 'reset' | 'restart' | 'limit' | 'crux' | null
 
@@ -25,18 +25,20 @@ export function useLabHistory() {
     return () => window.removeEventListener('popstate', restore)
   }, [])
 
-  function navigate(events: LabEvent[], next: Notice = null) {
-    window.history.pushState(null, '', `${window.location.pathname}${labHref(events)}`)
+  // A step replaces this question's entry, so Back leaves a question in one press instead of one per step; moving on
+  // to the next question, a reset and starting over each get an entry of their own.
+  function navigate(events: LabEvent[], next: Notice = null, push = false) {
+    window.history[push ? 'pushState' : 'replaceState'](null, '', `${window.location.pathname}${labHref(events)}`)
     setLocation({ events, invalid: false })
     setNotice(next)
     setViewing(null)
   }
 
   function act(event: LabEvent, next: Notice = null) {
-    const events = [...location.events, event]
+    const events = addEvent(location.events, event)
     if (events.length > HISTORY_LIMIT) return setNotice('limit')
     replay(events)
-    navigate(events, next)
+    navigate(events, next, event === 'next')
   }
 
   // Looking at another question leaves behind any notice about this one.
