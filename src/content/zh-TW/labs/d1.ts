@@ -224,7 +224,7 @@ export const d1 = {
       { match: 'VALUES (:request_id', note: '瀏覽器帶來的 ID；重複就違反唯一約束' },
       { match: 'BEGIN', note: '交易開始' },
       { match: 'COMMIT', note: '兩筆都寫入才提交' },
-      { match: 'SELECT order_id', note: '重複時：交易中止，查出原訂單回傳' },
+      { match: 'SELECT order_id', note: '重複時：伺服器中止交易，查出原訂單回傳' },
     ],
   },
 

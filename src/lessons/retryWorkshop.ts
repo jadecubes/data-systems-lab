@@ -328,9 +328,12 @@ export function addEvent(events: readonly LabEvent[], event: LabEvent): LabEvent
   return [...events.slice(0, start), ...kept, event]
 }
 
-/** Previous step: takes back this question's last step and a check after it, keeping the answers; a question without steps takes back its answer. */
+/**
+ * Previous step: takes back this question's last step, keeping the answers; a question without steps takes back its
+ * answer. This question's failed checks go too: one left before an earlier step would check a run that is not over.
+ */
 export function undoStep(events: readonly LabEvent[], taskStart: number): LabEvent[] {
-  const rest = events.at(-1) === 'verify' ? events.slice(0, -1) : events
+  const rest = events.filter((event, i) => i < taskStart || event !== 'verify')
   let step = rest.length - 1
   while (step >= taskStart && !isStep(rest[step])) step--
   return step < taskStart ? rest.slice(0, -1) : rest.filter((_, i) => i !== step)

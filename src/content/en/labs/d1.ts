@@ -226,7 +226,7 @@ export const d1: Translation<typeof zh> = {
       { match: 'VALUES (:request_id', note: 'the ID the browser sent; a repeat breaks the uniqueness constraint' },
       { match: 'BEGIN', note: 'the transaction starts' },
       { match: 'COMMIT', note: 'commits only when both rows are written' },
-      { match: 'SELECT order_id', note: 'on a repeat: the transaction is aborted, the original order is returned' },
+      { match: 'SELECT order_id', note: 'on a repeat: the server aborts the transaction and returns the original order' },
     ],
   },
 

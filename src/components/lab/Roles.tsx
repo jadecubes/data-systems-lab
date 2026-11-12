@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { flushSync } from 'react-dom'
 import { possibleSteps, simulate, type Setup, type StepEvent } from '../../lessons/retryWorkshop'
 import type { Content } from '../../i18n/content'
 import { interpolate } from '../../i18n/format'
@@ -21,7 +21,7 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
   }
   const action = (id: string, event: StepEvent, label: string, reason: string | null) => (
     <div key={id} className="lab-action">
-      <button type="button" disabled={!!reason} aria-describedby={`${id}-why`} onClick={() => onStep(event)}>
+      <button type="button" disabled={!!reason} aria-describedby={`${id}-why`} onClick={(e) => take(event, e.currentTarget)}>
         {label}
       </button>
       <small id={`${id}-why`}>{reason ?? t.reasons.you}</small>
@@ -33,17 +33,18 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
     ...(a.response === 'flight' ? [{ kind: 'res' as const, i, label: interpolate(t.messages.response, { n: n(i) }) }] : []),
   ])
   const waiting = run.queue[0] ?? -1
-  // A message's buttons go once it has a fate; keep focus on its card rather than losing it to the page body.
-  const networkTitle = useRef<HTMLHeadingElement>(null)
-  const fate = (event: StepEvent) => {
-    networkTitle.current?.focus()
-    onStep(event)
+  // A step's button can turn itself off (Place order) or go (a message once it has a fate); then focus moves to its
+  // card's heading rather than to the page body.
+  const take = (event: StepEvent, button: HTMLButtonElement) => {
+    const heading = button.closest('section')?.querySelector('h4')
+    flushSync(() => onStep(event))
+    if (!button.isConnected || button.disabled) heading?.focus()
   }
 
   return (
     <div className="lab-roles">
       <section className="lab-role" data-actor="browser" aria-labelledby="role-browser">
-        <h4 id="role-browser">{t.actors.browser.name}</h4>
+        <h4 id="role-browser" tabIndex={-1}>{t.actors.browser.name}</h4>
         <p>{t.actors.browser.role}</p>
         {interactive && (
           <>
@@ -54,7 +55,7 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
         )}
       </section>
       <section className="lab-role" data-actor="network" aria-labelledby="role-network">
-        <h4 id="role-network" ref={networkTitle} tabIndex={-1}>{t.actors.network.name}</h4>
+        <h4 id="role-network" tabIndex={-1}>{t.actors.network.name}</h4>
         <p>{t.actors.network.role}</p>
         {inFlight.length ? (
           <ul className="lab-messages" aria-label={t.messages.label}>
@@ -63,10 +64,10 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
                 <span>{label}</span>
                 {interactive && (
                   <span className="lab-message-actions">
-                    <button type="button" aria-label={interpolate(t.messages.deliver, { message: label })} onClick={() => fate(`${kind}${i + 1}-ok`)}>
+                    <button type="button" aria-label={interpolate(t.messages.deliver, { message: label })} onClick={(e) => take(`${kind}${i + 1}-ok`, e.currentTarget)}>
                       {t.buttons.deliver}
                     </button>
-                    <button type="button" aria-label={interpolate(t.messages.lose, { message: label })} onClick={() => fate(`${kind}${i + 1}-lost`)}>
+                    <button type="button" aria-label={interpolate(t.messages.lose, { message: label })} onClick={(e) => take(`${kind}${i + 1}-lost`, e.currentTarget)}>
                       {t.buttons.lose}
                     </button>
                   </span>
@@ -79,7 +80,7 @@ export function Roles({ content, setup, trace, interactive, onStep }: { content:
         )}
       </section>
       <section className="lab-role" data-actor="server" aria-labelledby="role-server">
-        <h4 id="role-server">{t.actors.server.name}</h4>
+        <h4 id="role-server" tabIndex={-1}>{t.actors.server.name}</h4>
         <p>{t.actors.server.role}</p>
         {interactive &&
           action('act-process', 'process', waiting < 0 ? t.buttons.processNone : interpolate(t.buttons.process, { n: n(waiting) }), waiting < 0 ? t.reasons.nothingToProcess : null)}
