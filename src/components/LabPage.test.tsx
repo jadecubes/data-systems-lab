@@ -7,7 +7,7 @@ import type { PageRoute } from '../app/routes'
 import { contentFor } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 import { langs } from '../i18n/langs'
-import { STANDARD_Q1, labHref, type LabEvent, type StepEvent } from '../lessons/retryWorkshop'
+import { HISTORY_LIMIT, STANDARD_Q1, labHref, type LabEvent, type StepEvent } from '../lessons/retryWorkshop'
 import { pseudoContents, unwrapped } from '../test/pseudo'
 
 const contents = { 'zh-TW': contentFor('zh-TW'), en: contentFor('en') }
@@ -37,6 +37,7 @@ function open(events: readonly LabEvent[], lang: PageRoute['lang'] = 'en', c = c
 const histories: [string, LabEvent[]][] = [
   ['the start', []],
   ['question 1 under way', ['send', 'req1-ok', 'process']],
+  ['question 1 waiting on the server', ['send', 'req1-lost', 'timeout', 'resend', 'req2-ok', 'timeout']],
   ['question 1 failed', ['send', 'req1-ok', 'process', 'res1-ok', 'verify']],
   ['question 1 passed', [...STANDARD_Q1, 'verify']],
   ['question 2 passed', [...pass(STANDARD_Q1), ...Q2, 'verify']],
@@ -181,6 +182,18 @@ test('a finished question reads again in full; a locked one shows a preview only
   expect(screen.queryByRole('radio')).toBeNull()
 })
 
+test('leaving a question read again or previewed puts focus on the live question, not the page body', () => {
+  open([...throughQ2])
+  const progress = screen.getByRole('list', { name: en.progress.label })
+  const live = () => screen.getByRole('heading', { level: 3, name: en.questions[2].title })
+  fireEvent.click(within(progress).getAllByRole('button')[0])
+  fireEvent.click(button(interpolate(en.controls.back, { n: '3' })))
+  expect(live()).toHaveFocus()
+  fireEvent.click(within(progress).getAllByRole('button')[4])
+  fireEvent.click(button(interpolate(en.preview.back, { n: '3' })))
+  expect(live()).toHaveFocus()
+})
+
 test('every progress button that says where to go goes there: a passed question\'s own button moves on', () => {
   open([...STANDARD_Q1, 'verify'])
   const passed = within(screen.getByRole('list', { name: en.progress.label })).getAllByRole('button')[0]
@@ -211,9 +224,9 @@ test('the two worlds line up: the browser\'s rows read the same, and each stretc
   expect(worlds()[1]).toHaveTextContent(interpolate(en.timeline.requestLost, { n: '1' }))
   unmount()
 
-  // A request that arrives late leaves nothing hidden before the first timeout in question 1's world; the row stays.
+  // A request that arrives late leaves nothing hidden before the first timeout in question 1's world; the row says so.
   open([...pass(['send', 'timeout', 'resend', 'req1-ok', 'process', 'res1-ok', 'timeout', 'req2-ok', 'process', 'res2-ok']), ...Q2, 'verify'])
-  expect(worlds().map(rows).map((r) => r[1])).toEqual([hidden(0), hidden(1)])
+  expect(worlds().map(rows).map((r) => r[1])).toEqual([en.worlds.hiddenNone, hidden(1)])
 })
 
 test('question 3 compares the chosen message against both worlds', () => {
@@ -371,4 +384,155 @@ test('when question 4 replays the standard order, its reference timeline shows t
   const reference = screen.getByRole('figure', { name: en.timeline.heading })
   // The standard order loses response 1; the reader's own let it arrive late.
   expect(reference).toHaveTextContent(interpolate(en.timeline.responseLost, { n: '1' }))
+})
+
+test('when only the server is left to act, the hint names the request it must handle before the check turns on', () => {
+  open(['send', 'req1-lost', 'timeout', 'resend', 'req2-ok', 'timeout'])
+  expect(screen.getByText(en.messages.empty)).toBeInTheDocument()
+  expect(button(en.controls.verify)).toBeDisabled()
+  expect(button(en.controls.verify)).toHaveAccessibleDescription(expect.stringContaining(interpolate(en.hints.unhandled, { n: '2' })))
+})
+
+test('steps within a question replace the history entry; the next question, a reset and starting over add one', () => {
+  open([])
+  const start = window.history.length
+  for (let i = 0; i < STANDARD_Q1.length; i++) fireEvent.click(button(en.stage.guided))
+  fireEvent.click(button(en.controls.verify))
+  expect(window.history.length).toBe(start)
+  expect(window.location.search).toContain('verify')
+  fireEvent.click(button(en.controls.next))
+  expect(window.history.length).toBe(start + 1)
+  fireEvent.click(button(en.buttons.send))
+  fireEvent.click(button(en.controls.reset))
+  expect(window.history.length).toBe(start + 2)
+  fireEvent.click(button(en.controls.restart))
+  expect(window.history.length).toBe(start + 3)
+})
+
+test('Previous step stays within this question: on a question with no steps yet it is off and says why, and Start over stays on', () => {
+  open([...pass(STANDARD_Q1)])
+  expect(button(en.controls.undo)).toBeDisabled()
+  expect(button(en.controls.undo)).toHaveAccessibleDescription(expect.stringContaining(en.hints.reset))
+  expect(button(en.controls.restart)).toBeEnabled()
+  fireEvent.click(button(en.buttons.send))
+  fireEvent.click(button(en.controls.undo))
+  expect(button(en.controls.undo)).toBeDisabled()
+  expect(screen.getByRole('heading', { level: 3, name: en.questions[1].title })).toBeInTheDocument()
+})
+
+test('the progress strip has no toggle buttons; the question shown again says so in its status', () => {
+  open([...throughQ2])
+  const buttons = within(screen.getByRole('list', { name: en.progress.label })).getAllByRole('button')
+  fireEvent.click(buttons[0])
+  for (const b of buttons) expect(b).not.toHaveAttribute('aria-pressed')
+  expect(buttons[0]).toHaveTextContent(en.progress.viewing)
+  expect(buttons[2]).toHaveAttribute('aria-current', 'step')
+})
+
+test('question 6: a response that arrives late, before the app resends, ends the run; the feedback says how to reach 4', () => {
+  open([...throughQ5, 'q6-none-4', 'q6-client-1', 'send', 'req1-ok', 'process', 'timeout', 'res1-ok', 'verify'])
+  expect(screen.getByRole('status')).toHaveTextContent(interpolate(en.verdicts.q6['too-few'], { count: '1' }))
+})
+
+test('at the step limit, another step leaves the lab as it was and says how to go on; a longer link starts over', () => {
+  // The lab itself folds changed answers together, so only a hand-made link this long reaches the limit.
+  const full: LabEvent[] = [...throughQ5, 'send']
+  while (full.length < HISTORY_LIMIT) full.push(full.length % 2 ? 'q6-none-1' : 'q6-none-2')
+  const first = open(full)
+  const before = window.location.search
+  fireEvent.click(button(interpolate(en.messages.deliver, { message: interpolate(en.messages.request, { n: '1' }) })))
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.limit)
+  expect(window.location.search).toBe(before)
+  first.unmount()
+  open([...full, 'req1-ok'])
+  expect(screen.getByRole('alert')).toHaveTextContent(en.notices.invalid)
+})
+
+test('giving a message its fate removes its buttons, so focus moves to the network card instead of the page body', () => {
+  open(['send'])
+  const message = interpolate(en.messages.request, { n: '1' })
+  const deliver = button(interpolate(en.messages.deliver, { message }))
+  deliver.focus()
+  fireEvent.click(deliver)
+  expect(screen.getByRole('heading', { level: 4, name: en.actors.network.name })).toHaveFocus()
+})
+
+test('a passed question keeps its steps, so what it earned stays: Previous step and Reset are off and say why', () => {
+  open([...throughQ2.slice(0, -1)])
+  const dryRun = () => screen.queryByRole('heading', { name: en.dryRun.heading })
+  expect(dryRun()).not.toBeNull()
+  for (const name of [en.controls.undo, en.controls.reset]) {
+    expect(button(name)).toBeDisabled()
+    expect(button(name)).toHaveAccessibleDescription(expect.stringContaining(en.hints.checked))
+  }
+  expect(button(en.controls.restart)).toBeEnabled()
+  expect(screen.queryByText(en.hints.reset)).toBeNull()
+})
+
+test('Previous step after a failed check takes back the last step too, not only the check', () => {
+  const q1LostResend: StepEvent[] = ['send', 'req1-ok', 'process', 'res1-lost', 'timeout', 'resend', 'req2-lost', 'timeout']
+  open([...q1LostResend, 'verify'])
+  expect(screen.getByRole('status')).toHaveTextContent(en.verdicts.q1['resend-lost'])
+  fireEvent.click(button(en.controls.undo))
+  expect(window.location.search).toBe(labHref(q1LostResend.slice(0, -1)))
+})
+
+test('in question 6, Previous step takes back a step and keeps the chosen numbers, even when they were chosen last', () => {
+  const steps: StepEvent[] = ['send', 'req1-ok', 'process', 'res1-ok']
+  open([...throughQ5, ...steps, 'q6-none-4', 'q6-client-1', 'verify'])
+  fireEvent.click(button(en.controls.undo))
+  expect(window.location.search).toBe(labHref([...throughQ5, ...steps.slice(0, -1), 'q6-none-4', 'q6-client-1']))
+  expect(screen.getAllByRole('radio', { checked: true })).toHaveLength(2)
+})
+
+test('Next question, and the last step Run the next step for me can take, leave focus on the page, not its body', () => {
+  open([...STANDARD_Q1, 'verify'])
+  fireEvent.click(button(en.controls.next))
+  expect(screen.getByRole('heading', { level: 3, name: en.questions[1].title })).toHaveFocus()
+  for (let i = 0; i < Q2.length; i++) {
+    const guided = button(en.stage.guided)
+    guided.focus()
+    fireEvent.click(guided)
+  }
+  expect(button(en.controls.verify)).toHaveFocus()
+})
+
+test('pressing the current question\'s progress card goes to that question', () => {
+  open([])
+  fireEvent.click(within(screen.getByRole('list', { name: en.progress.label })).getAllByRole('button')[0])
+  expect(screen.getByRole('heading', { level: 3, name: en.questions[0].title })).toHaveFocus()
+})
+
+test('a control that turns itself off hands focus to Check this question when it is on, otherwise to the feedback', () => {
+  const feedback = () => screen.getByRole('status')
+  const press = (name: string) => {
+    const b = button(name)
+    b.focus()
+    fireEvent.click(b)
+  }
+  const first = open([...STANDARD_Q1])
+  press(en.controls.verify)
+  expect(feedback()).toHaveFocus()
+  first.unmount()
+  const second = open(['send'])
+  press(en.controls.reset)
+  expect(feedback()).toHaveTextContent(en.notices.reset)
+  expect(feedback()).toHaveFocus()
+  second.unmount()
+  open(throughQ5)
+  const guided = () => screen.queryByRole('button', { name: en.stage.guided })
+  for (let i = 0; i < 30 && guided() && !guided()!.hasAttribute('disabled'); i++) press(en.stage.guided)
+  expect(button(en.controls.verify)).toBeDisabled()
+  expect(feedback()).toHaveFocus()
+})
+
+test('questions 4 and 5 replay question 1 under the new code only once answered correctly, so a wrong check gives nothing away', () => {
+  const stage = () => screen.queryByRole('group', { name: en.stage.heading })
+  const first = open([...throughQ2, 'q3-unknown', 'verify', 'next', 'q4-tcp', 'verify'])
+  expect(screen.getByRole('status')).toHaveTextContent(en.answers.q4.feedback.tcp)
+  expect(stage()).toBeNull()
+  expect(screen.getByRole('group', { name: en.reference.heading })).toBeInTheDocument()
+  first.unmount()
+  open([...throughQ2, 'q3-unknown', 'verify', 'next', 'q4-blocked', 'verify'])
+  expect(stage()).not.toBeNull()
 })

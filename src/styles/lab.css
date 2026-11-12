@@ -187,8 +187,13 @@
   color: var(--muted);
 }
 
-.lab-workshop .lab-progress [aria-pressed='true'] {
+.lab-workshop .lab-progress .step-viewing {
   background: var(--accent-soft);
+}
+
+/* "Showing now" looks the same on a finished card and a locked one. */
+.lab-workshop .lab-progress .step-viewing .step-status {
+  color: var(--text);
 }
 
 .kicker {
@@ -747,4 +752,9 @@ li.hidden-from-browser ul {
 
 .lab-related ul {
   padding-left: 1.25rem;
+}
+
+/* Headings and the feedback take focus when the control used last goes away; keep the ring off their text. */
+.lab-workshop [tabindex='-1']:focus-visible {
+  outline-offset: 4px;
 }

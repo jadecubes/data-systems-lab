@@ -51,7 +51,7 @@ export function Timeline({ content, setup, trace, title, caption, browserOnly = 
                       </ul>
                     </details>
                   ) : (
-                    <span className="timeline-box">{interpolate(t.worlds.hiddenSteps, { count: content.number(0) })}</span>
+                    <span className="timeline-box">{t.worlds.hiddenNone}</span>
                   )}
                 </li>
               ) : (

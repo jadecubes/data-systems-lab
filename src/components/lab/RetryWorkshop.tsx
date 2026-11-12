@@ -1,9 +1,14 @@
+import { useEffect, useRef } from 'react'
+import { flushSync } from 'react-dom'
 import {
   answered,
+  builds,
   canVerify,
   eventsThroughTask,
   guidedNext,
   maxOrders,
+  passedQuestion,
+  pending,
   q3Answers,
   q4Answers,
   q5Answers,
@@ -12,6 +17,7 @@ import {
   settled,
   simulate,
   tasks,
+  undoStep,
   type LabEvent,
   type LabState,
   type Q3Answer,
@@ -30,6 +36,9 @@ import type { LabHistory } from './useLabHistory'
 
 const original = tasks[0].setup
 
+/** Questions 3 to 5 each ask for one answer, by question index. */
+const singleAnswer: Partial<Record<number, readonly ['q3' | 'q4' | 'q5', readonly string[]]>> = { 2: ['q3', q3Answers], 3: ['q4', q4Answers], 4: ['q5', q5Answers] }
+
 /**
  * The verdict in the lab's words: a "done" or "not yet" for the questions the reader builds, then why. Chosen answers
  * need no such word: their feedback opens with its own ("Right.", "A common misconception.").
@@ -39,7 +48,7 @@ function verdictText(content: Content, state: LabState): { prefix: string | null
   const v = state.verdict
   if (!v) return null
   if (v.code === 'answer') {
-    const feedback = [content.labs.d1.answers.q3, content.labs.d1.answers.q4, content.labs.d1.answers.q5][state.task - 2].feedback
+    const feedback = content.labs.d1.answers[singleAnswer[state.task]![0]].feedback
     return { prefix: null, body: (feedback as Record<string, string>)[v.answer] }
   }
   // Step numbers and question 6's order count, by name.
@@ -55,19 +64,41 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
   const readOnly = viewing !== null && viewing < live.task
   const state = readOnly ? replay(eventsThroughTask(location.events, viewing)) : live
   const preview = viewing !== null && viewing > live.task ? viewing : null
+  // The back buttons unmount with the question they leave; focus the live question instead of losing it.
+  const wasViewing = useRef(viewing)
+  useEffect(() => {
+    if (wasViewing.current !== null && viewing === null) document.getElementById('lab-question-title')?.focus()
+    wasViewing.current = viewing
+  }, [viewing])
+  const focusQuestion = () => document.getElementById('lab-question-title')?.focus()
+  const next = () => {
+    act('next')
+    focusQuestion()
+  }
+  // A control can turn itself off (Check after checking, Reset after resetting, the guided button after its last step);
+  // then focus goes to Check this question if that is on, otherwise to the feedback, which says what happened.
+  const keepFocus = (change: () => void) => {
+    flushSync(change)
+    const focused = document.activeElement
+    if (focused !== document.body && !(focused instanceof HTMLButtonElement && focused.disabled)) return
+    const verify = document.getElementById('lab-verify') as HTMLButtonElement | null
+    ;(verify && !verify.disabled ? verify : document.getElementById('lab-feedback'))?.focus()
+  }
   const { task, verdict } = state
   const setup = tasks[task].setup
-  const building = tasks[task].kind !== 'answer'
+  const building = builds(task)
   const checked = !!verdict?.ok
   const interactive = building && !readOnly && !checked
-  const passed = (i: number) => live.completed.includes(i) || (live.task === i && !!live.verdict?.ok)
   const hasNext = task < tasks.length - 1
-  const canUndo = location.events.length > 0
-  const canReset = location.events.length > state.taskStart
+  // Previous step and Reset this question stay within this question, and stop once it passes: undoing a pass would
+  // take away what it showed.
+  const canUndo = location.events.length > state.taskStart && !checked
+  const canRestart = location.events.length > 0
 
-  // Questions 4 and 5 run question 1's order under new code, shown only once answered.
+  // Questions 4 and 5 run question 1's order under new code, shown only once answered correctly, so a wrong answer
+  // gives nothing away.
   const replayed = task === 3 || task === 4 ? replayTrace(state.q1Trace, setup) : null
-  const trace = building ? state.trace : replayed && verdict ? replayed.trace : []
+  const trace = building ? state.trace : replayed && checked ? replayed.trace : []
   const run = simulate(setup, trace)
   const last = run.steps.at(-1)
   const active = !last ? null : last.actor === 'server' ? 'sql' : last.event === 'send' || last.event === 'resend' ? 'api' : null
@@ -78,11 +109,11 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
   const hint = controlsHint(content, {
     checked,
     failedOn: verdict && !verdict.ok ? (verdict.code === 'too-few' || (building && task !== 5) ? 'build' : 'answer') : null,
-    needsSteps: building && !settled(run) ? (state.trace.length ? 'waiting' : 'empty') : null,
+    needsSteps: !building || settled(run) ? null : !state.trace.length ? 'empty' : pending(run) === 'server' ? { server: run.queue[0] + 1 } : 'waiting',
     needsAnswer: !answered(state) ? (task === 5 ? 'both' : 'one') : null,
     hasNext,
     canUndo,
-    canReset,
+    canRestart,
   })
   // A notice is about the question being worked on, so a finished one read again shows its own verdict.
   const shownNotice = readOnly ? null : notice
@@ -93,6 +124,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
     (shownNotice === 'crux' ? t.stage.crux : building ? (last ? stepText(content, setup, last) : '') : t.notices.pickAnswer)
   const prefix = shownNotice && shownNotice !== 'crux' ? null : verdictLine?.prefix
 
+  const single = singleAnswer[task]
   const radio = (name: string, value: string, label: string) => (
     <label key={value}>
       <input type="radio" name={name} checked={state.answers.includes(value)} disabled={readOnly || checked} onChange={() => act(value as LabEvent)} />
@@ -108,7 +140,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
           {t.notices.invalid}
         </p>
       )}
-      <ProgressStrip content={content} live={{ task: live.task, completed: live.completed, passed: !!live.verdict?.ok }} viewing={viewing} onView={setViewing} onNext={() => act('next')} />
+      <ProgressStrip content={content} live={live} viewing={viewing} onView={(i) => (i === null && viewing === null ? focusQuestion() : setViewing(i))} onNext={next} />
 
       {preview !== null ? (
         <LockedPreview content={content} index={preview} liveTask={live.task} onBack={() => setViewing(null)} />
@@ -116,15 +148,15 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
         <>
           <QuestionHeader content={content} index={task} readOnly={readOnly} />
           {replayed?.substituted && <p className="lab-caption">{t.replayed}</p>}
-          {replayed?.dropped && verdict && <p className="lab-caption">{t.replayedDropped}</p>}
+          {replayed?.dropped && checked && <p className="lab-caption">{t.replayedDropped}</p>}
 
           {task === 2 ? (
             <Worlds content={content} q1Trace={state.q1Trace} q2Trace={state.q2Trace} />
           ) : (
             <div className="lab-experiment">
-              {(building || verdict) && <Phone content={content} run={run} />}
+              {(building || checked) && <Phone content={content} run={run} />}
               <CodePanel content={content} version={setup.version} active={active} />
-              {building || verdict ? (
+              {building || checked ? (
                 <div className="lab-stage" role="group" aria-labelledby="stage-title">
                   <h4 id="stage-title">{t.stage.heading}</h4>
                   <p className="lab-caption">{t.stage.note}</p>
@@ -140,7 +172,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
                   )}
                   {offerGuided && (
                     <div className="lab-action lab-guided">
-                      <button type="button" disabled={!guided} aria-describedby="guided-why" onClick={() => guided && act(guided, task === 0 && state.trace.length === 2 ? 'crux' : null)}>
+                      <button type="button" disabled={!guided} aria-describedby="guided-why" onClick={() => guided && keepFocus(() => act(guided, task === 0 && state.trace.length === 2 ? 'crux' : null))}>
                         {t.stage.guided}
                       </button>
                       <small id="guided-why">{!guided ? t.stage.guidedOff : state.trace.length ? t.stage.guidedMore : t.stage.guidedFirst}</small>
@@ -160,22 +192,10 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
             </div>
           )}
 
-          {task === 2 && (
+          {single && (
             <fieldset className="lab-choices">
-              <legend>{t.answers.q3.legend}</legend>
-              {q3Answers.map((a) => radio('q3', `q3-${a}`, t.answers.q3.options[a]))}
-            </fieldset>
-          )}
-          {task === 3 && (
-            <fieldset className="lab-choices">
-              <legend>{t.answers.q4.legend}</legend>
-              {q4Answers.map((a) => radio('q4', `q4-${a}`, t.answers.q4.options[a]))}
-            </fieldset>
-          )}
-          {task === 4 && (
-            <fieldset className="lab-choices">
-              <legend>{t.answers.q5.legend}</legend>
-              {q5Answers.map((a) => radio('q5', `q5-${a}`, t.answers.q5.options[a]))}
+              <legend>{t.answers[single[0]].legend}</legend>
+              {single[1].map((a) => radio(single[0], `${single[0]}-${a}`, (t.answers[single[0]].options as Record<string, string>)[a]))}
             </fieldset>
           )}
           {task === 5 && (
@@ -189,7 +209,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
             </div>
           )}
 
-          <p className="lab-feedback" role="status" data-verdict={verdict ? (verdict.ok ? 'ok' : 'not-yet') : undefined}>
+          <p id="lab-feedback" className="lab-feedback" role="status" tabIndex={-1} data-verdict={verdict ? (verdict.ok ? 'ok' : 'not-yet') : undefined}>
             {prefix && <strong>{prefix}</strong>}
             {status}
           </p>
@@ -203,21 +223,21 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
             hasVerdict={!!verdict}
             hasNext={hasNext}
             canUndo={canUndo}
-            canReset={canReset}
+            canRestart={canRestart}
             hint={hint}
             onBack={() => setViewing(null)}
-            onVerify={() => act('verify')}
-            onNext={() => act('next')}
-            onUndo={() => navigate(location.events.slice(0, -1))}
-            onReset={() => navigate(location.events.slice(0, state.taskStart), 'reset')}
-            onRestart={() => navigate([], 'restart')}
+            onVerify={() => keepFocus(() => act('verify'))}
+            onNext={next}
+            onUndo={() => keepFocus(() => navigate(undoStep(location.events, state.taskStart)))}
+            onReset={() => keepFocus(() => navigate(location.events.slice(0, state.taskStart), 'reset', true))}
+            onRestart={() => keepFocus(() => navigate([], 'restart', true))}
           />
           {task === 1 && checked && <Worlds content={content} q1Trace={state.q1Trace} q2Trace={state.trace} />}
         </>
       )}
 
-      {passed(1) && <DryRun content={content} showClient={passed(3)} showServer={passed(4)} explainLate={passed(2)} />}
-      {passed(5) && <FinalCriterion content={content} />}
+      {passedQuestion(live, 1) && <DryRun content={content} showClient={passedQuestion(live, 3)} showServer={passedQuestion(live, 4)} explainLate={passedQuestion(live, 2)} />}
+      {passedQuestion(live, 5) && <FinalCriterion content={content} />}
     </section>
   )
 }
