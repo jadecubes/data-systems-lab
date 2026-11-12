@@ -60,8 +60,7 @@ export const q11: Translation<typeof zh> = {
       tradeoff:
         'Linearizability buys correctness; the price is stopping during a network partition and higher latency all the time.',
       questions: [
-        'If this rule is broken at write time (a duplicate, an oversell), can it still be fixed afterwards?',
-        'If overselling or a duplicate happens, is compensation afterwards acceptable?',
+        'If this rule is broken at write time (a duplicate, an oversell), is fixing it and compensating afterwards acceptable?',
       ],
       examples: [
         {

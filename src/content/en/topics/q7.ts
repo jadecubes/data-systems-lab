@@ -41,7 +41,7 @@ export const q7: Translation<typeof zh> = {
         'Are we treating asynchronous replication as if it were synchronous?',
         'If replication lag stretches to several minutes, which features break?',
       ],
-      examples: [{ source: 'book', text: 'The book puts it plainly: pretending that replication is synchronous when it is in fact asynchronous is a recipe for problems later.' }],
+      examples: [{ source: 'book', text: 'In the book’s example a user submits a comment and reloads at once; the read happens to hit a follower that has not caught up, so the new comment seems to have vanished. Read-your-writes consistency guarantees users always see what they themselves just wrote.' }],
     },
     'ch6-geographically-distributed-operation': {
       conclusion: 'With replicas in several regions, multi-leader replication lets each region handle writes locally: latency stays low, and the system survives a whole region going down or links between regions failing. The price is much weaker consistency: it cannot guarantee that an account never goes negative or that a username is unique; if you need such constraints, use single-leader replication.',

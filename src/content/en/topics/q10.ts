@@ -61,6 +61,7 @@ export const q10: Translation<typeof zh> = {
       ],
     },
     'ch9-summary': {
+      title: 'Stay on one machine if you can',
       conclusion:
         'Distributed systems bring a great deal of trouble from networks, clocks and process pauses; if a single machine can do the job, keep it on one machine. Good reasons to distribute go beyond scale: fault tolerance and low latency, meaning data placed close to users.',
       tradeoff:

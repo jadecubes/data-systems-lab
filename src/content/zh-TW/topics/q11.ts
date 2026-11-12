@@ -55,8 +55,7 @@ export const q11 = {
         '寫入當下就得保證不重複、餘額不為負或不超賣時，才需要線性一致性（linearizability）；能事後補償（compensation），或不需要最新值，就用多主（multi-leader）或無主（leaderless）複製，換取可用性（availability）與速度。鎖、租約（lease）與選出領導者（leader），交給協調服務（coordination service）。',
       tradeoff: '線性一致換到正確性，代價是網路分區（network partition）時停擺，平時延遲也較高。',
       questions: [
-        '這個規則若在寫入當下被違反（重複、超賣），事後還補救得了嗎？',
-        '超賣或重複發生時，事後補償（compensation）可以接受嗎？',
+        '這個規則若在寫入當下被違反（重複、超賣），事後再補救、補償（compensation）可以接受嗎？',
       ],
       examples: [
         {

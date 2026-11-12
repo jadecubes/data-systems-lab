@@ -13,7 +13,7 @@ export const q13 = {
     },
     'ch12-change-data-capture': {
       conclusion: '變更資料擷取（change data capture，CDC）把資料庫的每筆變更依寫入順序送給下游；搜尋索引（search index）、資料倉儲（data warehouse）照同樣順序套用，就成了資料庫的追隨者（follower）。它通常是非同步的，所以有複製延遲（replication lag）；上游的資料表結構也變成下游依賴的介面。',
-      tradeoff: '幾乎不必改動既有應用就能讓各系統一致，但上游刪改欄位會弄壞下游。外寄匣模式（outbox pattern）另建一張專給變更資料擷取讀的表，內部的表就能自由修改；代價是多寫一份資料，並維護兩種結構之間的轉換。',
+      tradeoff: '幾乎不必改動既有應用就能讓各系統一致，但上游刪改欄位會弄壞下游。外寄匣模式（outbox pattern）另建一張專給變更資料擷取讀的表，內部的表就能自由修改；代價是同一筆交易裡多存一份資料，並維護兩種結構之間的轉換。',
       questions: ['有哪些下游在讀這張表的變更資料擷取（CDC）事件（event）？', '改這個欄位前要通知誰？有用外寄匣模式（outbox pattern）或資料合約（data contract）保護下游嗎？'],
       examples: [{ source: 'book', text: '書中提到開源工具 Debezium：它接上 MySQL、PostgreSQL 等資料庫的複製日誌，以統一的格式輸出每筆變更的事件（event）。書中也說明，外寄匣表和業務資料在同一筆交易（transaction）裡寫入，所以沒有雙寫（dual writes）的競爭與部分失敗問題。' }],
     },

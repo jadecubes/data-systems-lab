@@ -40,7 +40,7 @@ export const q7 = {
         '我們是不是把非同步複製（asynchronous replication）當成同步在用？',
         '複製延遲（replication lag）拉長到幾分鐘時，哪些功能會壞？',
       ],
-      examples: [{ source: 'book', text: '書中直言：明明是非同步複製（asynchronous replication），卻假裝它是同步的，遲早會出問題。' }],
+      examples: [{ source: 'book', text: '書中的例子：使用者送出一則留言後馬上重新整理，這次讀取剛好落在還沒跟上的追隨者（follower），剛送出的留言看起來就像不見了。寫後讀一致性保證使用者一定看得到自己剛寫入的資料。' }],
     },
     'ch6-geographically-distributed-operation': {
       conclusion: '副本分散在多個地區時，多主複製（multi-leader replication）讓每個地區在本地處理寫入，延遲低，也撐得過整個地區停機或跨地區斷線。代價是一致性（consistency）弱得多：無法保證帳戶不為負、使用者名稱唯一；需要這類約束就用單主複製（single-leader replication）。',

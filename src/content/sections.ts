@@ -65,7 +65,7 @@ export const sections = [
   {id: "ch9-timeouts-and-unbounded-delays",topic: "Q10",chapter: 9,bookTitle: "Timeouts and Unbounded Delays",zhName: "逾時與無上限延遲",pages: [[352,353]]},
   {id: "ch9-timestamps-for-ordering-events",topic: "Q10",chapter: 9,bookTitle: "Timestamps for ordering events",zhName: "用時間戳排序事件",pages: [[362,364]]},
   {id: "ch9-fencing-off-zombies-and-delayed-requests",topic: "Q10",chapter: 9,bookTitle: "Fencing off zombies and delayed requests",zhName: "隔離殭屍與延遲請求",pages: [[374,376]]},
-  {id: "ch9-summary",topic: "Q10",chapter: 9,bookTitle: "Summary",zhName: "總結",pages: [[388,389]]},
+  {id: "ch9-summary",topic: "Q10",chapter: 9,bookTitle: null,zhName: null,pages: [[388,389]]},
   {id: "ch9-how-to-choose",topic: "Q10",chapter: 9,bookTitle: null,zhName: null,pages: [[352,387]]},
   {id: "ch10-intro-two-philosophies",topic: "Q11",chapter: 10,bookTitle: null,zhName: null,pages: [[401,402]]},
   {id: "ch10-the-cost-of-linearizability",topic: "Q11",chapter: 10,bookTitle: "The Cost of Linearizability",zhName: "線性一致性的代價",pages: [[413,417]]},

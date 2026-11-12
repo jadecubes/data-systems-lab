@@ -29,6 +29,8 @@ const bookTitleOverrides = {
   '8 側欄：Replication and Durability（複製與持久性）': ['Replication and Durability', '複製與持久性'],
   // The site's word for operations is 營運; the notes' heading says 運維.
   '7 Operations: Automatic Versus Manual Rebalancing（運維：自動與手動再平衡）': ['Operations: Automatic Versus Manual Rebalancing', '營運：自動與手動再平衡'],
+  // The chapter's summary sits mid-page in Q10 and argues one point; the topic text titles it instead.
+  '9 Summary（總結）': [null, null],
 }
 // Sections with no book heading get a hand-written id ("Replication and Backups" is not a book heading:
 // the book has "Backups and Replication").
@@ -39,6 +41,7 @@ const idOverrides = {
   '6 前言：為什麼複製、與備份的關係（Replication and Backups）': 'ch6-intro-replication-and-backups',
   '10 章首：兩種處理複本不一致的哲學': 'ch10-intro-two-philosophies',
   '11 章首：線上系統與批次處理': 'ch11-intro-online-and-batch',
+  '9 Summary（總結）': 'ch9-summary',
   ...Object.fromEntries([5, 6, 8, 9, 10, 11, 12, 13].map((c) => [`${c} 怎麼選（判準）`, `ch${c}-how-to-choose`])),
 }
 
