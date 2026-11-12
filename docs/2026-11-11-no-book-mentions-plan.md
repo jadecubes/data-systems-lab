@@ -41,6 +41,6 @@
 
 - [ ] **Step 1: 改測試，讓它失敗**：現有的 `every book example opens by naming the book, no example of ours does, and none cites a page` 改成 `no on-screen topic or lab text mentions the book`：走過兩種語言的所有主題與實驗課字串，中文不能符合 `/書中|書裡|本書|原書|這本書/`，英文不能符合 `/\bthe book\b/i`。頁碼另有 `no page numbers in content` 檢查。`ui` 的字串（地圖頁的致謝與介紹）不在檢查範圍。
 - [ ] **Step 2:** `pnpm vitest run src/content/content.test.ts`，預期 FAIL，列出所有提到書的字串。
-- [ ] **Step 3:** 逐句改寫，zh-TW 先、en 後：拿掉開頭的「書中說／書中的／書中提到」，讓句子自己成立（「書中的付款流程：先呼叫……」→「付款流程：先呼叫……」）；引述研究或數字的寫成「一項研究發現……」；D1 的標籤照「我做的決定」。設計稿 §3 與 §5.2、phase 4 計畫與 AGENTS.md 的規則一起改。
+- [ ] **Step 3:** 逐句改寫，zh-TW 先、en 後：拿掉開頭的「書中說／書中的／書中提到」，讓句子自己成立（「書中的付款流程：先呼叫……」→「付款流程：先呼叫……」）；引述研究或數字的寫成「一項研究發現……」；D1 的標籤照「我做的決定」。
 - [ ] **Step 4:** `pnpm test && pnpm build && pnpm test:e2e` 全綠；每一處改寫列成中英對照清單（改前、改後）請 Debra 看過，特別是原本「書中說……」的斷言。
 - [ ] **Step 5: Commit**（等 Debra 說 commit）
