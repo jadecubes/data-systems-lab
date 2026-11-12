@@ -313,14 +313,17 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   padding: 0.5rem;
-  overflow-x: auto;
   border-radius: 6px;
   background: var(--bg);
   font-size: 0.8rem;
 }
 
+/* Long lines wrap with a hanging indent rather than scroll: a cut-off line looked complete on a phone. */
 .code-listing code {
-  white-space: pre;
+  padding-left: 2ch;
+  text-indent: -2ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .code-note {

@@ -121,7 +121,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
   const status =
     (shownNotice && shownNotice !== 'crux' ? t.notices[shownNotice] : null) ??
     verdictLine?.body ??
-    (shownNotice === 'crux' ? t.stage.crux : building ? (last ? stepText(content, setup, last) : '') : t.notices.pickAnswer)
+    (shownNotice === 'crux' ? t.stage.crux : building ? (last ? stepText(content, setup, last) : '') : answered(state) ? t.hints.ready : t.notices.pickAnswer)
   const prefix = shownNotice && shownNotice !== 'crux' ? null : verdictLine?.prefix
 
   const single = singleAnswer[task]

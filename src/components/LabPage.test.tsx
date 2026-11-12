@@ -229,6 +229,15 @@ test('the two worlds line up: the browser\'s rows read the same, and each stretc
   expect(worlds().map(rows).map((r) => r[1])).toEqual([en.worlds.hiddenNone, hidden(1)])
 })
 
+test('in questions 3 to 5, once an answer is chosen the status line asks for the check, not for an answer', () => {
+  open([...throughQ2])
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.pickAnswer)
+  fireEvent.click(screen.getByRole('radio', { name: en.answers.q3.options.failed }))
+  fireEvent.click(button(en.controls.verify))
+  fireEvent.click(screen.getByRole('radio', { name: en.answers.q3.options.placed }))
+  expect(screen.getByRole('status')).toHaveTextContent(en.hints.ready)
+})
+
 test('question 3 compares the chosen message against both worlds', () => {
   open([...throughQ2, 'q3-failed', 'verify'])
   const table = screen.getByRole('table', { name: interpolate(en.answers.q3.reveal.caption, { answer: en.answers.q3.options.failed }) })
@@ -455,6 +464,17 @@ test('giving a message its fate removes its buttons, so focus moves to the netwo
   deliver.focus()
   fireEvent.click(deliver)
   expect(screen.getByRole('heading', { level: 4, name: en.actors.network.name })).toHaveFocus()
+})
+
+test('a role button that turns itself off, such as Place order or Time out, moves focus to its own card', () => {
+  open([])
+  for (const [label, actor] of [[en.buttons.send, en.actors.browser.name], [en.buttons.timeout, en.actors.browser.name]]) {
+    const pressed = button(label)
+    pressed.focus()
+    fireEvent.click(pressed)
+    expect(pressed).toBeDisabled()
+    expect(screen.getByRole('heading', { level: 4, name: actor })).toHaveFocus()
+  }
 })
 
 test('a passed question keeps its steps, so what it earned stays: Previous step and Reset are off and say why', () => {

@@ -267,6 +267,10 @@ test('Previous step takes back the last step and any check after it, never an an
   expect(undoStep([...toQ6, 'q6-none-4'], start)).toEqual(toQ6)
   expect(undoStep(['send', 'req1-ok', 'verify'], 0)).toEqual(['send'])
   expect(undoStep([...toQ3, 'q3-failed', 'verify'], toQ3.length)).toEqual(toQ3)
+  // A failed check followed by a step: taking back two steps must not leave the check on a run that is not over.
+  const q6 = [...toQ6, 'q6-none-4', 'q6-client-1', 'send', 'req1-lost', 'timeout', 'verify', 'resend', 'q6-none-3'] as LabEvent[]
+  const once = undoStep(q6, start)
+  expect(() => replay(undoStep(once, start))).not.toThrow()
   for (const events of [[...toQ6, 'send', 'req1-ok', 'q6-none-4', 'q6-client-1', 'verify'] as LabEvent[], [...toQ3, 'q3-failed', 'verify'] as LabEvent[]]) {
     expect(() => replay(undoStep(events, events.lastIndexOf('next') + 1))).not.toThrow()
   }
