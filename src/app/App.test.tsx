@@ -104,6 +104,12 @@ test.each(langs)('a topic page has one block per section and lists them under it
   expect(within(list).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(ids.map((id) => `/b/${lang}/topics/t3/#${id}`))
 })
 
+test.each(langs)('a topic with one section has no list of its sections: it would only repeat the heading below it (%s)', (lang) => {
+  expect(sectionsOf('T11')).toHaveLength(1)
+  render(<App route={{ kind: 'topic', lang, topic: 'T11' }} contents={contents} phase={4} base={base} />)
+  expect(screen.queryByRole('navigation', { name: contents[lang].ui.nav.sections })).toBeNull()
+})
+
 test.each(langs)('the site index is one short list: each live group, linking to its own page; no topics, nothing folds (%s)', (lang) => {
   const { ui } = contents[lang]
   render(<App route={{ kind: 'map', lang }} contents={contents} phase={4} base={base} />)

@@ -19,7 +19,7 @@ const ranges = (pages) =>
   })
 
 // A notes heading "Book Heading（中文名）" carries the book's English heading. Headings with Chinese outside
-// the parentheses were checked against the book (2026-10-24): these six are book headings.
+// the parentheses were checked against the book (2026-10-24): the first six are book headings; the last two say why they differ.
 const bookTitleOverrides = {
   '5 遠端程序呼叫的問題（The problems with remote procedure calls）': ['The problems with remote procedure calls', '遠端程序呼叫的問題'],
   '5 RPC 的資料編碼與演進（Data encoding and evolution for RPC）': ['Data encoding and evolution for RPC', 'RPC 的資料編碼與演進'],

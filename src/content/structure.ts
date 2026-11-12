@@ -3,9 +3,6 @@ import type { GroupId, LabId, Phase } from './types'
 
 type Placement = { readonly group: GroupId; readonly phase: Phase }
 
-/** Groups in map order (design §5.1). */
-export const groups = ['spec', 'anomalies', 'change', 'data', 'systems', 'storage', 'concurrency', 'flow'] as const satisfies readonly GroupId[]
-
 /**
  * Every topic exactly once (the mapped type rejects a missing, extra or misspelt key). Key order is map
  * order and prev/next order.
@@ -41,6 +38,9 @@ export const topics = {
   Q15: { group: 'flow', phase: 4 },
   Q16: { group: 'flow', phase: 4 },
 } as const satisfies { readonly [T in TopicId]: Placement }
+
+/** Groups in map order (design §5.1): the order their first topic appears in. */
+export const groups: readonly GroupId[] = [...new Set(Object.values(topics).map((t) => t.group))]
 
 /** `topics` are the ones a lab practises and links from; `related` are read next, linked from the lab's end. */
 export const labs = {
