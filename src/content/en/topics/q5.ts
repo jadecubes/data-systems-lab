@@ -7,7 +7,7 @@ export const q5: Translation<typeof zh> = {
   tags: ['normalization', 'denormalization', 'schema-on-read', 'schema-on-write', 'schema migration'],
   sections: {
     'ch3-trade-offs-of-normalization': {
-      conclusion: 'Normalized data is stored once: writes are fast, and reads are slower because they need joins (queries that combine tables). Denormalized data is fast to read, but every write must update each copy; those copies are a form of derived data and need a process that keeps them updated. Operational databases and small-to-medium systems are usually best normalized.',
+      conclusion: 'Normalized data is stored once: writes are fast, and reads are slower because they need joins (queries that combine tables). Denormalized data is fast to read, but every write must update each copy; those copies are a form of derived data and need a process that keeps them updated. Operational databases and small-to-medium systems usually start normalized.',
       tradeoff: 'Denormalization speeds reads at the cost of more space, updating every copy, and possible inconsistency if a process crashes halfway; analytical systems, which mostly read and update in batches, often suit denormalization better.',
       questions: ['Who updates this redundant data, and when?', 'If an update crashes after changing only some copies, is the data left inconsistent? Does a transaction protect it?'],
       examples: [{ source: 'book', text: 'The book uses company logos on résumés: if every résumé stores the logo URL, changing a logo means finding and updating every old URL; with an organization entity that résumés reference by ID, the change happens in one place.' }],

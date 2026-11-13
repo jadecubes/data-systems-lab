@@ -41,7 +41,7 @@ export const q12: Translation<typeof zh> = {
     },
     'ch5-message-brokers': {
       conclusion:
-        'A message broker holds messages between services. A message on a queue goes to only one consumer; a message published to a topic goes to every subscriber. Many brokers delete a message once it is consumed; a consumer that republishes messages must keep unknown fields.',
+        'A message broker holds messages between services. A message on a queue goes to only one consumer; a message published to a topic goes to every subscriber. Many brokers delete a message once it is consumed. When the message format changes, a consumer that republishes messages must keep the unknown fields it does not understand, or new fields are lost on the way.',
       tradeoff:
         'Deleting after consumption saves space, at the price of never replaying past messages; event sourcing requires configuring the broker to keep messages indefinitely.',
       questions: [

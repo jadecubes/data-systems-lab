@@ -4,8 +4,8 @@ import type { GroupId, LabId, Phase } from './types'
 type Placement = { readonly group: GroupId; readonly phase: Phase }
 
 /**
- * Every topic exactly once (the mapped type rejects a missing, extra or misspelt key). Key order is map
- * order and prev/next order.
+ * Every topic exactly once (the mapped type rejects a missing, extra or misspelt key). Map order and
+ * prev/next order list topics group by group, in key order within each group.
  */
 export const topics = {
   T1: { group: 'spec', phase: 2 },

@@ -7,7 +7,7 @@ export const q8 = {
   sections: {
     'ch7-pros-and-cons-of-sharding': {
       conclusion: '分片（sharding）是在資料量或寫入量超出單機時，把資料和寫入分散到多個節點；問題若只是讀取量，讓副本分擔讀取即可。單機撐得住就別分片：要選一個事後很難更改的分區鍵（partition key），不知道紀錄在哪個分片就得搜尋所有分片，跨分片的寫入還需要分散式交易（distributed transaction）。',
-      tradeoff: '分片讓資料量與寫入量能水平擴展（horizontal scaling），代價是複雜度，以及跨分片的查詢、join 與交易（transaction）都變慢。',
+      tradeoff: '分片讓資料量與寫入量能水平擴展（horizontal scaling），代價是複雜度，以及跨分片的查詢、join（把多張表的資料接起來）與交易（transaction）都變慢。',
       questions: [
         '瓶頸是資料量、寫入量，還是只是讀取量？真的需要分片（sharding）嗎？',
         '分區鍵（partition key）選什麼？之後改得了嗎？',

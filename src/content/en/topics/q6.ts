@@ -37,7 +37,7 @@ export const q6: Translation<typeof zh> = {
       examples: [{ source: 'book', text: 'In the book’s example, a data cube instantly answers total sales per store yesterday, but cannot tell what share of sales comes from items priced over $100, because price is not one of its dimensions.' }],
     },
     'ch4-storage-and-indexing-for-oltp': {
-      conclusion: 'An index is an additional structure derived from the primary data that helps particular queries find data faster; adding or removing an index does not change the data itself. Every index takes disk space and slows down writes, so databases do not index everything by default; indexes are chosen from the application’s typical queries.',
+      conclusion: 'In online transaction processing (OLTP), applications read and write a few records at a time. An index is an additional structure derived from the primary data that helps particular queries find data faster; adding or removing an index does not change the data itself. Every index takes disk space and slows down writes, so databases do not index everything by default; indexes are chosen from the application’s typical queries.',
       tradeoff: 'More indexes speed up more queries, but every write must also update every index; writes can hardly be faster than simply appending to the end of a file.',
       questions: [
         'Is this new filter or sort order backed by an index?',

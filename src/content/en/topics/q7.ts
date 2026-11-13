@@ -17,7 +17,7 @@ export const q7: Translation<typeof zh> = {
       examples: [{ source: 'book', text: 'The book stresses that replication does not replace backups: replicas quickly reflect writes from other nodes, accidental deletes included. The two also work together; for example, a new replica is often set up from a backup.' }],
     },
     'ch6-synchronous-versus-asynchronous-replication': {
-      conclusion: 'With synchronous replication the leader waits for a follower to confirm before reporting success; with asynchronous replication it does not wait. If replication is fully asynchronous, a write already confirmed to the user can still be lost when the leader fails; if every follower were synchronous, any one of them stalling would block all writes, so in practice one follower is synchronous and the rest asynchronous: semisynchronous.',
+      conclusion: 'With synchronous replication the leader waits for a follower to confirm before reporting success; with asynchronous replication it does not wait. If replication is fully asynchronous, a write already confirmed to the user can still be lost when the leader fails; if every follower were synchronous, any one of them stalling would block all writes, so in practice one follower is often synchronous and the rest asynchronous: semisynchronous.',
       tradeoff: 'Synchronous replication guarantees one more up-to-date copy, but writes stop when that follower has trouble; asynchronous replication keeps writes independent of followers at the cost of weaker durability.',
       questions: [
         'Do we use synchronous, semisynchronous or asynchronous replication?',

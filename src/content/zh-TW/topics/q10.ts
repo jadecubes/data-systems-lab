@@ -39,7 +39,7 @@ export const q10 = {
     },
     'ch9-fencing-off-zombies-and-delayed-requests': {
       conclusion:
-        '取得租約（lease）的節點可能暫停太久，租約已過期卻不自知，成了殭屍（zombie）；它當機前送出的請求，也可能在網路裡延遲很久才送到。對策是隔離權杖（fencing token）：每次授予租約時附上一個遞增的數字，寫入時必須帶著，儲存端拒絕比已見過的更小的數字。',
+        '取得租約（lease）的節點可能暫停太久，租約已過期卻不自知，成了殭屍（zombie）；它當機前送出的請求，也可能在網路裡延遲很久才送到。對策是隔離權杖（fencing token）：鎖服務（lock service）每次授予租約時附上一個遞增的數字，寫入時必須帶著，儲存端拒絕比已見過的更小的數字。',
       tradeoff:
         '儲存端必須能檢查權杖，或支援條件寫入（conditional write），換來殭屍和延遲的請求都寫不壞資料。只靠關掉可疑的節點，擋不住已經在網路上的延遲請求。',
       questions: [
@@ -60,7 +60,7 @@ export const q10 = {
     'ch9-summary': {
       title: '能用單機就留在單機',
       conclusion:
-        '分散式系統帶來網路、時鐘與行程暫停的大量麻煩；單機能解決，就留在單機。值得分散的理由不只擴展，還有容錯（fault tolerance）與低延遲，也就是把資料放在離使用者近的地方。',
+        '分散式系統帶來網路、時鐘與行程暫停（process pauses）的大量麻煩；單機能解決，就留在單機。值得分散的理由不只擴展，還有容錯（fault tolerance）與低延遲，也就是把資料放在離使用者近的地方。',
       tradeoff: '分散換到容錯與就近服務，代價是逾時（timeout）帶來的不確定、不可靠的時鐘，以及更難除錯。',
       questions: ['這個需求一台機器撐得住嗎？', '要分散的理由是擴展、容錯（fault tolerance），還是離使用者近？'],
       examples: [

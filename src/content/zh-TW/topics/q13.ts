@@ -13,9 +13,9 @@ export const q13 = {
     },
     'ch12-change-data-capture': {
       conclusion: '變更資料擷取（change data capture，CDC）把資料庫的每筆變更依寫入順序送給下游；搜尋索引（search index）、資料倉儲（data warehouse）照同樣順序套用，就成了資料庫的追隨者（follower）。它通常是非同步的，所以有複製延遲（replication lag）；上游的資料表結構也變成下游依賴的介面。',
-      tradeoff: '幾乎不必改動既有應用就能讓各系統一致，但上游刪改欄位會弄壞下游。外寄匣模式（outbox pattern）另建一張專給變更資料擷取讀的表，內部的表就能自由修改；代價是同一筆交易裡多存一份資料，並維護兩種結構之間的轉換。',
+      tradeoff: '幾乎不必改動既有應用就能讓各系統一致，但上游刪改欄位會弄壞下游。外寄匣模式（outbox pattern）另建一張專給變更資料擷取讀的表，內部的表就能自由修改；代價是同一筆交易（transaction）裡多存一份資料，並維護兩種結構之間的轉換。',
       questions: ['有哪些下游在讀這張表的變更資料擷取（CDC）事件（event）？', '改這個欄位前要通知誰？有用外寄匣模式（outbox pattern）或資料合約（data contract）保護下游嗎？'],
-      examples: [{ source: 'book', text: '書中提到開源工具 Debezium：它接上 MySQL、PostgreSQL 等資料庫的複製日誌，以統一的格式輸出每筆變更的事件（event）。書中也說明，外寄匣表和業務資料在同一筆交易（transaction）裡寫入，所以沒有雙寫（dual writes）的競爭與部分失敗問題。' }],
+      examples: [{ source: 'book', text: '書中提到開源工具 Debezium：它接上 MySQL、PostgreSQL 等資料庫的複製日誌，以統一的格式輸出每筆變更的事件（event）。書中也說明，外寄匣表和業務資料在同一筆交易裡寫入，所以沒有雙寫（dual writes）的競爭與部分失敗問題。' }],
     },
     'ch12-state-streams-and-immutability': {
       conclusion: '目前狀態是一連串事件（event）累積的結果。不可變性（immutability）指事件寫入後不再修改；保留這樣的事件日誌（event log），方便稽核（auditing）、從錯誤的部署中復原，也能從同一份日誌另建新的讀取視圖。',
@@ -28,7 +28,7 @@ export const q13 = {
     },
     'ch13-combining-specialized-tools-by-deriving-data': {
       conclusion: '所有寫入先進入一個決定順序的記錄系統（system of record），搜尋索引（search index）、快取、分析系統（analytical system）再依同樣順序衍生。衍生資料（derived data）多半非同步更新，預設不保證寫完立刻讀得到；不同服務或不同分片（shard）的事件（event）也沒有共同順序，因果關係可能遺失。',
-      tradeoff: '從日誌衍生資料比分散式交易（distributed transaction）好恢復，元件之間也較鬆散；代價是失去寫後讀一致性（read-your-writes consistency）與跨服務的統一順序。',
+      tradeoff: '依記錄系統的順序衍生資料，比分散式交易（distributed transaction）好恢復，元件之間也較鬆散；代價是失去寫後讀一致性（read-your-writes consistency）與跨服務的統一順序。',
       questions: ['這個功能的記錄系統（system of record）是哪一個？', '其他地方的資料是從它衍生，還是應用程式另外寫入的？', '兩個動作若存在不同服務，下游有可能以相反的順序處理嗎？'],
       examples: [{ source: 'book', text: '書中的例子：一個人先把前任解除好友，再傳訊息向朋友抱怨前任。若好友名單和訊息存在不同地方、先後順序遺失，通知服務可能先處理訊息，把通知送給前任。' }],
     },

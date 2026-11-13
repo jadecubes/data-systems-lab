@@ -10,7 +10,7 @@ export const q16 = {
       tradeoff: '持續稽核、另外衍生一份來比對，都要花資源；不檢查，就要等損壞造成下游損害才發現，那時追查更難也更貴。',
       questions: ['我們上次實際從備份（backup）還原是什麼時候？成功了嗎？', '有沒有定期比對衍生資料（derived data）和來源是否一致？', '出錯時，我們能重現是哪個輸入、哪個版本的程式造成的嗎？'],
       examples: [
-        { source: 'book', text: '書中提到，HDFS 與 Amazon S3 不完全信任磁碟：背景程序持續讀回檔案、與其他副本比對。同樣地，不定期試著還原，可能到資料遺失（data loss）時才發現備份是壞的。' },
+        { source: 'book', text: '書中提到，HDFS 與 Amazon S3 不完全信任磁碟：背景行程（process）持續讀回檔案、與其他副本比對。同樣地，不定期試著還原，可能到資料遺失（data loss）時才發現備份是壞的。' },
         { source: 'book', text: '書中也舉出，MySQL 過去曾無法正確維持唯一約束（uniqueness constraint），PostgreSQL 的可序列化（serializable）隔離也曾出現寫偏斜（write skew）。' },
       ],
     },

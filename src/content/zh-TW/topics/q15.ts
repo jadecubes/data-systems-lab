@@ -6,7 +6,7 @@ export const q15 = {
   tags: ['事件時間', '處理時間', '落後事件', '恰好一次', '冪等'],
   sections: {
     'ch12-reasoning-about-time': {
-      conclusion: '統計要依事件時間（event time）分組，而不是處理時間（processing time）；處理器停一下或重處理舊事件（event），兩者就會差很多。視窗結束後才到的落後事件（straggler events），要決定忽略並追蹤數量，還是發布更正；使用者裝置上的時鐘也不可信。',
+      conclusion: '統計要依事件時間（event time）分組，而不是處理時間（processing time）；處理器停一下或重處理舊事件（event），兩者就會差很多。統計用的時間視窗（window，例如每一分鐘）結束後才到的落後事件（straggler events），要決定忽略並追蹤數量，還是發布更正；使用者裝置上的時鐘也不可信。',
       tradeoff: '早點關閉視窗，結果較即時，但會漏算晚到的事件；等久一點或發布更正，結果較準，但較慢也較複雜。',
       questions: ['這個統計依事件（event）發生的時間算，還是依系統處理的時間算？', '晚到的事件（event）會補進已經發出的報表嗎？看報表的人會知道數字改過嗎？', '裝置離線、隔天才送上來的資料，算在哪一天？'],
       examples: [{ source: 'book', text: '書中的例子：計算每秒請求數的處理器重新部署、停了一分鐘，回來後一口氣處理積壓的事件。依處理時間算，圖上像出現異常尖峰；其實請求速率一直很平穩。' }],
@@ -18,14 +18,14 @@ export const q15 = {
       examples: [{ source: 'book', text: '書中的例子：開發票要用銷售當時的稅率。稅率每改一次就給新的 ID，發票記下銷售當時的稅率 ID，日後重算才會得到同樣的金額。' }],
     },
     'ch12-fault-tolerance': {
-      conclusion: '恰好一次（exactly-once）指可見的效果如同每筆只處理一次；實際上重啟時，有些事件（event）可能處理了不只一次。框架內的檢查點或交易（transaction）只保護框架內的狀態；輸出一離開框架，例如寫外部資料庫或寄信，重跑就可能重複，要靠冪等（idempotent）寫入處理。',
+      conclusion: '恰好一次（exactly-once）指可見的效果如同每筆只處理一次；實際上重啟時，有些事件（event）可能處理了不只一次。串流處理框架定期存下的進度，也就是檢查點（checkpoint），或框架內的交易（transaction），只保護框架內的狀態；輸出一離開框架，例如寫外部資料庫或寄信，重跑就可能重複，要靠冪等（idempotent）寫入處理。',
       tradeoff: '框架內交易保證強，但只限框架內；冪等寫入開銷小，但要求重播順序相同、處理結果確定、沒有其他寫入者同時改同一個值。',
       questions: ['處理器失敗重啟時，會不會重寄通知，或重複寫外部資料庫？', '我們怎麼判斷某一筆訊息已經處理過？'],
       examples: [{ source: 'book', text: '書中的例子：寫外部資料庫時，把觸發這次寫入的 Kafka 訊息偏移量（offset）一起存；重啟後重播到已經處理過的偏移量，就跳過不再寫。' }],
     },
     'ch12-how-to-choose': {
       title: '怎麼選：讓系統同步與恰好一次',
-      conclusion: '要讓多個系統同步，不要雙寫（dual writes），改用變更資料擷取（change data capture），讓資料庫決定順序；下游不該依賴內部資料表時，加上外寄匣模式（outbox pattern）。恰好一次（exactly-once）的效果一出框架，就要靠冪等（idempotent）寫入。',
+      conclusion: '要讓多個系統同步，不要雙寫（dual writes），也就是由應用程式自己分別寫進每個系統；改用變更資料擷取（change data capture），把資料庫的每筆變更依序送給其他系統，讓資料庫決定順序。下游不該依賴內部資料表時，加上外寄匣模式（outbox pattern）：在同一筆交易（transaction）裡另寫一張專給下游讀的表。恰好一次（exactly-once）的效果一出串流處理框架，就要靠冪等（idempotent）寫入。',
       tradeoff: '變更資料擷取和外寄匣讓各系統一致，但多一套基礎設施和一段延遲；雙寫簡單，卻會靜默地不一致。',
       questions: ['這次要同步的系統，是用變更資料擷取（change data capture）、外寄匣模式（outbox pattern），還是應用程式自己雙寫（dual writes）？', '新的下游系統上線時，要怎麼拿到既有的全部資料？'],
       examples: [{ source: 'book', text: '書中的判準：新的衍生系統要從現有資料起步時，若變更日誌不完整，先取一份對應某個日誌位置的一致性快照，再從那個位置接著套用變更；若日誌做了日誌壓縮（log compaction），每個鍵都留著最新值，就從頭重讀即可。' }],

@@ -55,7 +55,7 @@
 | 並行寫入 | concurrent writes | 多個寫入在時間上重疊 |
 | 衝突解決 | conflict resolution | 決定並行修改如何合併或選擇 |
 | 最後寫入者勝 | last write wins | 依時間戳或順序只保留一個寫入 |
-| 一致性 | consistency | 交易前後仍滿足應用定義的不變條件 |
+| 一致性 | consistency | 交易前後仍滿足應用定義的不變條件（ACID 的 C）；談複製時，也泛指副本之間給得出多強的保證 |
 | 不變條件 | invariant | 資料必須永遠成立的規則，例如借貸平衡 |
 | 隔離 | isolation | 並行的交易彼此不互相干擾的程度 |
 | 可用性 | availability | 系統能回應請求的程度 |
@@ -184,3 +184,6 @@
 | 確認 | acknowledgment | 消費者告訴代理一則訊息已處理完 |
 | 日誌式訊息代理 | log-based message broker | 把訊息存成只能附加的日誌，消費者記住讀到的位置 |
 | 分區 | partition | 日誌或資料集切開的一塊；順序只在同一個分區內保證 |
+| 行程 | process | 作業系統裡執行中的程式；和遠端程序呼叫的「程序」（procedure）不同 |
+| 地區 | region | 一組資料中心所在的地理範圍；不寫「區域」 |
+| 線上交易處理 | online transaction processing (OLTP) | 應用程式每次只讀寫少量紀錄的工作負載 |

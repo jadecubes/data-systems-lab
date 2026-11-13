@@ -6,7 +6,7 @@ export const q4 = {
   tags: ['容錯', '單點故障', '故障注入', '可營運性', '可觀測性'],
   sections: {
     'ch2-fault-tolerance': {
-      conclusion: '容錯（fault tolerance）是某些故障發生時，系統仍持續提供服務；一壞就讓整個系統停擺的部分，叫單點故障（single point of failure）。容錯永遠只針對一定數量的某些故障，例如三個節點最多壞一個。刻意做故障注入（fault injection），例如隨機關掉程序，容錯機制才會一直被演練到。',
+      conclusion: '容錯（fault tolerance）是某些故障發生時，系統仍持續提供服務；一壞就讓整個系統停擺的部分，叫單點故障（single point of failure）。容錯永遠只針對一定數量的某些故障，例如三個節點最多壞一個。刻意做故障注入（fault injection），例如隨機關掉行程（process），容錯機制才會一直被演練到。',
       tradeoff: '容忍的故障種類與數量越多越可靠，成本也越高；容忍任意故障是不可能的。資料外洩這類無法補救的故障，預防比容忍好。',
       questions: ['我們的設計要容忍哪些故障？最多幾個同時發生？', '單點故障（single point of failure）在哪裡？', '有沒有實際關掉機器演練過？接手時會不會漏掉或重複處理？'],
       examples: [{ source: 'book', text: '書中的例子：負責更新時間軸的機器在投遞途中當機，另一台要接手，而且既不漏掉、也不重複投遞貼文，也就是恰好一次（exactly-once）。' }],

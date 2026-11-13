@@ -8,7 +8,7 @@ export const q8: Translation<typeof zh> = {
   sections: {
     'ch7-pros-and-cons-of-sharding': {
       conclusion: 'Sharding spreads data and writes across several nodes when the data volume or write throughput is too much for one machine; if the problem is only read volume, let replicas share the reads instead. If one machine can cope, do not shard: you must pick a partition key that is hard to change later, finding a record without knowing its shard means searching every shard, and writes across shards need a distributed transaction.',
-      tradeoff: 'Sharding gives horizontal scaling of data volume and writes, at the cost of complexity and slower queries, joins and transactions across shards.',
+      tradeoff: 'Sharding gives horizontal scaling of data volume and writes, at the cost of complexity and slower queries, joins (combining data from several tables) and transactions across shards.',
       questions: [
         'Is the bottleneck data volume, write throughput, or only reads? Do we really need sharding?',
         'What will the partition key be, and can we change it later?',

@@ -42,7 +42,7 @@ export const q10: Translation<typeof zh> = {
     },
     'ch9-fencing-off-zombies-and-delayed-requests': {
       conclusion:
-        'A node holding a lease can pause so long that the lease expires without it knowing, turning it into a zombie; a request it sent before crashing can also be delayed in the network and arrive much later. The fix is a fencing token: each time a lease is granted it comes with an increasing number, every write must carry it, and storage rejects any number smaller than one it has already seen.',
+        'A node holding a lease can pause so long that the lease expires without it knowing, turning it into a zombie; a request it sent before crashing can also be delayed in the network and arrive much later. The fix is a fencing token: each time the lock service grants a lease, it attaches an increasing number, every write must carry it, and storage rejects any number smaller than one it has already seen.',
       tradeoff:
         'Storage must check the token or support conditional writes; in return, neither zombies nor delayed requests can corrupt data. Merely shutting down a suspect node does not stop requests already on the network.',
       questions: [

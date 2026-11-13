@@ -29,7 +29,7 @@ export const q13: Translation<typeof zh> = {
     },
     'ch13-combining-specialized-tools-by-deriving-data': {
       conclusion: 'All writes first go into one system of record that decides their order; search indexes, caches and analytical systems are then derived in the same order. Derived data is mostly updated asynchronously, so by default a write is not guaranteed to be readable right away, and events in different services or shards have no shared order, so causality can be lost.',
-      tradeoff: 'Deriving data from a log recovers more easily than a distributed transaction and couples components more loosely, at the cost of read-your-writes consistency and a single order across services.',
+      tradeoff: 'Deriving data in the system of record’s order recovers more easily than a distributed transaction and couples components more loosely, at the cost of read-your-writes consistency and a single order across services.',
       questions: ['Which is the system of record for this feature?', 'Is the data elsewhere derived from it, or written separately by the application?', 'If two actions live in different services, could a downstream system process them in the opposite order?'],
       examples: [{ source: 'book', text: 'In the book’s example, someone unfriends their ex and then sends friends a message complaining about the ex. If the friend list and the messages are stored in different places and the order is lost, the notification service may process the message first and notify the ex.' }],
     },
