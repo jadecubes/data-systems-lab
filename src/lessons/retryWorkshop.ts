@@ -1,6 +1,6 @@
 // The D1 lab model: a browser sends "place order", the network decides each message's fate, the server writes.
 // It returns codes and numbers only; every word the reader sees comes from src/content/<lang>/labs/d1.ts.
-import { eventsThroughTask as throughTask, readLessonLocation, lessonHref } from './workshopHistory'
+import { readLessonLocation, lessonHref } from './workshopHistory'
 
 /** How the server recognises a resend: not at all, by an ID it makes on arrival, or by an ID the browser made. */
 export type Version = 'none' | 'server' | 'client'
@@ -400,6 +400,6 @@ export function outcome(version: Version, trace: readonly StepEvent[]): { orders
 }
 
 export const HISTORY_LIMIT = 160
-export const eventsThroughTask: (events: readonly LabEvent[], task: number) => LabEvent[] = throughTask
+export { eventsThroughTask } from './workshopHistory'
 export const labHref = (events: readonly LabEvent[]) => lessonHref('1', events)
 export const readLabLocation = (href: string) => readLessonLocation<LabEvent>('1', href, replay)

@@ -142,13 +142,13 @@ export const d1: Translation<typeof zh> = {
   },
   stage: {
     note: 'Simulation: nothing runs on its own, and you decide the network’s fate too. The SQL above comes from the example file, which the tests really run; it does not run here.',
+    replayNote: 'Simulation: the order is replayed under the new code. The SQL above comes from the example file, which the tests really run; it does not run here.',
     heading: 'One order, three roles',
     passed: 'This question has passed, so its steps stay as they are.',
     guided: 'Run the next step for me',
     guidedFirst: 'Not sure where to start? This takes one step and stops; press again for the next.',
     guidedMore: 'Takes one more step and stops.',
     guidedOff: 'Your order now differs from the standard one, so this cannot continue it. To follow it, press Reset this question.',
-    crux: 'The server has written the order. Next: does the network deliver the response, or lose it? That is the whole question.',
   },
   actors: {
     browser: { name: 'Browser', role: 'The user’s phone: sends the request, waits for the response, shows the screen.' },
@@ -249,7 +249,7 @@ export const d1: Translation<typeof zh> = {
     ordersBad: 'duplicate order',
     screen: 'What the screen says: ',
     screenNone: 'nothing yet',
-    screenTrue: 'matches the database',
+    screenTrue: 'true',
     screenLie: 'screen lies',
   },
 
@@ -385,7 +385,7 @@ export const d1: Translation<typeof zh> = {
     ready: 'Press Check this question.',
     choose: 'Check this question turns on once you choose an answer above.',
     chooseBoth: 'Check this question turns on once you choose both numbers.',
-    empty: 'No steps yet. Use the buttons in the simulation, or press Run the next step for me.',
+    empty: 'Use the buttons in the simulation, or press Run the next step for me.',
     waiting: 'Check this question turns on when every message has a fate, the server has handled every request that reached it, and the browser is no longer waiting.',
     unhandled: 'Check this question turns on once the server has handled every request that reached it: press Handle request {n} next.',
     next: 'Next question turns on when the check passes.',
@@ -394,10 +394,13 @@ export const d1: Translation<typeof zh> = {
   },
   notices: {
     reset: 'This question was reset. Questions you finished earlier are unchanged.',
-    restart: 'Started over: the steps and choices in every question were cleared; the acceptance criterion you wrote is kept.',
+    restart: 'Started over: the steps and choices in every question were cleared; the acceptance criterion you wrote is kept. To undo, press the browser’s Back button.',
     invalid: 'This link is invalid, or from an earlier version of the lab. The lab starts from the beginning; no old answer was counted.',
     limit: 'Too many steps. Press Reset this question to redo just this one, or Start over to begin again.',
     pickAnswer: 'Choose an answer, then press Check this question to see the result and why.',
+    answered: 'Answer chosen.',
+    noSteps: 'No steps yet.',
+    crux: 'The server has written the order. Next: does the network deliver the response, or lose it? That is the whole question.',
   },
 
   final: {

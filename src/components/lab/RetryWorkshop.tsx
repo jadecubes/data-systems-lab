@@ -118,11 +118,12 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
   // A notice is about the question being worked on, so a finished one read again shows its own verdict.
   const shownNotice = readOnly ? null : notice
   const verdictLine = verdictText(content, state)
+  // A notice outranks the verdict; the crux notice comes with a step, which clears the verdict, so it never hides one.
   const status =
-    (shownNotice && shownNotice !== 'crux' ? t.notices[shownNotice] : null) ??
+    (shownNotice && t.notices[shownNotice]) ??
     verdictLine?.body ??
-    (shownNotice === 'crux' ? t.stage.crux : building ? (last ? stepText(content, setup, last) : '') : answered(state) ? t.hints.ready : t.notices.pickAnswer)
-  const prefix = shownNotice && shownNotice !== 'crux' ? null : verdictLine?.prefix
+    (building ? (last ? stepText(content, setup, last) : t.notices.noSteps) : answered(state) ? t.notices.answered : t.notices.pickAnswer)
+  const prefix = shownNotice ? null : verdictLine?.prefix
 
   const single = singleAnswer[task]
   const radio = (name: string, value: string, label: string) => (
@@ -159,7 +160,7 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
               {building || checked ? (
                 <div className="lab-stage" role="group" aria-labelledby="stage-title">
                   <h4 id="stage-title">{t.stage.heading}</h4>
-                  <p className="lab-caption">{t.stage.note}</p>
+                  <p className="lab-caption">{building ? t.stage.note : t.stage.replayNote}</p>
                   {building && (
                     <>
                       <p className="lab-goal">{t.questions[task].goal}</p>
@@ -218,9 +219,8 @@ export function RetryWorkshop({ content, history, live }: { content: Content; hi
             content={content}
             readOnly={readOnly}
             liveTask={live.task}
-            canVerify={canVerify(state)}
+            canVerify={!verdict && canVerify(state)}
             checked={checked}
-            hasVerdict={!!verdict}
             hasNext={hasNext}
             canUndo={canUndo}
             canRestart={canRestart}

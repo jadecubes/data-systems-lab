@@ -93,9 +93,9 @@ export interface ControlsProps {
   content: Content
   readOnly: boolean
   liveTask: number
+  /** Answered, settled and not yet checked. */
   canVerify: boolean
   checked: boolean
-  hasVerdict: boolean
   hasNext: boolean
   /** Previous step and Reset this question: something has happened in this question. */
   canUndo: boolean
@@ -122,13 +122,13 @@ export function Controls(p: ControlsProps) {
   }
   return (
     <div className="lab-controls" role="group" aria-label={t.label}>
-      {/* Two groups that wrap as wholes, so no button is left alone on a row. */}
+      {/* Two pairs that wrap as wholes, so neither is split. Start over stands apart, unstretched: it clears every question. */}
       <div>
-        <button type="button" id="lab-verify" className="lab-primary" disabled={!p.canVerify || p.hasVerdict} aria-describedby="controls-hint" onClick={p.onVerify}>
+        <button type="button" id="lab-verify" className="lab-primary" disabled={!p.canVerify} aria-describedby="controls-hint" onClick={p.onVerify}>
           {t.verify}
         </button>
         {p.hasNext && (
-          <button type="button" disabled={!p.checked} aria-describedby="controls-hint" onClick={p.onNext}>
+          <button type="button" className={p.checked ? 'lab-primary' : undefined} disabled={!p.checked} aria-describedby="controls-hint" onClick={p.onNext}>
             {t.next}
           </button>
         )}
@@ -140,10 +140,10 @@ export function Controls(p: ControlsProps) {
         <button type="button" disabled={!p.canUndo} aria-describedby="controls-hint" onClick={p.onReset}>
           {t.reset}
         </button>
-        <button type="button" disabled={!p.canRestart} aria-describedby="controls-hint" onClick={p.onRestart}>
-          {t.restart}
-        </button>
       </div>
+      <button type="button" disabled={!p.canRestart} aria-describedby="controls-hint" onClick={p.onRestart}>
+        {t.restart}
+      </button>
       <p id="controls-hint" className="lab-hint">
         {p.hint.map((h) => (
           <span key={h}>{h}</span>

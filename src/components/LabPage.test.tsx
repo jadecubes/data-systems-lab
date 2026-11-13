@@ -163,7 +163,7 @@ test('"Run the next step for me" stops when the reader leaves the standard order
   fireEvent.click(button(en.stage.guided))
   fireEvent.click(button(en.stage.guided))
   fireEvent.click(button(en.stage.guided))
-  expect(screen.getByRole('status')).toHaveTextContent(en.stage.crux)
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.crux)
   fireEvent.click(button(en.buttons.timeout))
   expect(button(en.stage.guided)).toBeDisabled()
   expect(button(en.stage.guided)).toHaveAccessibleDescription(en.stage.guidedOff)
@@ -229,13 +229,27 @@ test('the two worlds line up: the browser\'s rows read the same, and each stretc
   expect(worlds().map(rows).map((r) => r[1])).toEqual([en.worlds.hiddenNone, hidden(1)])
 })
 
-test('in questions 3 to 5, once an answer is chosen the status line asks for the check, not for an answer', () => {
+test('in questions 3 to 5, once an answer is chosen the status line says so, not asks for one', () => {
   open([...throughQ2])
   expect(screen.getByRole('status')).toHaveTextContent(en.notices.pickAnswer)
   fireEvent.click(screen.getByRole('radio', { name: en.answers.q3.options.failed }))
   fireEvent.click(button(en.controls.verify))
   fireEvent.click(screen.getByRole('radio', { name: en.answers.q3.options.placed }))
-  expect(screen.getByRole('status')).toHaveTextContent(en.hints.ready)
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.answered)
+})
+
+test('a question with no steps says so in the status line, where focus lands after Previous step', () => {
+  open([])
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.noSteps)
+  fireEvent.click(button(en.stage.guided))
+  fireEvent.click(button(en.controls.undo))
+  expect(document.activeElement).toHaveTextContent(en.notices.noSteps)
+})
+
+test('a replayed run does not say the reader decides the network', () => {
+  open([...throughQ2, 'q3-unknown', 'verify', 'next', 'q4-blocked', 'verify'])
+  expect(screen.getByText(en.stage.replayNote)).toBeInTheDocument()
+  expect(screen.queryByText(en.stage.note)).not.toBeInTheDocument()
 })
 
 test('question 3 compares the chosen message against both worlds', () => {
@@ -359,9 +373,9 @@ test('the language switch opens the lab in the other language at the same point'
 test('the crux notice comes once, when the server has just written the first order', () => {
   open([])
   for (let i = 0; i < 3; i++) fireEvent.click(button(en.stage.guided))
-  expect(screen.getByRole('status')).toHaveTextContent(en.stage.crux)
+  expect(screen.getByRole('status')).toHaveTextContent(en.notices.crux)
   for (let i = 3; i < 8; i++) fireEvent.click(button(en.stage.guided))
-  expect(screen.getByRole('status')).not.toHaveTextContent(en.stage.crux)
+  expect(screen.getByRole('status')).not.toHaveTextContent(en.notices.crux)
 })
 
 test('a locked question\'s preview shows its question but not its instructions, which name earlier answers', () => {
