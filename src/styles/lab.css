@@ -1,0 +1,763 @@
+/* The D1 lab. Colours come from app.css; the state colours below are the only new ones. */
+:root {
+  --ok-text: #1a6b35;
+  --bad-text: #a1262b;
+  --bad-soft: #fdeceb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ok-text: #7fd39b;
+    --bad-text: #ff9b94;
+    --bad-soft: #3a2224;
+  }
+}
+
+.lab-topic-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lab-link {
+  margin: 0 0 1.25rem;
+  font-weight: 600;
+}
+
+.card .lab-link {
+  margin: 0.75rem 0 0;
+}
+
+.lab-setup {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.lab-setup > div {
+  display: grid;
+  gap: 0.15rem 1rem;
+}
+
+.lab-setup dt {
+  font-weight: 600;
+}
+
+.lab-setup dd {
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .lab-setup > div {
+    grid-template-columns: 8rem minmax(0, 1fr);
+  }
+}
+
+.lab-caption,
+.lab-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.lab-alert {
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--bad-text);
+  background: var(--bad-soft);
+}
+
+.lab-point {
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+}
+
+/*
+ * A wide table scrolls inside its own box, never the page: its columns are compared across rows, so they are not
+ * stacked. A shadow at an edge shows there is more that way; the covers move with the content and hide it at the ends.
+ */
+.table-scroll {
+  --edge: color-mix(in srgb, var(--text) 25%, transparent);
+  max-width: 100%;
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--bg) 40%, transparent) left / 1.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 40%, transparent) right / 1.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, var(--edge), transparent) left / 0.6rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, var(--edge), transparent) right / 0.6rem 100% no-repeat scroll;
+}
+
+.lab-workshop table,
+.lab-idea {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.lab-workshop caption,
+.lab-idea caption {
+  padding-bottom: 0.35rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.lab-workshop th,
+.lab-workshop td,
+.lab-idea th,
+.lab-idea td {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.lab-idea th[scope='row'] strong,
+.lab-idea th[scope='row'] span {
+  display: block;
+}
+
+.lab-idea th[scope='row'] span {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.lab-anchors {
+  margin-top: 1rem;
+}
+
+.lab-anchors summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.lab-anchors li strong {
+  margin-right: 0.5rem;
+}
+
+/* Progress strip: checked · current · ready · locked; current and ready look the same. */
+.lab-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lab-workshop .lab-progress button {
+  display: grid;
+  align-content: start;
+  gap: 0.1rem;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-weight: 400;
+  text-align: left;
+}
+
+.lab-progress .step-number {
+  font-weight: 700;
+}
+
+.lab-progress .step-title {
+  font-size: 0.9rem;
+}
+
+.lab-progress .step-status {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.lab-workshop .lab-progress .step-current,
+.lab-workshop .lab-progress .step-ready {
+  border: 2px solid var(--accent);
+}
+
+.lab-progress .step-checked .step-status {
+  color: var(--ok-text);
+}
+
+.lab-workshop .lab-progress .step-locked {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.lab-workshop .lab-progress .step-viewing {
+  background: var(--accent-soft);
+}
+
+/* "Showing now" looks the same on a finished card and a locked one. */
+.lab-workshop .lab-progress .step-viewing .step-status {
+  color: var(--text);
+}
+
+.kicker {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lab-question h3,
+.lab-preview h3 {
+  margin-top: 0.25rem;
+}
+
+.lab-readonly-note {
+  font-weight: 600;
+}
+
+/* Buttons that act; a disabled one has its reason beside it. */
+.lab-workshop button {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lab-workshop button:disabled {
+  border-color: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.lab-workshop .lab-primary:not(:disabled) {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.lab-action {
+  display: grid;
+  justify-items: start;
+  gap: 0.2rem;
+  margin: 0.5rem 0;
+}
+
+.lab-action small {
+  color: var(--muted);
+}
+
+.lab-experiment {
+  display: grid;
+  /* Not the content's width: the SQL listing scrolls inside its own box instead of widening the page. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.lab-phone {
+  margin: 0;
+}
+
+.lab-phone figcaption,
+.code-label {
+  margin: 0 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.phone-screen {
+  display: grid;
+  max-width: 18rem;
+  place-items: center;
+  min-height: 8rem;
+  margin: 0;
+  padding: 1rem;
+  border: 6px solid var(--text);
+  border-radius: 18px;
+  background: var(--surface);
+  font-weight: 600;
+  text-align: center;
+}
+
+.phone-screen[data-claim='idle'],
+.phone-screen[data-claim='none'] {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.phone-screen[data-claim='failed'] {
+  color: var(--bad-text);
+}
+
+.phone-screen[data-claim='placed'] {
+  color: var(--ok-text);
+}
+
+.lab-code h4,
+.lab-stage h4,
+.lab-database h4,
+.lab-worlds h4 {
+  margin: 0 0 0.5rem;
+}
+
+.lab-code pre {
+  margin: 0 0 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+}
+
+/* SQL lines keep their indentation and scroll inside the box; each note wraps on its own row under its line, in view. */
+.code-listing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.8rem;
+}
+
+/* Long lines wrap with a hanging indent rather than scroll: a cut-off line looked complete on a phone. */
+.code-listing code {
+  padding-left: 2ch;
+  text-indent: -2ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-note {
+  padding-left: 1.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.code-note:not(:empty) {
+  margin-bottom: 0.35rem;
+}
+
+.lab-code [data-active] {
+  outline: 2px solid var(--accent);
+}
+
+.lab-stage {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.lab-goal {
+  font-weight: 600;
+}
+
+.lab-howto {
+  padding-left: 1.25rem;
+}
+
+.lab-roles {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+@media (min-width: 640px) {
+  .lab-roles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.lab-role {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.lab-role h4 {
+  margin: 0;
+}
+
+.lab-role > p {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lab-messages {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lab-messages li {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.lab-message-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.lab-quiet {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Timeline: three columns, one per role; each step sits in its role's column, under its step number. */
+.lab-timeline {
+  margin: 1rem 0;
+}
+
+/* The width the columns get; the head and steps switch to one column below (a container cannot also be a subgrid). */
+.timeline-body {
+  container-type: inline-size;
+}
+
+.lab-timeline figcaption {
+  display: grid;
+  gap: 0.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.lab-timeline figcaption span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.timeline-head,
+.timeline-steps li {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 0.35rem;
+}
+
+.timeline-head span {
+  padding: 0.25rem;
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.timeline-head small {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.timeline-steps {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-number {
+  grid-column: 1 / -1;
+  justify-self: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.timeline-box {
+  overflow-wrap: anywhere;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.85rem;
+}
+
+.timeline-steps li[data-actor='browser'] > .timeline-box {
+  grid-column: 1;
+}
+
+.timeline-steps li[data-actor='network'] > .timeline-box {
+  grid-column: 2;
+}
+
+.timeline-steps li[data-actor='server'] > .timeline-box {
+  grid-column: 3;
+}
+
+/* What the browser cannot see: dashed and muted, its steps one click away. */
+.timeline-head .hidden-from-browser,
+li.hidden-from-browser .timeline-box {
+  border: 1px dashed var(--border);
+  background: var(--bg);
+  color: var(--muted);
+}
+
+li.hidden-from-browser .timeline-box {
+  grid-column: 2 / -1;
+}
+
+li.hidden-from-browser summary {
+  cursor: pointer;
+}
+
+/* Room for the triangle the other rows have, so "0" lines up with an unopened count in the other world. */
+li.hidden-from-browser > span.timeline-box {
+  padding-inline-start: calc(0.5rem + 1.1em);
+}
+
+li.hidden-from-browser ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.25rem;
+}
+
+/* Too narrow for three readable columns (a phone at large text): one column, each step naming its role. */
+@container (max-width: 17em) {
+  .timeline-head {
+    display: none;
+  }
+
+  .timeline-steps li,
+  .timeline-steps li[data-actor] > .timeline-box,
+  li.hidden-from-browser .timeline-box {
+    grid-template-columns: minmax(0, 1fr);
+    grid-column: 1;
+  }
+
+  .timeline-box > .visually-hidden {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    font-weight: 600;
+    white-space: normal;
+  }
+}
+
+.timeline-empty {
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  /* A narrow timeline column at large text sizes is narrower than a tag's longest word. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  margin-left: 0.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tag-late {
+  background: var(--accent-soft);
+}
+
+.tag-bad {
+  background: var(--bad-soft);
+  color: var(--bad-text);
+}
+
+.lab-database {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  /* Long English words ("uniqueness") would otherwise widen a two-column table past a phone at large text. */
+  hyphens: auto;
+}
+
+.lab-database code {
+  font-size: 0.85rem;
+}
+
+.row-bad td,
+.verdict-bad {
+  color: var(--bad-text);
+}
+
+.lab-workshop td.verdict-bad {
+  background: var(--bad-soft);
+}
+
+.verdict-ok {
+  color: var(--ok-text);
+}
+
+.lab-rule h5 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.lab-rule p {
+  margin: 0;
+}
+
+.lab-worlds {
+  margin: 1rem 0;
+}
+
+.worlds-pair {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .worlds-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Titles of different lengths must not shift one timeline down: caption and body share rows across both. */
+  .worlds-pair .lab-timeline {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}
+
+/* Answer rows look like inputs: bordered rows with the control first. */
+.lab-choices,
+.lab-checklist {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.lab-choices legend,
+.lab-checklist legend {
+  font-weight: 600;
+}
+
+.lab-choices label,
+.lab-checklist label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.lab-choices input,
+.lab-checklist input {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.3rem;
+}
+
+.lab-choice-pair {
+  display: grid;
+  gap: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .lab-choice-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lab-feedback {
+  min-height: 1.6em;
+  font-weight: 600;
+}
+
+.lab-feedback[data-verdict='ok'] {
+  color: var(--ok-text);
+}
+
+.lab-feedback[data-verdict='not-yet'] {
+  color: var(--bad-text);
+}
+
+.lab-controls,
+.lab-controls > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* A button that wraps onto its own row widens with it instead of looking stranded. */
+.lab-controls > div > button {
+  flex: 1 1 auto;
+}
+
+.lab-hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* One sentence per span: English separates them with a space; Chinese needs none. */
+.lab-hint span + span::before {
+  content: ' ';
+}
+
+:lang(zh-TW) .lab-hint span + span::before {
+  content: '';
+}
+
+.lab-reveal {
+  margin: 1rem 0;
+}
+
+.lab-reveal th:last-child,
+.lab-reveal td:last-child {
+  min-width: 5em;
+}
+
+.lab-dry-run,
+.lab-final,
+.lab-related {
+  margin-top: 2rem;
+}
+
+.lab-dry-run td strong,
+.lab-dry-run td small {
+  display: block;
+}
+
+.lab-dry-run td small {
+  color: var(--muted);
+}
+
+.lab-field {
+  display: grid;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+.lab-field textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.lab-sample {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--accent-soft);
+}
+
+.lab-related ul {
+  padding-left: 1.25rem;
+}
+
+/* Headings and the feedback take focus when the control used last goes away; keep the ring off their text. */
+.lab-workshop [tabindex='-1']:focus-visible {
+  outline-offset: 4px;
+}

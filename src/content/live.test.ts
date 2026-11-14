@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { isLiveTopic, liveTopics, mapLayout, mapOrder, neighbours, sectionsOf } from './live'
+import { isLiveTopic, labOf, liveLabs, liveTopics, mapLayout, mapOrder, neighbours, sectionsOf } from './live'
 import { topics } from './structure'
 
 test('map order follows the groups, then the second line', () => {
@@ -33,4 +33,13 @@ test('isLiveTopic rejects unknown and not-yet-live topics', () => {
   expect(isLiveTopic('T5', 1)).toBe(false)
   expect(isLiveTopic('X9', 6)).toBe(false)
   expect(isLiveTopic('toString', 6)).toBe(false)
+})
+
+test('a topic links to its lab only once the lab is live', () => {
+  expect(labOf('T3', 2)).toBeUndefined()
+  expect(labOf('T3', 3)).toBe('d1')
+  expect(labOf('T4', 3)).toBe('d1')
+  expect(labOf('T5', 3)).toBeUndefined()
+  expect(liveLabs(3)).toEqual(['d1'])
+  expect(liveLabs(2)).toEqual([])
 })

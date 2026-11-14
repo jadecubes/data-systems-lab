@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test'
-import { pageTitle } from '../src/app/App'
+import { pageTitle } from '../src/app/title'
 import { parseRoute, routePath, type PageRoute } from '../src/app/routes'
 import { CURRENT_PHASE } from '../src/config'
-import { liveTopics, sectionsOf } from '../src/content/live'
-import { contents } from '../src/i18n/content'
+import { liveLabs, liveTopics, sectionsOf } from '../src/content/live'
+import { texts as contents } from '../src/i18n/text'
 import { langs, otherLang } from '../src/i18n/langs'
 import { BASE, CJK, inspect } from './helpers'
 
-test('every internal link from the maps loads directly; every live topic is reached with all its sections', async ({ page, request }) => {
+test('every internal link from the maps loads directly; every live topic is reached with all its sections, and every live lab', async ({ page, request }) => {
   const queue = langs.map((lang) => routePath({ kind: 'map', lang }, BASE))
   const seen = new Set<string>()
   while (queue.length) {
@@ -32,6 +32,8 @@ test('every internal link from the maps loads directly; every live topic is reac
   const topicPaths = [...seen].filter((u) => u.includes('/topics/')).sort()
   const expected = langs.flatMap((lang) => liveTopics(CURRENT_PHASE).map((topic) => routePath({ kind: 'topic', lang, topic }, BASE)))
   expect(topicPaths).toEqual(expected.sort())
+  const labPaths = [...seen].filter((u) => u.includes('/labs/')).sort()
+  expect(labPaths).toEqual(langs.flatMap((lang) => liveLabs(CURRENT_PHASE).map((lab) => routePath({ kind: 'lab', lang, lab }, BASE))).sort())
 
   // A prerendered page whose text or structure differs from its first client render makes React throw it away and
   // render again (attribute differences are caught by the hydration unit test in App.test.tsx).

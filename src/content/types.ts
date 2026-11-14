@@ -58,7 +58,7 @@ export type TopicText<T extends TopicId> = {
 }
 
 /** Fields holding codes rather than text: the same in every language, never translated. */
-export const codeKeys = ['source', 'lanes', 'from', 'to', 'at', 'fate'] as const
+export const codeKeys = ['source', 'lanes', 'from', 'to', 'at', 'fate', 'match'] as const
 
 /**
  * The English shape derived from the Chinese one: every string becomes `string`, while codes and tuple

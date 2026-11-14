@@ -42,8 +42,9 @@ export const topics = {
   Q16: { zone: 'second', phase: 4 },
 } as const satisfies { readonly [T in TopicId]: Placement }
 
+/** `topics` are the ones a lab practises and links from; `related` are read next, linked from the lab's end. */
 export const labs = {
-  d1: { topics: ['T3', 'T4'], phase: 3 },
-  d2: { topics: ['T5'], phase: 5 },
-  d3: { topics: ['T6', 'T7'], phase: 6 },
-} as const satisfies Record<LabId, { readonly topics: readonly TopicId[]; readonly phase: Phase }>
+  d1: { topics: ['T3', 'T4'], related: ['T5', 'T6', 'T7'], phase: 3 },
+  d2: { topics: ['T5'], related: [], phase: 5 },
+  d3: { topics: ['T6', 'T7'], related: [], phase: 6 },
+} as const satisfies Record<LabId, { readonly topics: readonly TopicId[]; readonly related: readonly TopicId[]; readonly phase: Phase }>
