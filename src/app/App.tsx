@@ -1,3 +1,4 @@
+import { GroupPage } from '../components/GroupPage'
 import { IndexToggle } from '../components/IndexToggle'
 import { LabPage } from '../components/LabPage'
 import { LanguageSwitch } from '../components/LanguageSwitch'
@@ -36,6 +37,8 @@ export function App({ route, contents, phase, base }: { route: PageRoute | null;
         <main id="main">
           {route.kind === 'map' ? (
             <MapPage content={content} phase={phase} base={base} />
+          ) : route.kind === 'group' ? (
+            <GroupPage content={content} group={route.group} phase={phase} base={base} />
           ) : route.kind === 'lab' ? (
             <LabPage content={content} lab={route.lab} phase={phase} base={base} />
           ) : (

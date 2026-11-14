@@ -1,33 +1,25 @@
 import { expect, test } from '@playwright/test'
 import { INDEX_KEY } from '../src/app/indexToggle'
 import { routePath } from '../src/app/routes'
-import { sectionsOf } from '../src/content/live'
+import { CURRENT_PHASE } from '../src/config'
+import { mapLayout } from '../src/content/live'
 import { texts as contents } from '../src/i18n/text'
-import { interpolate } from '../src/i18n/format'
 import { langs, type Lang } from '../src/i18n/langs'
 import { BASE } from './helpers'
 
 const { ui, topics } = contents.en
 
-test('every level of the site index folds and unfolds, and only an open topic shows its sections', async ({ page }, info) => {
+test('a group in the site index opens its own page, showing that group\'s topics only', async ({ page }, info) => {
   await page.goto(routePath({ kind: 'topic', lang: 'en', topic: 'T4' }, BASE))
   const index = page.locator('.site-index')
   // On a phone the index starts closed behind its own toggle; on wide screens it is always open.
   if (info.project.name === 'mobile') await index.locator('> summary').click()
   const nav = page.getByRole('navigation', { name: ui.index.label })
-  const sectionLink = (topic: 'T3' | 'T4') => nav.locator(`a[href$="#${sectionsOf(topic)[0].id}"]`)
-
-  await expect(sectionLink('T4')).toBeVisible()
-  await expect(sectionLink('T3')).toBeHidden()
-  await nav.getByLabel(interpolate(ui.index.sections, { topic: topics.T3!.title })).click()
-  await expect(sectionLink('T3')).toBeVisible()
-
-  await nav.getByText(ui.groups.anomalies).click()
-  await expect(nav.getByRole('link', { name: topics.T3!.title })).toBeHidden()
-  await nav.getByText(ui.groups.anomalies).click()
-  await expect(nav.getByRole('link', { name: topics.T3!.title })).toBeVisible()
-  // The map is reached from the site name and the pager; the index lists only groups and topics while one zone is live.
-  await expect(nav.locator(`a[href="${routePath({ kind: 'map', lang: 'en' }, BASE)}"]`)).toHaveCount(0)
+  await nav.getByRole('link', { name: ui.groups.flow }).click()
+  await expect(page).toHaveURL(routePath({ kind: 'group', lang: 'en', group: 'flow' }, BASE))
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.groups.flow)
+  const flow = mapLayout(CURRENT_PHASE).find(({ group }) => group === 'flow')!.topics
+  await expect(page.locator('main .card-title')).toHaveText(flow.map((t) => topics[t]!.title))
 })
 
 test('on a wide screen the index hides and shows, and stays hidden on the next page', async ({ page }, info) => {

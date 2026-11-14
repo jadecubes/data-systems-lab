@@ -2,7 +2,7 @@ import { routePath } from '../app/routes'
 import { labOf, neighbours, sectionsOf } from '../content/live'
 import type { TopicId } from '../content/sections'
 import type { Phase } from '../content/types'
-import { labTitle, sectionText, type Content } from '../i18n/content'
+import { labTitle, sectionText, sectionTitle, type Content } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 import { SectionBlock } from './SectionBlock'
 
@@ -34,6 +34,21 @@ export function TopicPage({ content, topic, phase, base }: { content: Content; t
         <p className="lab-link">
           <a href={routePath({ kind: 'lab', lang, lab }, base)}>{interpolate(ui.lab.link, { title: labTitle(content, lab) })}</a>
         </p>
+      )}
+      {/* One section needs no list: it would only repeat the heading below it. */}
+      {blocks.length > 1 && (
+        <nav className="topic-sections" aria-labelledby="topic-sections-label">
+          <span id="topic-sections-label" className="learn-label">
+            {ui.nav.sections}
+          </span>
+          <ol>
+            {blocks.map(({ meta, text }) => (
+              <li key={meta.id}>
+                <a href={`${link(topic)}#${meta.id}`}>{sectionTitle(content, meta, text).title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
       )}
       {blocks.map(({ meta, text }) => (
         <SectionBlock key={meta.id} content={content} meta={meta} text={text} />

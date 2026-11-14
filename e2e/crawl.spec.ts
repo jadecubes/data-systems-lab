@@ -2,12 +2,14 @@ import { expect, test } from '@playwright/test'
 import { pageTitle } from '../src/app/title'
 import { parseRoute, routePath, type PageRoute } from '../src/app/routes'
 import { CURRENT_PHASE } from '../src/config'
-import { liveLabs, liveTopics, sectionsOf } from '../src/content/live'
+import { liveGroups, liveLabs, liveTopics, sectionsOf } from '../src/content/live'
 import { texts as contents } from '../src/i18n/text'
 import { langs, otherLang } from '../src/i18n/langs'
 import { BASE, CJK, inspect } from './helpers'
 
 test('every internal link from the maps loads directly; every live topic is reached with all its sections, and every live lab', async ({ page, request }) => {
+  // Every page is loaded, checked with axe and resized: about two seconds each, for over sixty pages.
+  test.setTimeout(240_000)
   const queue = langs.map((lang) => routePath({ kind: 'map', lang }, BASE))
   const seen = new Set<string>()
   while (queue.length) {
@@ -32,6 +34,8 @@ test('every internal link from the maps loads directly; every live topic is reac
   const topicPaths = [...seen].filter((u) => u.includes('/topics/')).sort()
   const expected = langs.flatMap((lang) => liveTopics(CURRENT_PHASE).map((topic) => routePath({ kind: 'topic', lang, topic }, BASE)))
   expect(topicPaths).toEqual(expected.sort())
+  const groupPaths = [...seen].filter((u) => u.includes('/groups/')).sort()
+  expect(groupPaths).toEqual(langs.flatMap((lang) => liveGroups(CURRENT_PHASE).map((group) => routePath({ kind: 'group', lang, group }, BASE))).sort())
   const labPaths = [...seen].filter((u) => u.includes('/labs/')).sort()
   expect(labPaths).toEqual(langs.flatMap((lang) => liveLabs(CURRENT_PHASE).map((lab) => routePath({ kind: 'lab', lang, lab }, BASE))).sort())
 

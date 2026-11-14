@@ -6,6 +6,7 @@ import { renderToString } from 'react-dom/server'
 import { afterEach, expect, test, vi } from 'vitest'
 import { SectionBlock } from '../components/SectionBlock'
 import { liveTopics, sectionsOf } from '../content/live'
+import { groups } from '../content/structure'
 import { contentFor, sectionText } from '../i18n/content'
 import { interpolate } from '../i18n/format'
 import { langs } from '../i18n/langs'
@@ -30,12 +31,15 @@ const routes: (PageRoute | null)[] = [
     { kind: 'map', lang },
     { kind: 'topic', lang, topic: 'T3' },
     { kind: 'topic', lang, topic: 'T4' },
+    { kind: 'topic', lang, topic: 'Q7' },
+    { kind: 'group', lang, group: 'storage' },
   ]),
 ]
 
 test.each(routes)('no hard-coded text: every visible string and label comes from content (%o)', (route) => {
   const pseudo = pseudoContents()
-  const { container } = render(<App route={route} contents={pseudo} phase={1} base={base} />)
+  // The current phase, so every group heading is checked too.
+  const { container } = render(<App route={route} contents={pseudo} phase={4} base={base} />)
   const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT)
   for (let n = walker.nextNode(); n; n = walker.nextNode()) expect(unwrapped(n.textContent!)).toBe('')
   for (const el of container.querySelectorAll('[aria-label],[alt],[title]')) {
@@ -54,9 +58,8 @@ test('no hard-coded text in a section block with no book title', () => {
   for (let n = walker.nextNode(); n; n = walker.nextNode()) expect(unwrapped(n.textContent!)).toBe('')
 })
 
-test('map at phase 1: one zone, left unnamed; one group, two folded cards, each with a read link to its base-absolute topic path', () => {
+test('map at phase 1: one group, two folded cards, each with a read link to its base-absolute topic path', () => {
   const { container } = render(<App route={{ kind: 'map', lang: 'zh-TW' }} contents={contents} phase={1} base={base} />)
-  // With a single live zone its name says nothing the page does not, so the group heading is the top level.
   expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual(['使用者會碰到的異常'])
   expect(screen.queryAllByRole('heading', { level: 3 })).toHaveLength(0)
   const cards = [...container.querySelectorAll('.card')]
@@ -93,35 +96,54 @@ test.each(langs)('a topic page lists what it teaches under its summary (%s)', (l
   expect(within(list).getAllByRole('listitem').map((li) => li.textContent)).toEqual(topics.T4!.tags)
 })
 
-test('topic page has one block per section, and the site index opens the path to the current topic and its sections', () => {
-  const { container } = render(<App route={{ kind: 'topic', lang: 'en', topic: 'T3' }} contents={contents} phase={1} base={base} />)
+test.each(langs)('a topic page has one block per section and lists them under its summary, each linking to its block (%s)', (lang) => {
+  const { container } = render(<App route={{ kind: 'topic', lang, topic: 'T3' }} contents={contents} phase={1} base={base} />)
   const ids = sectionsOf('T3').map((s) => s.id)
   expect([...container.querySelectorAll('section[id^="ch"]')].map((s) => s.id)).toEqual(ids)
-  const index = screen.getByRole('navigation', { name: 'Contents' })
-  const current = within(index).getByRole('link', { current: 'page' })
-  expect(current).toHaveAttribute('href', '/b/en/topics/t3/')
-  const item = current.closest('li')!
-  expect(within(item).getAllByRole('link').slice(1).map((a) => a.getAttribute('href'))).toEqual(ids.map((id) => `/b/en/topics/t3/#${id}`))
-  // Every enclosing level and the current topic's sections are open; the other topic's sections are not.
-  for (let el = item.parentElement; el && el !== index; el = el.parentElement) if (el.tagName === 'DETAILS') expect(el).toHaveAttribute('open')
-  expect(item.querySelector('details')).toHaveAttribute('open')
-  const other = within(index).getByRole('link', { name: contents.en.topics.T4!.title }).closest('li')!
-  expect(other.querySelector('details')).not.toHaveAttribute('open')
+  const list = screen.getByRole('navigation', { name: contents[lang].ui.nav.sections })
+  expect(within(list).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(ids.map((id) => `/b/${lang}/topics/t3/#${id}`))
 })
 
-test.each(langs)('the site index lists every live topic in map order and no map entry, with each topic folded on the map (%s)', (lang) => {
-  render(<App route={{ kind: 'map', lang }} contents={contents} phase={1} base={base} />)
+test.each(langs)('a topic with one section has no list of its sections: it would only repeat the heading below it (%s)', (lang) => {
+  expect(sectionsOf('T11')).toHaveLength(1)
+  render(<App route={{ kind: 'topic', lang, topic: 'T11' }} contents={contents} phase={4} base={base} />)
+  expect(screen.queryByRole('navigation', { name: contents[lang].ui.nav.sections })).toBeNull()
+})
+
+test.each(langs)('the site index is one short list: each live group, linking to its own page; no topics, nothing folds (%s)', (lang) => {
   const { ui } = contents[lang]
+  render(<App route={{ kind: 'map', lang }} contents={contents} phase={4} base={base} />)
   const index = screen.getByRole('navigation', { name: ui.index.label })
-  const topicLinks = within(index).getAllByRole('link').filter((a) => !a.getAttribute('href')!.includes('#'))
-  expect(topicLinks.map((a) => a.getAttribute('href'))).toEqual(liveTopics(1).map((t) => `/b/${lang}/topics/${t.toLowerCase()}/`))
-  // A single live zone is not listed: its group comes first, open, with a toggle named after it; each topic's sections toggle is closed.
-  expect(index.firstElementChild).toHaveTextContent(ui.groups.anomalies)
-  expect(within(index).getByText(ui.groups.anomalies).closest('details')).toHaveAttribute('open')
-  for (const topic of liveTopics(1)) {
-    const toggle = within(index).getByLabelText(interpolate(ui.index.sections, { topic: contents[lang].topics[topic]!.title }))
-    expect(toggle.closest('details')).not.toHaveAttribute('open')
-  }
+  const links = within(index).getAllByRole('link')
+  expect(links.map((a) => a.textContent)).toEqual(groups.map((g) => ui.groups[g]))
+  expect(links.map((a) => a.getAttribute('href'))).toEqual(groups.map((g) => `/b/${lang}/groups/${g}/`))
+  expect(index.querySelectorAll('details')).toHaveLength(0)
+  // On the map no group is the current one.
+  for (const a of links) expect(a).not.toHaveAttribute('aria-current')
+})
+
+test('a group page shows only the live topics of its group', () => {
+  const { container } = render(<App route={{ kind: 'group', lang: 'en', group: 'anomalies' }} contents={contents} phase={1} base={base} />)
+  expect([...container.querySelectorAll('main .card-read')].map((a) => a.getAttribute('href'))).toEqual(['/b/en/topics/t3/', '/b/en/topics/t4/'])
+})
+
+test.each(langs)('a group page shows that group only: its name, then its topic cards in map order (%s)', (lang) => {
+  const { ui } = contents[lang]
+  const route = { kind: 'group', lang, group: 'storage' } as const
+  const { container } = render(<App route={route} contents={contents} phase={4} base={base} />)
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(ui.groups.storage)
+  expect([...container.querySelectorAll('main .card-read')].map((a) => a.getAttribute('href'))).toEqual(
+    ['Q5', 'Q6', 'Q7', 'Q8'].map((t) => `/b/${lang}/topics/${t.toLowerCase()}/`),
+  )
+  const index = screen.getByRole('navigation', { name: ui.index.label })
+  expect(within(index).getByRole('link', { name: ui.groups.storage })).toHaveAttribute('aria-current', 'page')
+  expect(pageTitle(route, contents)).toBe(interpolate(ui.pageTitle.group, { group: ui.groups.storage, site: ui.siteTitle }))
+})
+
+test('the site index lists only live groups, so it never links to a group page that does not exist', () => {
+  render(<App route={{ kind: 'map', lang: 'en' }} contents={contents} phase={1} base={base} />)
+  const index = screen.getByRole('navigation', { name: contents.en.ui.index.label })
+  expect(within(index).getAllByRole('link').map((a) => a.textContent)).toEqual([contents.en.ui.groups.anomalies])
 })
 
 test.each(langs)('a menu button named after the index hides and shows it, and remembers the choice for the next page (%s)', (lang) => {
@@ -182,7 +204,8 @@ test.each(langs)('on the map, the site name in the header is marked as the curre
 // The built site hydrates prerendered pages. In production React keeps the server's attributes when they differ,
 // so a wrong href, lang or aria-current would ship silently; development React reports every difference.
 test.each(routes.filter((route) => route !== null))('the prerendered page hydrates with nothing different, attributes included (%o)', (route) => {
-  const app = <App route={route} contents={contents} phase={1} base={base} />
+  // The current phase, so every route in the list is live.
+  const app = <App route={route} contents={contents} phase={4} base={base} />
   const container = document.createElement('div')
   container.innerHTML = renderToString(app)
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
@@ -302,14 +325,6 @@ test('zh-TW shows the book title beside the Chinese name, marked as English', ()
   expect(within(heading).getByText('Unreliable Networks')).toHaveAttribute('lang', 'en')
 })
 
-// Everything on the site is worth knowing, so pages carry no ratings; the codes stay in sections.ts as selection notes.
-test.each(langs)('a topic page shows no ratings (%s)', (lang) => {
-  const { container } = render(<App route={{ kind: 'topic', lang, topic: 'T1' }} contents={contents} phase={2} base={base} />)
-  // This section's platform rating differs from its zone's, which used to add a note under its heading.
-  expect(container.querySelector('[id="ch2-how-important-is-reliability"]')).not.toBeNull()
-  expect(container).not.toHaveTextContent(lang === 'zh-TW' ? '評級' : /\bratings?\b/i)
-})
-
 test('prev/next only among live topics', () => {
   const { unmount } = render(<App route={{ kind: 'topic', lang: 'en', topic: 'T3' }} contents={contents} phase={1} base={base} />)
   let pager = screen.getByRole('navigation', { name: 'Topic navigation' })
@@ -331,13 +346,18 @@ test('the language switch is a select of every language with this page\'s langua
 })
 
 test('before scripts run, the prerendered switch is a link to the same page in the other language', () => {
-  const page = document.createElement('div')
-  page.innerHTML = renderToString(<App route={{ kind: 'topic', lang: 'zh-TW', topic: 'T3' }} contents={contents} phase={1} base={base} />)
-  const nav = within(page).getByRole('navigation', { name: '切換語言' })
-  expect(within(nav).queryByRole('combobox')).toBeNull()
-  const link = within(nav).getByRole('link', { name: 'English' })
-  expect(link).toHaveAttribute('href', '/b/en/topics/t3/')
-  expect(link).toHaveAttribute('lang', 'en')
+  // In the document, so names given by aria-labelledby resolve.
+  const page = document.body.appendChild(document.createElement('div'))
+  try {
+    page.innerHTML = renderToString(<App route={{ kind: 'topic', lang: 'zh-TW', topic: 'T3' }} contents={contents} phase={1} base={base} />)
+    const nav = within(page).getByRole('navigation', { name: '切換語言' })
+    expect(within(nav).queryByRole('combobox')).toBeNull()
+    const link = within(nav).getByRole('link', { name: 'English' })
+    expect(link).toHaveAttribute('href', '/b/en/topics/t3/')
+    expect(link).toHaveAttribute('lang', 'en')
+  } finally {
+    page.remove()
+  }
 })
 
 test('the not-found page offers both languages, each marked with its lang', () => {
@@ -350,3 +370,29 @@ test('the not-found page offers both languages, each marked with its lang', () =
   expect(container.querySelectorAll('h1')).toHaveLength(2)
   expect(htmlLang(null)).toBe('en')
 })
+
+test.each(langs)('from phase 4 the map has one level: every topic sits under a group heading (%s)', (lang) => {
+  const { ui } = contents[lang]
+  render(<App route={{ kind: 'map', lang }} contents={contents} phase={4} base={base} />)
+  const main = screen.getByRole('main')
+  const headings = within(main).getAllByRole('heading', { level: 2 })
+  expect(headings.map((h) => h.textContent)).toEqual(groups.map((g) => ui.groups[g]))
+  expect(within(main).queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+  for (const h of headings) expect(h.nextElementSibling).toHaveClass('cards')
+  expect(main.querySelectorAll('.card')).toHaveLength(29)
+})
+
+test.each(langs)('the site index marks the group of the current topic, and on a lab page the group of the topics it practises (%s)', (lang) => {
+  const { ui } = contents[lang]
+  const cases = [
+    [{ kind: 'topic', lang, topic: 'Q7' }, 'storage'],
+    [{ kind: 'lab', lang, lab: 'd1' }, 'anomalies'],
+  ] as const
+  for (const [route, group] of cases) {
+    const { unmount } = render(<App route={route} contents={contents} phase={4} base={base} />)
+    const index = screen.getByRole('navigation', { name: ui.index.label })
+    expect(within(index).getAllByRole('link', { current: true }).map((a) => a.textContent)).toEqual([ui.groups[group]])
+    unmount()
+  }
+})
+
